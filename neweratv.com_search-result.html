@@ -371,6 +371,9 @@
                     });
 
                     if (forbiddenConfig) {
+                        body.classList.add('body-forbidden'); // 页面整体禁用样式
+                        searchContainer.classList.add('search-container-forbidden');
+                        
                         searchTitle.textContent = "搜索结果";
                         const textContent = forbiddenConfig.hidden 
                             ? `<span class="hidden-text">${forbiddenConfig.text}</span>`
@@ -389,23 +392,25 @@
                                 window.location.href = "https://missing.shiroki-y.top/reservation.html"; // 请根据需要修改目标URL
                             }, 2000); 
                             
-                            return Promise.resolve(null); // 立即停止后续 Promise 链
+                            return null;
                         }
                         // <<<<<<<<<<<<<<<<<<<<<<<< 波动和重定向逻辑 <<<<<<<<<<<<<<<<<<<<<<<<
                         
-                        return Promise.resolve(null); // 命中任何禁词，都停止执行后续的普通搜索
+                       return null;
                     }
 
                     // 2. 如果未命中禁用关键词，继续加载 encrypted_keywords.json (普通搜索)
                     return fetch('js/encrypted_keywords.json');
                 })
-                .then(res => {
-                    if (res && !res.ok) throw new Error('Failed to load encrypted_keywords.json');
-                    if (res) return res.json();
-                    return null; // 如果命中禁用，则跳过这里
+                .then(resOrNull => { // 接收上一步的返回值
+                    if (resOrNull === null) return; // 👈 如果上一步返回 null (命中禁词)，则停止
+
+                // 此时 resOrNull 应该是 fetch('js/encrypted_keywords.json') 返回的 Response 对象
+                    if (!resOrNull.ok) throw new Error('Failed to load encrypted_keywords.json');
+                    return resOrNull.json();
                 })
                 .then(keywordsMap => {
-                    if (keywordsMap === null) return; 
+                        if (keywordsMap === undefined || keywordsMap === null) return;
 
                     // ------------------ 正常搜索结果 ------------------
                     searchTitle.textContent = "搜索结果";
