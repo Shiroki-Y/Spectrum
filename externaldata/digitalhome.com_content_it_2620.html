@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>『科学技术』 [杂谈]讨论：伪科学和“超自然现象”</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../images/favicon_2/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="../images/favicon_2/favicon.svg" />
+    <link rel="shortcut icon" href="../images/favicon_2/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon_2/apple-touch-icon.png" />
+    <link rel="manifest" href="../images/favicon_2/site.webmanifest" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#f8fafc',
+                        accent: '#dc2626',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+<script src="../js/md5.min.js"></script>
+<style type="text/tailwindcss">
+    @layer utilities {
+        .archive-header {
+            @apply fixed top-0 left-0 right-0 z-50 text-white shadow-md bg-gradient-to-r from-purple-500 to-blue-500;
+        }
+        .archive-header-content {
+            @apply container mx-auto px-4;
+        }
+        .archive-header-top {
+            @apply flex items-center justify-between py-2 transition-all duration-300; /* 原py-3 → 改为py-2，减少顶部区域高度 */
+        }
+        .archive-info {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少中间区域高度 */
+        }
+        .archive-info-lower {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少下段区域高度 */
+        }
+        .return-home-btn {
+            @apply bg-white text-primary px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors;
+        }
+        .logo {
+              @apply h-10 w-auto bg-white p-1 border border-gray-300 
+                 rounded-[8px]; 
+        }
+        .content-wrapper {
+              @apply mt-0 pt-0; /* 移除顶部外边距和内边距，后续通过 JS 动态设置 */
+        }
+        .page-wrapper {
+              @apply mt-0; /* 移除顶部外边距 */
+        }
+        /* 移动端顶部收起状态 */
+        .archive-header.top-hidden .archive-header-top {
+            @apply py-0 h-0 overflow-hidden;
+        }
+    }
+
+    .article-title-dh, .article-meta {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  /* 可选：适当增加上下间距 */
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+</style>
+<style>
+/* 移动端修复：减少顶部间距，防止内容溢出 */
+
+/* 移动端顶部警告文字样式：放大字体并加黑色描边 */
+.mobile-warning-text {
+  color: #dc2626;                  /* 红色文字 */
+  font-weight: 700;                /* 粗体 */
+  font-size: 1.25rem;              /* 放大字号 */
+  -webkit-text-stroke: 1px #000;   /* WebKit 浏览器黑色描边 */
+  text-stroke: 1px #000;           /* 其他支持 text-stroke 的浏览器 */
+  -webkit-text-fill-color: #dc2626;/* 确保填充颜色仍为红色 */
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 0 !important;
+  }
+  
+  .page-wrapper {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 105px !important; /* 恢复上一步的间距设置 */
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+  }
+  
+  .page-wrapper > * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  .ad-bar-wrapper {
+    margin-top: 0 !important;
+    width: 95% !important;
+    max-width: 95% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  
+  .ad-bar-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  .article-box {
+    width: 95% !important;
+    max-width: 95% !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  
+  .article-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    padding-right: 0 !important;
+    overflow-x: hidden !important;
+  }
+  
+  .article-content * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  .article-content img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  
+  .footer-ad-bar {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+  
+  .reply-box {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .page-wrapper {
+    padding-top: 68px !important;
+    margin-top: 0 !important;
+  }
+  
+  .ad-bar-wrapper {
+    margin-top: 0 !important;
+  }
+}
+</style>
+</head>
+<body class="bg-gray-100">
+    <!-- 顶部固定条 -->
+    <header class="archive-header" id="archiveHeader">
+        <!-- 顶部区域：Logo和返回按钮 -->
+        <div class="archive-header-top archive-header-content">
+            <div class="flex items-center">
+                <img src="../images/webtimetower.PNG" 
+                     alt="WebTimeTower Logo" 
+                     class="logo">
+            </div>
+            
+            <!-- PC端中间信息区域 -->
+            <div class="hidden md:block text-center text-[19px] text-white font-bold text-primary"> 
+                <div>您正在浏览&nbsp;&nbsp;<span class="underline">digitalhome.com</span>&nbsp;&nbsp;于<span class="underline">2005年8月27日</span>&nbsp;&nbsp;的网页存档</div>
+            </div>
+            
+            <a href="../webtimetower.html" class="return-home-btn flex items-center" id="returnHomeBtn">
+                  <i class="fa fa-home mr-2"></i>返回首页
+            </a>
+        </div>
+        
+        <!-- 移动端中间信息区域 -->
+        <div class="archive-info archive-header-content md:hidden">
+            <div class="mobile-warning-text text-center">
+                警告：此页内容请通过电脑端查看
+            </div>
+        </div>
+        
+        <!-- 移动端下段文字区域（仅移动端显示） -->
+        <div class="archive-info-lower archive-header-content md:hidden">
+            <div class="text-center text-sm font-semibold text-white" id="tower-placeholder-mobile">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+
+        <!-- PC端下段文字区域（仅PC端显示） -->
+        <div class="archive-info-lower archive-header-content hidden md:block">
+            <div class="text-center text-[16px] font-bold text-white" id="tower-placeholder-pc">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+    </header>
+
+    <div class="page-wrapper">
+        <!-- 广告栏和logo整体包裹 -->
+        <div class="ad-bar-wrapper">
+            <div class="ad-bar-logo-row">
+                <img src="../images/digitalhome.jpg" alt="LOGO" class="ad-bar-logo-img">
+            </div>
+            <div class="ad-bar-container">
+                <div class="ad-bar-side">
+                    <div class="ad-bar-side-row"><span>分</span><span>类</span></div>
+                    <div class="ad-bar-side-row"><span>广</span><span>告</span></div>
+                </div>
+                <div class="ad-bar-main">
+                    <div class="ad-bar-col">
+                        <ul>
+                            <li><a href="#" class="ad-link">品牌鞋子的暴利经营</a></li>
+                            <li><a href="#" class="ad-link ad-emph">三国群英 招兵买马</a></li>
+                        </ul>
+                    </div>
+                    <div class="ad-bar-col">
+                        <ul>
+                            <li><a href="#" class="ad-link">攻克高血压获重大突破</a></li>
+                            <li><a href="#" class="ad-link">颈椎病－－轻松治好!</a></li>
+                        </ul>
+                    </div>
+                    <div class="ad-bar-col">
+                        <ul>
+                            <li><a href="#" class="ad-link">网上问诊，求医必答！</a></li>
+                            <li><a href="#" class="ad-link ad-emph">★2005年你玩什么游戏★</a></li>
+                        </ul>
+                    </div>
+                    <div class="ad-bar-col">
+                        <ul>
+                            <li><a href="#" class="ad-link ad-emph">股票：8月黑马免费送</a></li>
+                            <li><a href="#" class="ad-link">热门MP3铃声免费下载</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="article-box text-center md:mt-16">
+            <div class="article-title-dh">『科学技术』 [杂谈]讨论：伪科学和“超自然现象” </div>
+            <div class="article-meta">
+                1楼&nbsp;作者：<span>无泪之城5962</span> &nbsp; 提交日期：<span>2005-8-27 18:32:10</span>
+            </div>
+            <div class="article-content">
+                <p>最近老听到有人用“伪科学”这个词。为什么科学解释不了的东西就是伪科学呢？我觉得应该归类到“超自然现象”。</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                2楼&nbsp;作者：<span>吃苹果的猫</span> &nbsp; 提交日期：<span>2005-8-27 18:39:44</span>
+            </div>
+            <div class="article-content">
+                <p>楼主，不是科学解释不了的就是超自然！伪科学是假装自己是科学，其实根本没啥根据，就是忽悠人的。</p>
+                <p>你看那些“高人”、“大师”，绝大多数都是伪科学，别瞎信就对了。</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                3楼&nbsp;作者：<span>weng1980</span> &nbsp; 提交日期：<span>2005-8-27 18:48:21</span>
+            </div>
+            <div class="article-content">
+                <p>不对吧，比如 “气” 还是有科学依据的。这和经络、人体磁场都有关系。</p>
+                <p>再说老祖宗早就说了，"炁始而生化，炁散而有形"，是生命的原动力！练气功的人能用意念控制身体，甚至还能治病。我们应该好好研究一下 “气”，说不定能发现新的科学。</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                4楼&nbsp;作者：<span>风继续吹</span> &nbsp; 提交日期：<span>2005-8-27 18:51:27</span>
+            </div>
+            <div class="article-content">
+                <p>楼上的论调就充分说明了伪科学的存在</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                5楼&nbsp;作者：<span>未知用户</span> &nbsp; 提交日期：<span>2005-8-27 19:00:00</span>
+            </div>
+            <div class="article-content">
+                <p>1 1 12</p>
+                <p>20 2 10</p>
+                <p>9 1 4</p>
+                <p>17 2 1</p>
+                <p style="margin-bottom: 2em;"></p>
+                <p>12 1 9</p>
+                <p>27 1 13</p>
+                <p>6 1 11</p>
+                <p>10 1 28</p>
+                <p>2 2 1</p>
+                <p>25 2 6</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                6楼&nbsp;作者：<span>沙发为我留</span> &nbsp; 提交日期：<span>2005-8-27 19:02:33</span>
+            </div>
+            <div class="article-content">
+                <p>啥玩意儿？怎么突然冒出来一个未知用户？</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                7楼&nbsp;作者：<span>风继续吹</span> &nbsp; 提交日期：<span>2005-8-27 19:03:49</span>
+            </div>
+            <div class="article-content">
+                <p>这是不是他自己披的马甲？那我还叫“已取消用户“呢！</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                8楼&nbsp;作者：<span>我是灿灿</span> &nbsp; 提交日期：<span>2005-8-27 19:06:17</span>
+            </div>
+            <div class="article-content">
+                <p>他发那串数字是啥意思，偶要照着这个号码买彩票</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                9楼&nbsp;作者：<span>无泪之城5962</span> &nbsp; 提交日期：<span>2005-8-27 19:08:24</span>
+            </div>
+            <div class="article-content">
+                <p>可能就是随便按着玩的。别扯远了</p>
+                <p>就算不提伪科学，我还是觉得无法解释的所谓超自然力量也是科学的一种，只不过现在的科学无法解释罢了。</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                10楼&nbsp;作者：<span>风火老法师</span> &nbsp; 提交日期：<span>2005-8-27 19:14:39</span>
+            </div>
+            <div class="article-content">
+                <p>你要聊超自然我可就来兴致了，什么麦田怪圈 百慕大三角 第三类接触，我觉得科学解释不了的现象多了去了！</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                11楼&nbsp;作者：<span>风继续吹</span> &nbsp; 提交日期：<span>2005-8-27 19:20:05</span>
+            </div>
+            <div class="article-content">
+                <p>保留意见。就像那个《奔向科学》那一期，说监控拍到了“飞棍”，还说可能是外星人的交通工具！</p>
+                <p>结果看到最后，其实是只大扑棱蛾子，被抓拍成了那样而已。</p>
+                <p>超自然现象的绝大多数都是自己吓自己</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                12楼&nbsp;作者：<span>沙发为我留</span> &nbsp; 提交日期：<span>2005-8-27 19:23:45</span>
+            </div>
+            <div class="article-content">
+                <p>哈哈哈，顶一个 那期我也看了，看到最后就一个字：汗！</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                13楼&nbsp;作者：<span>无泪之城5962</span> &nbsp; 提交日期：<span>2005-8-27 19:30:12</span>
+            </div>
+            <div class="article-content">
+                <p>奔向科学里的故事还是跟真正的超自然现象有区别的吧。就像【风火老法师】网友提到的麦田怪圈，那些神秘的象形符号，用科学能解读吗？</p>
+            </div>
+        </div>
+        <div class="article-box">
+    <div class="article-meta">
+        14楼&nbsp;作者：<span>一米阳光</span> &nbsp; 提交日期：<span>2005-8-27 19:35:34</span>
+    </div>
+    <div class="article-content">
+        <p>说到象形符号，我家楼道里最近也出现了一些莫名其妙的符号。比如这个，有谁知道是什么意思吗？</p>
+        <img src="../images/Image0827_01.jpg" alt="楼道里的符号" style="width: 280px; height: auto; display: block; margin-top: 10px; margin-left: 2em;">
+    </div>
+</div>
+        <div class="article-box">
+            <div class="article-meta">
+                15楼&nbsp;作者：<span>风继续吹</span> &nbsp; 提交日期：<span>2005-8-27 19:41:22</span>
+            </div>
+            <div class="article-content">
+                <p>楼上的还是注意点吧，这个很像小偷踩点的标志……</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                16楼&nbsp;作者：<span>0715zf_wang</span> &nbsp; 提交日期：<span>2005-8-27 19:44:50</span>
+            </div>
+            <div class="article-content">
+                <p>怎么突然好吓人 路过</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                17楼&nbsp;作者：<span>曾经的流星雨</span> &nbsp; 提交日期：<span>2005-8-27 19:52:36</span>
+            </div>
+            <div class="article-content">
+                <p>你们有过突然回过神，发现眼前的场景和曾经做过的梦一样，这种经历吗？</p>
+                <p>梦里的场景基本醒来就会忘，但是之后的某天某一时刻，却突然意识到现在经历的就是曾经梦到的景象</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                18楼&nbsp;作者：<span>风火老法师</span> &nbsp; 提交日期：<span>2005-8-27 19:56:51</span>
+            </div>
+            <div class="article-content">
+                <p>这个也算是超自然吧，不过我对和梦有关的不感兴趣。lz可能爱听</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                19楼&nbsp;作者：<span>无泪之城5962</span> &nbsp; 提交日期：<span>2005-8-27 19:59:35</span>
+            </div>
+            <div class="article-content">
+                <p>天啊，我真的经历过。17楼有什么经历吗？详细讲讲</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                20楼&nbsp;作者：<span>曾经的流星雨</span> &nbsp; 提交日期：<span>2005-8-27 20:06:07</span>
+            </div>
+            <div class="article-content">
+                <p>其实，现在这个帖子的内容就和我曾经做过的一个梦一样。</p>
+                <p>虽然大部分都忘得差不多了，但也是我一个人坐在家里的电脑前，偶然看到一篇讨论伪科学和超自然的帖子，点进去后没多久就看到一个莫名其妙的人发了一堆数字</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                21楼&nbsp;作者：<span>吃苹果的猫</span> &nbsp; 提交日期：<span>2005-8-27 20:08:14</span>
+            </div>
+            <div class="article-content">
+                <p>怎么变成悬疑帖了？好有意思</p>
+                <p>呵呵。。。</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                22楼&nbsp;作者：<span>风继续吹</span> &nbsp; 提交日期：<span>2005-8-27 20:13:42</span>
+            </div>
+            <div class="article-content">
+                <p>那你在梦里弄清楚那些数字是什么意思了吗？</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                23楼&nbsp;作者：<span>曾经的流星雨</span> &nbsp; 提交日期：<span>2005-8-27 20:16:12</span>
+            </div>
+            <div class="article-content">
+                <p>记不太清了，但我记得醒的时候还有点兴奋，应该是解开了。</p>
+                <p>不过，梦里出现的数字和5楼发的格式不太一样。我记得是在每行第一个数字后有个F</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                24楼&nbsp;作者：<span>风继续吹</span> &nbsp; 提交日期：<span>2005-8-27 20:20:03</span>
+            </div>
+            <div class="article-content">
+                <p>这样？</p>
+                <p>1F 1-12</p>
+                <p>20F 2-10</p>
+                <p>9F 1-4</p>
+                <p>17F 2-1</p>
+                <p style="margin-bottom: 2em;"></p>
+                <p>12F 1-9</p>
+                <p>27F 1-13</p>
+                <p>6F 1-11</p>
+                <p>10F 1-28</p>
+                <p>2F 2-1</p>
+                <p>25F 2-6</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                25楼&nbsp;作者：<span>曾经的流星雨</span> &nbsp; 提交日期：<span>2005-8-27 20:25:00</span>
+            </div>
+            <div class="article-content">
+                <p>对，是这样的。具体数字我完全记不清了，所以没法说跟5楼发的是不是一样。</p>
+                <p>我家人回来了，下线了，88</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                26楼&nbsp;作者：<span>无泪之城5962</span> &nbsp; 提交日期：<span>2005-8-27 20:27:33</span>
+            </div>
+            <div class="article-content">
+                <p>越聊越离奇了，我这个帖子是不是就够奔向科学拍3集的</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                27楼&nbsp;作者：<span>沙发为我留</span> &nbsp; 提交日期：<span>2005-8-27 20:30:44</span>
+            </div>
+            <div class="article-content">
+                <p>版主快联系节目组吧，看看他们能推理出来什么，哈哈~</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                28楼&nbsp;作者：<span>weng1980</span> &nbsp; 提交日期：<span>2005-8-27 20:38:51</span>
+            </div>
+            <div class="article-content">
+                <p>世界上未知的事物太多了，经过时间的验证，一切皆会有答案</p>
+            </div>
+        </div>
+        
+        <div class="footer-ad-bar">
+            <div class="footer-ad-side">精彩推荐</div>
+            <div class="footer-ad-main">
+                <div class="footer-ad-row">
+                    <a href="#" class="ad-link">十大乒乓球经典画面回眸</a>
+                    <a href="#" class="ad-link">IT,今年不“挨踢”</a>
+                    <a href="#" class="ad-link">京城不明物一夜咬死25只羊</a>
+                </div>
+                <div class="footer-ad-row">
+                    <a href="#" class="ad-link">一网打尽羽坛帅哥(组图)</a>
+                    <a href="#" class="ad-link">火箭队昨日试训三名新球员</a>
+                    <a href="#" class="ad-link">2005最受网民推崇的电视剧</a>
+                </div>
+                <div class="footer-ad-row">
+                    <a href="#" class="ad-link">百万豪车强悍跑车争锋(图)</a>
+                    <a href="#" class="ad-link">05最受关注娱乐话题大调查</a>
+                    <a href="#" class="ad-link">“良心监理”惊曝内幕</a>
+                </div>
+                <div class="footer-ad-row">
+                    <a href="#" class="ad-link">三峡大坝防范核弹设计(图)</a>
+                    <a href="#" class="ad-link">05年10大最差企业家</a>
+                    <a href="#" class="ad-link">大牌明星狗选秀大赛(组图)</a>
+                </div>
+            </div>
+        </div> 
+
+        <div class="reply-box">
+          <div class="reply-row">
+            <label>用户：</label>
+            <input type="text" class="reply-input" disabled/>
+            <label>口令：</label>
+            <input type="password" class="reply-input" disabled/>
+          </div>
+          <textarea class="reply-textarea" rows="7" cols="80" placeholder="" disabled></textarea>
+          <div class="reply-row">
+            <label>图片链接: HTTP://</label>
+            <input type="text" class="reply-imginput" disabled/>
+          </div>
+          <div class="reply-actions">
+              <button type="button" class="reply-btn" id="post-btn">发表</button>
+          </div>
+        </div>
+    </div>
+    <footer>
+        <small>
+            <span class="first-line">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+            <span class="second-line">Copyright&copy; Shiroki. All Rights Reserved.</span>
+        </small>
+    </footer>
+
+<div class="page-number">
+
+ex/43
+
+</div>
+
+<script src="../js/main.js"></script>
+<script>
+// 新增：发表按钮点击弹窗“该网页已停止服务，无法提交”，消失后恢复红字
+document.addEventListener('DOMContentLoaded', function() {
+  var postBtn = document.getElementById('post-btn');
+  if (postBtn) {
+    postBtn.addEventListener('click', function(e) {
+      showTowerMessage('该网页已停止服务，无法提交');
+      setTimeout(function() {
+        showTowerMessage(towerErrorHTML);
+      }, 1000);
+    });
+  }
+});
+</script>
+</body>
+</html>

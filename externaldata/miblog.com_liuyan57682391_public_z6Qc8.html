@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公开博文一</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../images/favicon_3/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="../images/favicon_3//favicon.svg" />
+    <link rel="shortcut icon" href="../images/favicon_3//favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon_3//apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#f8fafc',
+                        accent: '#dc2626',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+<script src="../js/md5.min.js"></script>
+<style type="text/tailwindcss">
+    @layer utilities {
+        .archive-header {
+            @apply fixed top-0 left-0 right-0 z-50 text-white shadow-md bg-gradient-to-r from-purple-500 to-blue-500;
+        }
+        .archive-header-content {
+            @apply container mx-auto px-4;
+        }
+        .archive-header-top {
+            @apply flex items-center justify-between py-2 transition-all duration-300; /* 原py-3 → 改为py-2，减少顶部区域高度 */
+        }
+        .archive-info {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少中间区域高度 */
+        }
+        .archive-info-lower {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少下段区域高度 */
+        }
+        .return-home-btn {
+            @apply bg-white text-primary px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors;
+        }
+        .logo {
+              @apply h-10 w-auto bg-white p-1 border border-gray-300 
+                 rounded-[8px]; 
+        }
+        .content-wrapper {
+              @apply mt-0 pt-0; /* 移除顶部外边距和内边距，后续通过 JS 动态设置 */
+        }
+        .page-wrapper {
+              @apply mt-0; /* 移除顶部外边距 */
+        }
+        /* 移动端顶部收起状态 */
+        .archive-header.top-hidden .archive-header-top {
+            @apply py-0 h-0 overflow-hidden;
+        }
+    }
+
+    .article-title-dh, .article-meta {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  /* 可选：适当增加上下间距 */
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+</style>
+<style>
+.page-wrapper.blog-home-page {
+  margin-top: 0 !important; /* 先重置，再由JS动态设置 */
+  padding-top: 0 !important;
+  box-sizing: border-box !important;
+  padding-bottom: 60px !important;
+}
+/* 移动端修复：减少顶部间距，防止内容溢出 */
+@media (max-width: 768px) {
+  body {
+    padding-top: 0 !important;
+  }
+  .page-wrapper.custom-page-wrapper {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    box-sizing: border-box !important;
+    /* 用 !important 锁定基础样式，防止被覆盖 */
+  }
+  .page-wrapper:not(.blog-home-page) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 250px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 40 !important;
+  }
+  
+  .page-wrapper > * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  .ad-bar-wrapper {
+    margin-top: 0 !important;
+    width: 95% !important;
+    max-width: 95% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  
+  .ad-bar-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  .article-box {
+    width: 95% !important;
+    max-width: 95% !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  
+  .article-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    padding-right: 0 !important;
+    overflow-x: hidden !important;
+  }
+  
+  .article-content * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  .article-content img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  
+  .footer-ad-bar {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+  
+  .reply-box {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+}
+
+.blog-header .login-register {
+    right: 40px !important; /* 登录注册向左移动 */
+  }
+  
+.blog-header .login-register a {
+    color: white !important; /* 字体改为白色 */
+  }
+
+.blog-header .login-register span {
+    color: white !important; /* 分隔符也改为白色 */
+  }  
+@media (min-width: 769px) {
+  .page-wrapper.blog-home-page {
+        padding-top: 150px !important;
+        margin-top: 40px !important; /* 统一使用 px */
+        /* 关键修改：移除固定的 300px 边距 */
+        margin-left: auto !important;
+        margin-right: auto !important;
+
+        /* 限制内容最大宽度，例如 960px 或 1200px */
+        max-width: 960px !important; 
+        width: auto !important; /* 允许宽度根据内容自适应 */
+
+        box-sizing: border-box !important;
+        min-height: calc(100vh - 138px) !important;
+    }
+  
+  /* PC端调整博文目录和私密博文的宽度比例 - 左28%，右72% */
+  .blog-content-wrapper {
+    gap: 20px;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+  }
+  
+  .blog-profile-box {
+    width: 28% !important;
+    flex: 0 0 28% !important;
+    max-width: 28% !important;
+  }
+  
+  .blog-post-box {
+    flex: 1 1 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+  
+  /* PC端让文字更贴近容器顶部 */
+  .blog-profile-box .blog-post-content {
+    padding-top: 20 !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    padding-bottom: 15px !important;
+    margin-top: 0 !important;
+  }
+  
+  .blog-post-box .blog-post-content {
+    padding-top: 0 !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    padding-bottom: 15px !important;
+    margin-top: 0 !important;
+  }
+  
+  .blog-profile-box .blog-section-header,
+  .blog-post-box .blog-section-header {
+    margin-bottom: 0 !important;
+  }
+  
+  .ad-bar-wrapper {
+    margin-top: 0 !important;
+  }
+  
+  /* PC端调整博客头部布局 */
+  .blog-header {
+    margin: 30px auto 30px 380px !important; /* 上 右 下 左 - 左侧280px，右侧auto */
+    padding: 20px 0 !important;
+  }
+}
+
+/* 博客主页样式 */
+.blog-home-page {
+  background-image: url('../images/bg.png');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: local;
+  padding: 20px;
+  position: relative;
+}
+
+.blog-header {
+  max-width: 960px;
+  margin: 0 auto 30px auto;
+  padding: 20px 0;
+  position: relative;
+}
+
+.blog-header .login-register {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 14px;
+}
+
+.blog-header .login-register a {
+  color: #1e3a8a;
+  text-decoration: none;
+}
+
+.blog-header .login-register a:hover {
+  text-decoration: underline;
+}
+
+.blog-header .login-register span {
+  color: #1e3a8a;
+  margin: 0 8px;
+}
+
+.blog-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #1e3a8a;
+  margin: 0;
+  margin-bottom: 5px;
+}
+
+.blog-url {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  margin-bottom: 15px;
+}
+
+.blog-nav {
+  font-size: 14px;
+}
+
+.blog-nav a {
+  color: #1e3a8a;
+  text-decoration: none;
+}
+
+.blog-nav a:hover {
+  text-decoration: underline;
+}
+
+.blog-nav span {
+  color: #1e3a8a;
+  margin: 0 8px;
+}
+
+.blog-content-wrapper {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.blog-profile-box,
+.blog-post-box {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 0;
+}
+
+.blog-profile-box {
+  width: 280px;
+  flex-shrink: 0;
+}
+
+.blog-post-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.blog-section-header {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  height: 40px;
+}
+
+.section-title-img {
+  width: 100%;
+  height: 100%; 
+  display: block;
+  object-fit: fill;
+}
+
+.section-title {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color:#2687a8;
+  z-index: 1;
+}
+
+.profile-picture-placeholder {
+  width: 160px;
+  height: 200px;
+  background-color: #e5e7eb;
+  border: none;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.profile-picture-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.profile-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  padding: 15px;
+  text-align: center;
+}
+
+.blog-post-content {
+  padding: 15px;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 私密博文框的内容区域需要填满剩余空间并居中文字 */
+.blog-post-box .blog-post-content {
+  display: flex;
+  flex-direction: column; 
+  justify-content: flex-start; /* 👈 将内容推向顶部 */
+  align-items: stretch; /* 👈 关键：让子元素水平拉伸到父容器宽度 */
+  
+  padding: 15px;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 博文目录链接样式 */
+.blog-category-link {
+  color: #333;
+  text-decoration: none;
+}
+
+.blog-category-link:hover {
+  text-decoration: underline;
+}
+
+.post-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 10px 0;
+}
+
+.post-date {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 15px 0;
+}
+
+.post-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  margin: 0 0 20px 0;
+}
+.post-text p {
+  margin-bottom: 15px;
+  text-indent: 2em;
+}
+.post-footer-links {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  display: block; 
+  text-align: left; 
+  width: 100%;
+}
+
+.post-footer-links a {
+  color: #666;
+  text-decoration: none;
+}
+
+.post-footer-links a:hover {
+  text-decoration: underline;
+}
+
+.post-footer-links span {
+  margin: 0 8px;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden !important;
+  }
+  
+  .page-wrapper.blog-home-page {
+    padding-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-height: calc(100vh - 125px) !important;
+    /* 关键修改：添加左右15px padding，抵消内容溢出，立刻居中 */
+    padding-left: 15px !important;
+
+    padding-bottom: 60px !important; /* 保留底部空隙 */
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    background-image: url('../images/bg-mb.png') !important;
+    background-size: cover !important;
+    background-position: center top !important;
+    background-repeat: no-repeat !important;
+    background-attachment: local !important;
+  }
+  
+  .blog-home-page {
+    padding: 0 20px 25px 20px !important; /* 上0 右20px 下25px 左20px */
+    box-sizing: border-box !important;
+    background-image: url('../images/bg-mb.png') !important; /* 移动端背景图片覆盖PC端背景 */
+    background-size: cover !important;
+    background-position: center top !important;
+    background-repeat: no-repeat !important;
+    background-attachment: local !important;
+  }
+  
+  .blog-header {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 15px 15px !important;
+    margin-top: 20px !important; 
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 20px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    position: relative !important;
+  }
+  
+  .blog-header .login-register {
+    position: static !important; /* 移动端改为静态定位，避免溢出 */
+    margin-top: 10px !important;
+    text-align: right !important;
+    margin-right: -35px !important;
+  }
+  
+  .blog-title {
+    font-size: 24px !important; /* 移动端缩小字体 */
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+  
+  .blog-url {
+    font-size: 12px !important; /* 移动端缩小字体 */
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+  
+  .blog-nav {
+    font-size: 12px !important; /* 移动端缩小字体 */
+    word-wrap: break-word !important;
+  }
+  
+  .blog-content-wrapper {
+  flex-direction: column !important; /* 保持垂直堆叠 */
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 0 15px !important; 
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  gap: 15px !important;
+  overflow-x: hidden !important;
+  }
+  
+  .blog-profile-box,
+  .blog-post-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    overflow-x: hidden !important;
+  }
+  
+  .blog-post-content {
+    padding: 15px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+  
+  .blog-post-box {
+  min-height: 600px !important; 
+  height: 600px !important; 
+  display: block !important; 
+}
+  
+  .blog-post-box .blog-post-content {
+    flex: 1 !important; 
+    display: block !important;
+  }
+  
+  .blog-title, 
+  .blog-url, 
+  .blog-nav {
+      margin-left: -45px !important; 
+  }
+  
+  /* 移动端使用 blogtitle-mb.png 作为渐变条 */
+  .blog-section-header .section-title-img {
+    content: url('../images/blogtitle-mb.png');
+  }
+}
+  /* 仅当前博客页面生效：强制右移，不受全局影响 */
+.blog-header-custom {
+  padding-left: 80px !important; /* 自定义PC端偏移量（按需改） */
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  transform: none !important; /* 禁止任何JS修改位置 */
+}
+/* 仅当前博客页面：登录注册按钮左移（与blog-header右移配套） */
+.blog-header-custom .login-register-custom {
+  /* 核心：左移距离（按需调整，建议比blog-header的padding-left小20px，视觉协调） */
+  right: calc(var(--blog-header-offset, 100px) - 20px) !important; 
+  position: absolute !important; /* 保持绝对定位，确保左移生效 */
+  top: 0 !important;
+}
+.image-container {
+    width: 70%; 
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+</style>
+</head>
+<body class="bg-gray-100">
+    <!-- 顶部固定条 -->
+    <header class="archive-header" id="archiveHeader">
+        <!-- 顶部区域：Logo和返回按钮 -->
+        <div class="archive-header-top archive-header-content">
+            <div class="flex items-center">
+                <img src="../images/webtimetower.PNG" 
+                     alt="WebTimeTower Logo" 
+                     class="logo">
+            </div>
+            
+            <!-- PC端中间信息区域 -->
+            <div class="hidden md:block text-center text-[19px] text-white font-bold text-primary"> 
+                <div>您正在浏览&nbsp;&nbsp;<span class="underline">miblog.com</span>&nbsp;&nbsp;于<span class="underline">2023年4月17日</span>&nbsp;&nbsp;的网页存档</div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <a href="../webtimetower.html" class="return-home-btn flex items-center ml-4" id="returnHomeBtn">
+                      <i class="fa fa-home mr-2"></i>返回首页
+                </a>
+            </div>
+        </div>
+        
+        <!-- 移动端中间信息区域 -->
+        <div class="archive-info archive-header-content md:hidden">
+            <div class="text-center text-white font-bold">
+            您正在浏览&nbsp;&nbsp;<span class="underline">miblog.com</span>&nbsp;&nbsp;于<br><span class="underline">2023年4月17日</span>&nbsp;&nbsp;的网页存档
+            </div>
+        </div>
+        
+        <!-- 移动端下段文字区域（仅移动端显示） -->
+        <div class="archive-info-lower archive-header-content md:hidden">
+            <div class="text-center text-sm font-semibold text-white" id="tower-placeholder-mobile">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+
+        <!-- PC端下段文字区域（仅PC端显示） -->
+        <div class="archive-info-lower archive-header-content hidden md:block">
+            <div class="text-center text-[16px] font-bold text-white" id="tower-placeholder-pc">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+    </header>
+
+    <div class="page-wrapper blog-home-page custom-page-wrapper">
+        <!-- 博客头部 -->
+        <div class="blog-header blog-header-custom">
+            <div class="login-register login-register-custom">
+                <a href="#" id="login-btn">登录</a>
+                <span>|</span>
+                <a href="#" id="register-btn">注册</a>
+            </div>
+            <h1 class="blog-title">刘砚的博客</h1>
+            <p class="blog-url">www.miblog_liuyan57682391.com</p>
+            <nav class="blog-nav">
+                <a href="miblog.com_liuyan57682391.html">首页</a>
+                <span>|</span>
+                <a href="miblog.com_liuyan57682391_public.html">博文目录</a>
+            </nav>
+        </div>
+        
+        <!-- 博客主内容区域 - 两栏布局 -->
+        <div class="blog-content-wrapper">
+            <!-- 左侧：个人资料 -->
+            <div class="blog-profile-box">
+                <div class="blog-section-header">
+                    <img src="../images/title_short.png" alt="个人资料" class="section-title-img">
+                    <h2 class="section-title">个人资料</h2>
+                </div>
+                <div class="blog-post-content">
+                  <div class="profile-picture-placeholder">
+                    <img src="../images/liuyan.png">
+                    <!-- 头像占位符 -->
+                  </div>
+                    <p class="profile-name">刘砚</p>
+                </div>
+            </div>
+            
+            <!-- 右侧：博文 -->
+            <div class="blog-post-box">
+                <div class="blog-section-header">
+                    <img src="../images/title_long.png" alt="博文" class="section-title-img">
+                    <h2 class="section-title">博文</h2>
+                </div>
+                <div class="blog-post-content">
+                    <h3 class="post-title">火星文：初探网络次文化现象</h3>
+                    <p class="post-date">发布日期: 2005-9-20</p>
+                    <div class="post-text">
+                        <p>火星文（又称 “非主流文字”）作为一种新兴的网络次文化现象，以其独特的符号运用、字形重构、谐音替代等方式，对既有的语言文字规范产生了一定的影响。 我想在这篇文章中，分享我对这种网络文字现象的观察与思考，并尝试进行初步的解读。</p>
+                        <p>“火星文”并非一种独立的语言体系，而是对现有汉字进行一定程度的改造和变异。 其主要特征包括：<b>（1）符号化：</b>大量使用特殊符号、表情符号及变形的标点符号；<b>（2）字形重构：</b>以形近的其他文字替换原有汉字，例如将 “我” 写作 “莪”；<b>（3）谐音替代：</b>使用谐音字代替原字，例如将 “不” 写作 “8”；<b>（4）中英文混杂：</b>在中文语句中穿插使用英文字母或英语文化圈的符号。</p>
+                        <p>青少年为何对 “火星文” 如此热衷？ 这背后反映出他们独特的社会心理需求。 处于追求个性和自我表达的关键时期，青少年们渴望在虚拟的网络世界中寻找到归属感与身份认同。 而 “火星文” 这种独特的语言工具，恰恰在一定程度上满足了他们寻求身份认同、追求个性表达，甚至是对于既有权威和规则的反叛心理。</p>
+                        <p>目前社会对于此种网络文字的担忧，普遍集中在其可能对语言的规范性产生影响，并导致青少年与成人之间的沟通障碍。 <b>于是，我决定亲自尝试使用 “火星文”，希望借此了解这种文字的吸引力究竟何在。</b></p>
+                        <p>锜初●·..莪真dē憾菿難姒适應° 那些↑特姝 De ♂ ♀ 苻呺☆、模棱兩可 De ♂ ♀ 谐音╰ ╮還冇ф英攵夹雜 De ♂ ♀ 錶垯汸鉽、讓莪憾菿涃惑° 吥過隨着莪吥断哋学習&模仿╰ ╮莪吔慢慢掌渥ㄋ①些樭夲規侓&技巧° “火星攵” 吥仅仅湜①種情感表达和交流哋途径╰ ╮作为①種攵字游戏╰ ╮吔湜狠冇吸引力哋° </p>
+                        <p>规範哋语訁攵字湜沟通哋基础╰ ╮吔湜攵化传承哋重婹载体° 泹 “火星攵” 作为网絡时笩哋①種特殊语訁哯潒╰ ╮諟瑆莪们應该鼡更閞倣哋心忲╰ ╮呿理解&澊偅8茼哋攵化╰ ╮琎洏浭恏哋理解快速變化丶;ˊ．哋时笩°</p>
+                        <div class="image-container">
+                          <img src="../images/quiz.png" alt="quiz">
+                        </div>
+                        <p style="text-align: center;">①我上面有什么</p>
+                        <p style="text-align: center;">②而左边是什么</p>
+                        <p style="text-align: center;">③文化作了什么</p>
+                        <p style="text-align: center;">④现在王是什么</p>
+                    </div>
+                    <div class="post-footer-links">
+                        <a href="#" id="Btn1">转载</a>
+                        <span>|</span>
+                        <a href="#" id="Btn2">评论</a>
+                        <span>|</span>
+                        <a href="#" id="Btn3">收藏</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <small>
+            <span class="first-line">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+            <span class="second-line">Copyright&copy; Shiroki. All Rights Reserved.</span>
+        </small>
+    </footer>
+
+<div class="page-number">
+
+24/43
+
+</div>
+
+<script src="../js/main.js"></script>
+<script>
+// 关键：等 main.js 所有事件执行完后，再强制设置当前页面的顶部间距
+function fixCurrentPageMargin() {
+  const header = document.getElementById('archiveHeader');
+  const pageWrapper = document.querySelector('.page-wrapper.custom-page-wrapper');
+  if (!header || !pageWrapper) return;
+
+  // 仅在移动端执行
+  if (window.innerWidth <= 768) {
+    const headerHeight = header.offsetHeight;
+    // 用 inline 样式（最高优先级）设置 margin-top，彻底覆盖所有干扰
+    pageWrapper.style.marginTop = `${headerHeight}px`;
+    pageWrapper.style.boxSizing = 'border-box';
+    // 锁定样式，防止被其他脚本修改
+    pageWrapper.style.setProperty('margin-top', `${headerHeight}px`, 'important');
+  } else {
+    // PC端保持原有样式
+    pageWrapper.style.marginTop = '';
+  }
+}
+
+// 1. 页面加载完成后，先等 main.js 执行完，再执行自己的逻辑（用 setTimeout 延迟10ms，确保执行顺序）
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(fixCurrentPageMargin, 10);
+});
+
+// 2. 监听窗口大小变化（main.js 也监听了这个事件，我们要在它之后重新设置）
+window.addEventListener('resize', function() {
+  setTimeout(fixCurrentPageMargin, 10);
+});
+
+// 3. 监听滚动事件（main.js 会在滚动时修改样式，我们要实时“抢回来”）
+window.addEventListener('scroll', function() {
+  setTimeout(fixCurrentPageMargin, 10);
+});
+
+// 原有按钮点击事件逻辑（保持不变）
+var loginBtn = document.getElementById('login-btn');
+var registerBtn = document.getElementById('register-btn');
+var Btn1 = document.getElementById('Btn1');
+var Btn2 = document.getElementById('Btn2');
+var Btn3 = document.getElementById('Btn3');
+
+if (loginBtn) {
+  loginBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (typeof showTowerMessage === 'function') {
+      showTowerMessage('该网页已停止服务，无法操作');
+    }
+  });
+}
+
+if (registerBtn) {
+  registerBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (typeof showTowerMessage === 'function') {
+      showTowerMessage('该网页已停止服务，无法操作');
+    }
+  });
+}
+
+if (Btn1) {
+  Btn1.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (typeof showTowerMessage === 'function') {
+      showTowerMessage('该网页已停止服务，无法操作');
+    }
+  });
+}
+
+if (Btn2) {
+  Btn2.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (typeof showTowerMessage === 'function') {
+      showTowerMessage('该网页已停止服务，无法操作');
+    }
+  });
+}
+
+if (Btn3) {
+  Btn3.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (typeof showTowerMessage === 'function') {
+      showTowerMessage('该网页已停止服务，无法操作');
+    }
+  });
+}
+
+// 仅当前博客页面生效：抵消全局JS的影响
+document.addEventListener('DOMContentLoaded', function() {
+  // 1. 获取当前页面的专属元素（只有当前页面有blog-header-custom）
+  const customBlogHeader = document.querySelector('.blog-header-custom');
+  const pageWrapper = document.querySelector('.page-wrapper.blog-home-page');
+  if (!customBlogHeader || !pageWrapper) return; // 不是当前页面，直接退出（不影响其他页面）
+
+  // 2. 覆盖全局JS的.content-wrapper操作（仅当前页面）
+  function overrideGlobalJS() {
+    // 阻止全局JS修改当前页面的布局
+    const contentWrapper = document.querySelector('.content-wrapper');
+    if (contentWrapper) {
+      // 只让.content-wrapper适配顶部条，不干扰blog-header
+      contentWrapper.style.paddingTop = '';
+      contentWrapper.style.margin = '';
+    }
+
+    // 确保当前页面的page-wrapper位置正确，同时保留blog-header偏移
+    const archiveHeader = document.getElementById('archiveHeader');
+    if (archiveHeader) {
+      const headerHeight = archiveHeader.offsetHeight;
+      pageWrapper.style.marginTop = `${headerHeight + (window.innerWidth >=768 ? 20 : 10)}px`;
+      pageWrapper.style.marginLeft = '0 !important';
+      pageWrapper.style.marginRight = '0 !important';
+      pageWrapper.style.width = '100% !important';
+    }
+  }
+
+  // 3. 执行覆盖逻辑，并监听全局JS的触发事件（滚动/ resize）
+  overrideGlobalJS();
+  window.addEventListener('scroll', overrideGlobalJS); // 全局JS滚动时，我们立即覆盖
+  window.addEventListener('resize', overrideGlobalJS); // 窗口变化时，立即覆盖
+
+  // 4. 延迟100ms再执行一次（确保覆盖全局JS的后续操作）
+  setTimeout(overrideGlobalJS, 100);
+});
+</script>
+</body>
+</html>

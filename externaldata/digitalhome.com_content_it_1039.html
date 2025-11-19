@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>『电脑网络』 [移动通信]想和大家聊聊...</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../images/favicon_2/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="../images/favicon_2/favicon.svg" />
+    <link rel="shortcut icon" href="../images/favicon_2/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon_2/apple-touch-icon.png" />
+    <link rel="manifest" href="../images/favicon_2/site.webmanifest" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#f8fafc',
+                        accent: '#dc2626',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+<script src="../js/md5.min.js"></script>
+<style type="text/tailwindcss">
+    @layer utilities {
+        .archive-header {
+            @apply fixed top-0 left-0 right-0 z-50 text-white shadow-md bg-gradient-to-r from-purple-500 to-blue-500;
+        }
+        .archive-header-content {
+            @apply container mx-auto px-4;
+        }
+        .archive-header-top {
+            @apply flex items-center justify-between py-2 transition-all duration-300; /* 原py-3 → 改为py-2，减少顶部区域高度 */
+        }
+        .archive-info {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少中间区域高度 */
+        }
+        .archive-info-lower {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少下段区域高度 */
+        }
+        .return-home-btn {
+            @apply bg-white text-primary px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors;
+        }
+        .logo {
+              @apply h-10 w-auto bg-white p-1 border border-gray-300 
+                 rounded-[8px]; 
+        }
+        .content-wrapper {
+              @apply mt-0 pt-0; /* 移除顶部外边距和内边距，后续通过 JS 动态设置 */
+        }
+        .page-wrapper {
+              @apply mt-0; /* 移除顶部外边距 */
+        }
+        /* 移动端顶部收起状态 */
+        .archive-header.top-hidden .archive-header-top {
+            @apply py-0 h-0 overflow-hidden;
+        }
+    }
+
+    .article-title-dh, .article-meta {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  /* 可选：适当增加上下间距 */
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+</style>
+</head>
+<body class="bg-gray-100">
+    <!-- 顶部固定条 -->
+    <header class="archive-header" id="archiveHeader">
+        <!-- 顶部区域：Logo和返回按钮 -->
+        <div class="archive-header-top archive-header-content">
+            <div class="flex items-center">
+                <img src="../images/webtimetower.PNG" 
+                     alt="WebTimeTower Logo" 
+                     class="logo">
+            </div>
+            
+            <!-- PC端中间信息区域 -->
+            <div class="hidden md:block text-center text-[19px] text-white font-bold text-primary"> 
+                <div>您正在浏览&nbsp;&nbsp;<span class="underline">digitalhome.com</span>&nbsp;&nbsp;于<span class="underline">2005年5月25日</span>&nbsp;&nbsp;的网页存档</div>
+            </div>
+            
+            <a href="../webtimetower.html" class="return-home-btn flex items-center" id="returnHomeBtn">
+                  <i class="fa fa-home mr-2"></i>返回首页
+            </a>
+        </div>
+        
+        <!-- 移动端中间信息区域 -->
+        <div class="archive-info archive-header-content md:hidden">
+            <div class="text-center text-white font-bold">
+            您正在浏览&nbsp;&nbsp;<span class="underline">digitalhome.com</span>&nbsp;&nbsp;于<br><span class="underline">2005年5月25日</span>&nbsp;&nbsp;的网页存档
+            </div>
+        </div>
+        
+        <!-- 移动端下段文字区域（仅移动端显示） -->
+        <div class="archive-info-lower archive-header-content md:hidden">
+            <div class="text-center text-sm font-semibold text-white" id="tower-placeholder-mobile">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+
+        <!-- PC端下段文字区域（仅PC端显示） -->
+        <div class="archive-info-lower archive-header-content hidden md:block">
+            <div class="text-center text-[16px] font-bold text-white" id="tower-placeholder-pc">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+    </header>
+
+    <div class="page-wrapper">
+        <!-- 广告栏和logo整体包裹 -->
+        <div class="ad-bar-wrapper">
+            <div class="ad-bar-logo-row">
+                <img src="../images/digitalhome.jpg" alt="LOGO" class="ad-bar-logo-img">
+            </div>
+            <div class="ad-bar-container">
+                <div class="ad-bar-side">
+                    <div class="ad-bar-side-row"><span>分</span><span>类</span></div>
+                    <div class="ad-bar-side-row"><span>广</span><span>告</span></div>
+                </div>
+                <div class="ad-bar-main">
+                    <div class="ad-bar-col">
+                        <ul>
+                            <li><a href="#" class="ad-link">首都净念区平价医院</a></li>
+                            <li><a href="#" class="ad-link ad-emph">癌症新疗法再创新迹！</a></li>
+                        </ul>
+                    </div>
+                    <div class="ad-bar-col">
+                        <ul>
+                            <li><a href="#" class="ad-link">如果你脱发......</a></li>
+                            <li><a href="#" class="ad-link">挂机赚健康币减医疗费</a></li>
+                        </ul>
+                    </div>
+                    <div class="ad-bar-col">
+                        <ul>
+                            <li><a href="#" class="ad-link">他让我一月会说英语</a></li>
+                            <li><a href="#" class="ad-link ad-emph">★2005年你玩什么游戏★</a></li>
+                        </ul>
+                    </div>
+                    <div class="ad-bar-col">
+                        <ul>
+                            <li><a href="#" class="ad-link">平民化MP3挑战性价比</a></li>
+                            <li><a href="#" class="ad-link ad-emph">精彩铃音送不完！</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="article-box text-center md:mt-16">
+            <div class="article-title-dh">『电脑网络』 [移动通信]想和大家聊聊 “<span class="del-text">&lt;deleted&gt;</span>” </div>
+            <div class="article-meta">
+                1楼&nbsp;作者：<span>啃菜的鸟</span> &nbsp; 提交日期：<span>2005-5-23 20:04:33</span>
+            </div>
+            <div class="article-content">
+                <p>各位朋友，最近我对手机上网的原理挺好奇的，总觉得手机能连上网络真是太神奇了！听说这和 “<span class="del-text">&lt;deleted&gt;</span>”有很大关系，所以想和大家聊聊这个话题，看看有没有懂行的大大能给解答一下。</p>
+                <p>我对这个过程不太了解，只知道手机能发射信号，然后通过某种方式连接到互联网。这中间<span class="del-text">&lt;deleted&gt;</span>到底扮演了什么角色呢？它是怎么把咱们的手机信号转换成网络信号的？</p]>
+                <p>原本一提到<span class="del-text">&lt;deleted&gt;</span>，我印象最深的就是那种大铁塔，上面挂着一堆天线，远远就能看到，特别显眼。 所以都建在比较空旷的地方，像郊区、田野啥的。但是听说现在城里面都开始直接建在楼顶上了，变得又小又隐蔽了，不仔细看还发现不了。</p>
+                <p>我家里人还总担心<span class="del-text">&lt;deleted&gt;</span>有辐射，说长期在<span class="del-text">&lt;deleted&gt;</span>附近活动对身体不好。这种说法到底有没有科学依据啊？</p>
+                <p>还望各位高手不吝赐教，万分感谢！</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                2楼&nbsp;作者：<span>无雨有风</span> &nbsp; 提交日期：<span>2005-5-23 21:56:17</span>
+            </div>
+            <div class="article-content">
+                <p><span class="del-text">&lt;deleted&gt;</span>这两个字乍一听确实让人摸不着头脑。你可以把它想象成一个大喇叭，专门负责接收和发送手机信号。 咱们手机发出的信号，都要先经过这个大喇叭，然后才能传到网上。</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                3楼&nbsp;作者：<span>jack123</span> &nbsp; 提交日期：<span>2005-5-24 14:32:40</span>
+            </div>
+            <div class="article-content">
+                <p>我妈也说那玩意儿有辐射，看到了都让我绕道走。不过我觉得应该没事儿吧，要不然国家也不会让建啊。</p>
+            </div>
+        </div>
+        <div class="article-box">
+            <div class="article-meta">
+                4楼&nbsp;作者：<span>欧阳文盲</span> &nbsp; 提交日期：<span>2005-5-24 19:10:27</span>
+            </div>
+            <div class="article-content">
+                <p>搞不懂那些高科技，只要能上网就行了！ 哈哈！</p>
+            </div>
+        </div>
+
+        <div class="footer-ad-bar">
+            <div class="footer-ad-side">精彩推荐</div>
+            <div class="footer-ad-main">
+                <div class="footer-ad-row">
+                    <a href="#" class="ad-link">当今最红四大花旦你来评定</a>
+                    <a href="#" class="ad-link">周丙伦今年内地狂赚2.2亿</a>
+                    <a href="#" class="ad-link">章子鱼称代表亚洲演员(图)</a>
+                </div>
+                <div class="footer-ad-row">
+                    <a href="#" class="ad-link">一网打尽羽坛帅哥(组图)</a>
+                    <a href="#" class="ad-link">NBA新赛季三要素力挺火箭</a>
+                    <a href="#" class="ad-link">全明星候选之西部后卫出炉</a>
+                </div>
+                <div class="footer-ad-row">
+                    <a href="#" class="ad-link">灵芝林庆31岁生日流泪(图)</a>
+                    <a href="#" class="ad-link">05最受关注娱乐话题大调查</a>
+                    <a href="#" class="ad-link">揭秘周墨畅与地娱解约内幕</a>
+                </div>
+                <div class="footer-ad-row">
+                    <a href="#" class="ad-link">李香代言化身雪天使(图)</a>
+                    <a href="#" class="ad-link">数十大汉派出所门前闹事</a>
+                    <a href="#" class="ad-link">大牌明星狗选秀大赛(组图)</a>
+                </div>
+            </div>
+        </div> 
+
+        <div class="reply-box">
+          <div class="reply-row">
+            <label>用户：</label>
+            <input type="text" class="reply-input" disabled/>
+            <label>口令：</label>
+            <input type="password" class="reply-input" disabled/>
+          </div>
+          <textarea class="reply-textarea" rows="7" cols="80" placeholder="" disabled></textarea>
+          <div class="reply-row">
+            <label>图片链接: HTTP://</label>
+            <input type="text" class="reply-imginput" disabled/>
+          </div>
+          <div class="reply-actions">
+              <button type="button" class="reply-btn" id="post-btn">发表</button>
+          </div>
+        </div>
+    </div>
+    <footer>
+        <small>
+            <span class="first-line">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+            <span class="second-line">Copyright&copy; Shiroki. All Rights Reserved.</span>
+        </small>
+    </footer>
+
+<div class="page-number">
+
+31/43
+
+</div>
+
+<script src="../js/main.js"></script>
+<script>
+// 首次访问时间持久化
+const TOWER_KEY = "digitalhome_modified_time";
+let now = new Date();
+let firstVisit = localStorage.getItem(TOWER_KEY);
+if (!firstVisit) {
+  firstVisit = now.getTime();
+  localStorage.setItem(TOWER_KEY, firstVisit);
+}
+let modifyTime = new Date(Number(firstVisit) - 3 * 60 * 1000);
+function formatTowerDate(dt) {
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth()+1).padStart(2, '0');
+  const d = String(dt.getDate()).padStart(2, '0');
+  const h = String(dt.getHours()).padStart(2, '0');
+  const min = String(dt.getMinutes()).padStart(2, '0');
+  return `${y}年${m}月${d}日 ${h}:${min}`;
+}
+let towerShowTime = formatTowerDate(modifyTime);
+
+// 红色描边内容
+const towerErrorHTML = '<span style="color:#ff3333;font-weight:bold;'
+  + 'text-shadow:0 2px 10px rgba(0,0,0,0.25),'
+  + '0 0 2px #000,1px 1px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000;'
+  + 'display:inline-block;">此页面于 ' + towerShowTime + ' 被未知用户修改</span>';
+
+// 小字栏内容设置函数
+function showTowerMessage(contentHTML) {
+  var pc = document.getElementById('tower-placeholder-pc');
+  var mobile = document.getElementById('tower-placeholder-mobile');
+  if (pc) {
+    pc.innerHTML = contentHTML;
+    pc.classList.add('visible');
+  }
+  if (mobile) {
+    mobile.innerHTML = contentHTML;
+    mobile.classList.add('visible');
+  }
+}
+
+// 页面初始显示红字
+window.addEventListener('DOMContentLoaded', function() {
+  showTowerMessage(towerErrorHTML);
+});
+
+// 绑定所有广告链接
+document.querySelectorAll('.ad-link').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    // 跳转链接（新标签页）
+    const url = link.getAttribute('href');
+    if (url && url !== '#') {
+      window.open(url, '_blank');
+    }
+    e.preventDefault();
+
+    // 显示ad-link文字（白色加粗）
+    var adText = link.textContent.trim();
+    var adHTML = '<span style="color:#fff;font-weight:bold;display:inline-block;">' + adText + '</span>';
+    showTowerMessage('正在查询...');
+
+    // 1秒后恢复红色字样
+    setTimeout(function() {
+      showTowerMessage(towerErrorHTML);
+    }, 1000);
+  });
+});
+
+// 新增：发表按钮点击弹窗“该网页已停止服务，无法提交”，消失后恢复红字
+document.addEventListener('DOMContentLoaded', function() {
+  var postBtn = document.getElementById('post-btn');
+  if (postBtn) {
+    postBtn.addEventListener('click', function(e) {
+      showTowerMessage('该网页已停止服务，无法提交');
+      setTimeout(function() {
+        showTowerMessage(towerErrorHTML);
+      }, 1000);
+    });
+  }
+});
+</script>
+</body>
+</html>

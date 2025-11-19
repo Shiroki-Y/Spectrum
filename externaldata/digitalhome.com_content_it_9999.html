@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>『电脑网络』 [移动通信]优化无线基站的频谱效率</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../images/favicon_2/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="../images/favicon_2/favicon.svg" />
+    <link rel="shortcut icon" href="../images/favicon_2/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon_2/apple-touch-icon.png" />
+    <link rel="manifest" href="../images/favicon_2/site.webmanifest" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#f8fafc',
+                        accent: '#dc2626',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+<script src="../js/md5.min.js"></script>
+<style type="text/tailwindcss">
+    @layer utilities {
+        .archive-header {
+            @apply fixed top-0 left-0 right-0 z-50 text-white shadow-md bg-gradient-to-r from-purple-500 to-blue-500;
+        }
+        .archive-header-content {
+            @apply container mx-auto px-4;
+        }
+        .archive-header-top {
+            @apply flex items-center justify-between py-2 transition-all duration-300; /* 原py-3 → 改为py-2，减少顶部区域高度 */
+        }
+        .archive-info {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少中间区域高度 */
+        }
+        .archive-info-lower {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少下段区域高度 */
+        }
+        .return-home-btn {
+            @apply bg-white text-primary px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors;
+        }
+        .logo {
+              @apply h-10 w-auto bg-white p-1 border border-gray-300 
+                 rounded-[8px]; 
+        }
+        .content-wrapper {
+              @apply mt-0 pt-0; /* 移除顶部外边距和内边距，后续通过 JS 动态设置 */
+        }
+        .page-wrapper {
+              @apply mt-0; /* 移除顶部外边距 */
+        }
+        /* 移动端顶部收起状态 */
+        .archive-header.top-hidden .archive-header-top {
+            @apply py-0 h-0 overflow-hidden;
+        }
+    }    
+</style>
+    <style>
+.ad-bar-wrapper {
+  margin-top: 66px !important; /* PC端数值 */
+}
+
+@media (max-width: 767px) {
+  .ad-bar-wrapper {
+    margin-top: 126px !important; /* 移动端数值 */
+  }
+}
+</style>
+</head>
+<body class="bg-gray-100">
+    <!-- 顶部固定条 -->
+    <header class="archive-header" id="archiveHeader">
+        <!-- 顶部区域：Logo和返回按钮 -->
+        <div class="archive-header-top archive-header-content">
+            <div class="flex items-center">
+                <img src="../images/webtimetower.PNG" 
+                     alt="WebTimeTower Logo" 
+                     class="logo">
+            </div>
+            
+            <!-- PC端中间信息区域 -->
+            <div class="hidden md:block text-center text-[19px] text-white font-bold text-primary"> 
+                <div>您正在浏览&nbsp;&nbsp;<span class="underline">digitalhome.com</span>&nbsp;&nbsp;于<span class="underline">????年??月??日</span>&nbsp;&nbsp;的网页存档</div>
+            </div>
+            
+            <a href="../webtimetower.html" class="return-home-btn flex items-center" id="returnHomeBtn">
+                  <i class="fa fa-home mr-2"></i>返回首页
+            </a>
+        </div>
+        
+        <!-- 移动端中间信息区域 -->
+        <div class="archive-info archive-header-content md:hidden">
+            <div class="text-center text-white font-bold">
+            您正在浏览&nbsp;&nbsp;<span class="underline">digitalhome.com</span>&nbsp;&nbsp;于<br><span class="underline">????年??月??日</span>&nbsp;&nbsp;的网页存档
+            </div>
+        </div>
+        
+        <!-- 移动端下段文字区域（仅移动端显示） -->
+        <div class="archive-info-lower archive-header-content md:hidden">
+            <div class="text-center text-sm font-semibold text-white" id="tower-placeholder-mobile">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+
+        <!-- PC端下段文字区域（仅PC端显示） -->
+        <div class="archive-info-lower archive-header-content hidden md:block">
+            <div class="text-center text-[16px] font-bold text-white" id="tower-placeholder-pc">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+    </header>
+
+    <div class="page-wrapper">
+        <!-- 广告栏和logo整体包裹 -->
+        <div class="ad-bar-wrapper">
+            <div class="ad-bar-logo-row">
+                <img src="../images/digitalhome.jpg" alt="LOGO" class="ad-bar-logo-img">
+            </div>
+            <div class="ad-bar-container">
+                <div class="ad-bar-side">
+                    <div class="ad-bar-side-row"><span>环</span><span>视</span></div>
+                    <div class="ad-bar-side-row"><span>四</span><span>周</span></div>
+                </div>
+                <div class="ad-bar-main">
+                    <div class="ad-bar-col">
+                        <ul>
+                            <li><a href="https://map.baidu.com/search/%E8%B4%B5%E9%98%B3%E5%8C%97%E7%AB%99/@11873574.29,3057843.2199999997,21z,87t,-73.77h#panoid=09008200122005071453276487L&panotype=street&heading=39.42&pitch=7.6&l=21&tn=B_NORMAL_MAP&sc=0&newmap=1&shareurl=1&pid=09008200122005071453276487L" target="_blank" class="ad-emph">寻找第一座基站</a></li>
+                            <li><a href="#" class="msg01-link">〇隆汽车</a></li>
+                        </ul>
+                    </div>
+                    <div class="ad-bar-col">
+                        <ul>
+                            <li><a href="#" class="msg01-link">电信〇厦</a></li>
+                            <li><a href="https://map.baidu.com/search/%E5%85%B0%E5%B7%9E%E8%A5%BF%E5%9B%BA%E7%9F%B3%E5%8C%96%E5%B7%A5%E4%B8%9A%E5%8C%BA/@11535110.42,4290988.58,21z,87t,-101.88h?querytype=s&da_src=shareurl&wd=%E5%85%B0%E5%B7%9E%E8%A5%BF%E5%9B%BA%E7%9F%B3%E5%8C%96%E5%B7%A5%E4%B8%9A%E5%8C%BA&c=1&src=0&pn=0&sug=0&l=7&b=(11130859.704765124,3902572.333186451;12838676.802538337,4683098.116153114)&from=webmap&biz_forward=%7B%22scaler%22:2,%22styles%22:%22pl%22%7D&device_ratio=2#panoid=0902240012210518120153324HL&panotype=street&heading=144.7&pitch=14.33&l=21&tn=B_NORMAL_MAP&sc=0&newmap=1&shareurl=1&pid=0902240012210518120153324HL" target="_blank" class="ad-emph">寻找第二座基站</a></li>
+                        </ul>
+                    </div>
+                    <div class="ad-bar-col">
+                        <ul>
+                            <li><a href="https://map.baidu.com/search/%E9%95%BF%E6%98%A5%E5%B8%82%E5%87%80%E6%9C%88%E9%AB%98%E6%96%B0%E6%8A%80%E6%9C%AF%E4%BA%A7%E4%B8%9A%E5%BC%80%E5%8F%91%E5%8C%BA/@13949684.81,5411755.89,21z,87t,-86.97h?querytype=s&da_src=shareurl&wd=%E9%95%BF%E6%98%A5%E5%B8%82%E5%87%80%E6%9C%88%E9%AB%98%E6%96%B0%E6%8A%80%E6%9C%AF%E4%BA%A7%E4%B8%9A%E5%BC%80%E5%8F%91%E5%8C%BA&c=55&src=0&wd2=%E9%95%BF%E6%98%A5%E5%B8%82&pn=0&sug=1&l=13&b=(14074312.73453142,5409974.0658880165;14109268.008152025,5425949.718284934)&from=webmap&biz_forward=%7B%22scaler%22:2,%22styles%22:%22pl%22%7D&device_ratio=2#panoid=09000600121903290944467962G&panotype=street&heading=203.37&pitch=12.46&l=21&tn=B_NORMAL_MAP&sc=0&newmap=1&shareurl=1&pid=09000600121903290944467962G" target="_blank" class="ad-emph">寻找第三座基站</a></li>
+                            <li><a href="#" class="msg01-link">中国○○</a></li>
+                        </ul>
+                    </div>
+                    <div class="ad-bar-col">
+                        <ul>
+                            <li><a href="#" class="msg01-link">轮胎大〇〇</a></li>
+                            <li><a href="https://map.baidu.com/poi/%E8%BF%8E%E5%AE%BE%E8%B7%AF/@9744742.66,5420264.11,21z,87t,-151.52h?uid=597a6b2d4aed015a5ed4fe53&ugc_type=3&ugc_ver=1&device_ratio=2&compat=1&en_uid=597a6b2d4aed015a5ed4fe53&pcevaname=pc4.1&querytype=detailConInfo&da_src=shareurl#panoid=09015900122106071642266257N&panotype=street&heading=272.29&pitch=8.99&l=21&tn=B_NORMAL_MAP&sc=0&newmap=1&shareurl=1&pid=09015900122106071642266257N" target="_blank" class="ad-emph">寻找第四座基站</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="article-box text-center md:mt-16">
+           <div class="article-title-dh flex items-center justify-center">
+               <span class="w-full text-center">『电脑网络』 [移动通信]优化无线基站的频谱效率</span>
+           </div>
+            <div class="article-meta">
+                1楼&nbsp;作者：<span>啃菜的鸟</span> &nbsp; 提交日期：<span>2008-9-15 19:25:00</span>
+            </div>
+            <div class="article-content">
+                <p>随着无线通信技术的快速发展，用户数量和数据流量呈现爆发式增长。如何在有限的无线频谱资源上承载日益增加的数据流量，成为无线通信领域面临的重要挑战。满足上述需求的同时，还需要控制基站系统的购置成本和运行费用。因此，提高基站频谱效率具有重要的现实意义。</p>
+                <p>频谱效率的定义与重要性：频谱效率是指在一定的频谱带宽内，能够传输的信息量。提高频谱效率意味着在相同的频谱资源下，可以支持更多的用户和更大的数据流量。这对于缓解频谱资源紧张、提升用户体验、降低运营成本具有重要意义。</p]>
+                <p>目前，业界主要通过以下几种途径来提高基站频谱效率：</p>
+                <p><b>1.采用先进的无线通信标准： </b>新一代无线通信标准通常采用更高效的调制编码方式和多址接入技术，可以在相同的频谱资源上实现更高的数据传输速率。例如，从 CDMA2000、W-CDMA、TD-SCDMA、MC-GSM 到 WiMAX 以及 LTE 等标准的演进，都体现了对频谱效率的不断追求。</p>
+                <p><b>2.峰值平均功率比降低 (CFR) 技术： </b>在无线信号到达基站功率放大器 (PA) 之前实施振幅因数降低 (CFR) 与数字预失真 (DPD) 技术可提高基站信号的质量并扩大覆盖范围，同时还能降低系统的购置与运行成本。</p>
+                <p><b>3.数字预失真 (DPD) 技术： </b>功率放大器 (PA) 是基站的核心组件，但其非线性特性会导致信号失真，降低频谱效率。DPD 技术通过对发射信号进行预处理，抵消 PA 的非线性影响，从而提高信号质量和频谱效率。</p>
+                <p><b>4.表面失真 (Creepingdistortion)： </b>DPD 与 CFR 是两种信号处理技术，不仅可感测输入与输出信号的特征，而且还能防止出现失真潜入 PA 无线输出信号的机制。这使 PA 输出性能能在其更广泛的工作范围内实现几乎完全的线性化。无需减少对 PA 的输出功率就可避免其运行范围上端出现失真，从而使 PA 更加节能，进而降低基站的制冷需求与运行成本。</p>
+                <p>提高基站频谱效率是无线通信领域一项持续性的研究课题。通过采用先进的无线通信标准、CFR 和 DPD 等技术，可以在有限的频谱资源上实现更高的数据传输速率，满足日益增长的无线通信需求。同时，还需要关注服务质量和成本控制，寻求技术创新和优化方案，实现无线通信的可持续发展。</p>
+            </div>
+        </div>
+
+        <div class="footer-ad-bar">
+            <div class="footer-ad-side">精彩推荐</div>
+            <div class="footer-ad-main">
+                <div class="footer-ad-row">
+                    <a href="#" class="msg02-link">优化无线基站频谱效率</a>
+                    <a href="#" class="msg02-link">提升无线基站频谱效能</a>
+                    <a href="#" class="msg02-link">提高无线基站频谱效益</a>
+                </div>
+                <div class="footer-ad-row">
+                    <a href="#" class="msg02-link">增强无线基站频谱效益</a>
+                    <a href="#" class="msg02-link">优化无线基站频谱配置</a>
+                    <a href="#" class="msg02-link">改善无线基站频谱管理</a>
+                </div>
+                <div class="footer-ad-row">
+                    <a href="#" class="msg02-link">提高无线基站频谱效能</a>
+                    <a href="#" class="msg02-link">改善无线基站频谱效率</a>
+                    <a href="#" class="msg02-link">提升无线基站频谱效益</a>
+                </div>
+                <div class="footer-ad-row">
+                    <a href="#" class="msg02-link">改善无线基站频谱配置</a>
+                    <a href="#" class="msg02-link">提高无线基站频谱效率</a>
+                    <a href="#" class="msg02-link">增强无线基站频谱管理</a>
+                </div>
+            </div>
+        </div> 
+
+<div class="reply-box">
+  <div class="reply-row">
+    <label>用户：</label>
+    <input type="text" class="reply-input" disabled/>
+    <label>口令：</label>
+    <input type="password" class="reply-input" disabled/>
+  </div>
+  <textarea class="reply-textarea" rows="7" cols="80" placeholder="" id="reply-textarea"></textarea>
+  <div class="reply-row">
+    <label>图片链接: HTTP://</label>
+    <input type="text" class="reply-imginput" disabled/>
+  </div>
+  <div class="reply-actions">
+    <button type="button" class="reply-btn" id="post-btn">发表</button>
+  </div>
+</div>
+
+<script>
+document.getElementById('post-btn').onclick = function() {
+  var textarea = document.getElementById('reply-textarea');
+  var content = textarea.value.trim();
+  var pc = document.getElementById('tower-placeholder-pc');
+  var mobile = document.getElementById('tower-placeholder-mobile');
+  if (content === "") {
+    // 弹出“请输入内容”
+    if (pc) {
+      pc.textContent = "请输入内容";
+      pc.classList.add('visible');
+    }
+    if (mobile) {
+      mobile.textContent = "请输入内容";
+      mobile.classList.add('visible');
+    }
+    setTimeout(function() {
+      if (pc) {
+        pc.textContent = '';
+        pc.classList.remove('visible');
+      }
+      if (mobile) {
+        mobile.textContent = '';
+        mobile.classList.remove('visible');
+      }
+    }, 2000);
+  } else if (content === "盛大铁塔世界") {
+    window.location.href = "../secret/spectrum.html";
+  } else {
+    // 其他内容的反馈
+    if (pc) {
+      pc.textContent = "线索并不在文章中";
+      pc.classList.add('visible');
+    }
+    if (mobile) {
+      mobile.textContent = "线索并不在文章中";
+      mobile.classList.add('visible');
+    }
+    setTimeout(function() {
+      if (pc) {
+        pc.textContent = '';
+        pc.classList.remove('visible');
+      }
+      if (mobile) {
+        mobile.textContent = '';
+        mobile.classList.remove('visible');
+      }
+    }, 2000);
+  }
+};
+</script>
+    <footer>
+        <small>
+            <span class="first-line">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+            <span class="second-line">Copyright&copy; Shiroki. All Rights Reserved.</span>
+        </small>
+    </footer>
+<div class="page-number">
+  32/43
+</div>
+<script src="../js/main.js"></script>
+<script>document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.msg01-link').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      showTowerMessage('正在查询...');
+      setTimeout(function() {
+        showTowerMessage('不需要阅读下方文章');
+      }, 300);
+    });
+  });
+  document.querySelectorAll('.msg02-link').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      showTowerMessage('正在查询...');
+      setTimeout(function() {
+        showTowerMessage('你将会是最强大的基站');
+      }, 300);
+    });
+  });
+});
+
+/* === 反审查和右键禁用机制 === */
+document.addEventListener('contextmenu', function(e) {
+    // 阻止默认的右键菜单
+    e.preventDefault();
+    // 弹出提示窗口
+    alert("逃避不能解决问题");
+});
+
+document.addEventListener('keydown', function(e) {
+    // 检查是否是 F12 键
+    if (e.key === 'F12') {
+        e.preventDefault();
+        alert("逃避不能解决问题");
+    }
+
+    // 检查是否是 Ctrl/Cmd 组合键 (Ctrl/Cmd + U, Ctrl/Cmd + Shift + I)
+    if (e.ctrlKey || e.metaKey) { // metaKey 是 Mac 上的 Command 键
+        // Ctrl + U (查看源码)
+        if (e.key === 'u' || e.key === 'U') {
+            e.preventDefault();
+            alert("逃避不能解决问题");
+        }
+        
+        // Ctrl/Cmd + Shift + I (打开开发者工具)
+        if (e.shiftKey && (e.key === 'i' || e.key === 'I')) {
+             e.preventDefault();
+             alert("逃避不能解决问题");
+        }
+    }
+});
+/* === 反审查和右键禁用机制 结束 === */
+</script>
+</body>
+</html>
