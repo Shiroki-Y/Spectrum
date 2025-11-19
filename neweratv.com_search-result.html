@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索结果</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/favicon_1/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="images/favicon_1/favicon.svg" />
+    <link rel="shortcut icon" href="images/favicon_1/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_1/apple-touch-icon.png" />
+    <link rel="manifest" href="images/favicon_1/site.webmanifest" />
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#f8fafc',
+                        accent: '#dc2626',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .archive-header {
+                @apply fixed top-0 left-0 right-0 z-50 text-white shadow-md bg-gradient-to-r from-purple-500 to-blue-500;
+            }
+            .archive-header-content {
+                @apply container mx-auto px-4;
+            }
+            .archive-header-top {
+                @apply flex items-center justify-between py-2 transition-all duration-300;
+            }
+            .archive-info {
+                @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500;
+            }
+            .archive-info-lower {
+                @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500;
+            }
+            .return-home-btn {
+                @apply bg-white text-primary px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors;
+            }
+            .logo {
+                @apply h-10 w-auto bg-white p-1 border border-gray-300 rounded-[8px]; 
+            }
+            .content-wrapper {
+                @apply mt-0 pt-0; 
+            }
+            .page-wrapper {
+                @apply mt-0; 
+            }
+            /* 移动端顶部收起状态 */
+            .archive-header.top-hidden .archive-header-top {
+                @apply py-0 h-0 overflow-hidden;
+            }
+        }
+    </style>
+    
+    <style>
+        .search-results-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 0px;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+        .search-results-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+        .search-results-container a {
+            display: block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #337ab7;
+            transition: color 0.3s ease;
+        }
+        .search-results-container a:hover {
+            text-decoration: underline;
+        }
+        /* 禁用模式样式 */
+        .search-container-forbidden {
+            border-color: #ff0000 !important;
+            background-color: #2a0a0a !important;
+        }
+        .search-container-forbidden h2,
+        .search-container-forbidden a,
+        .search-container-forbidden p:not(.hidden-text) {
+            color: #ff0000 !important;
+        }
+        .hidden-text-container {
+            margin: 10px 0;
+            text-align: center;
+        }
+        /* 隐藏文本样式 */
+        .hidden-text {
+            display: inline-block;
+            background-color: #000;
+            color: #000;
+            padding: 2px 4px;
+            cursor: text;
+            user-select: text;
+            transition: color 0.1s ease;
+        }
+        .hidden-text::selection {
+            color: #ff0000;
+            background-color: #333;
+        }
+        /* 可见文本样式 */
+        .visible-text {
+            display: inline-block;
+            color: #ff0000;
+            padding: 2px 4px;
+            text-align: center;
+        }
+        /* 页面整体禁用样式 */
+        .body-forbidden {
+            background-color: #1b1c1d !important;
+        }
+        .body-forbidden footer,
+        .body-forbidden footer small,
+        .body-forbidden footer .first-line,
+        .body-forbidden footer .second-line {
+            color: #666 !important;
+            background-color: transparent !important;
+        }
+        
+        /* 添加抖动关键帧动画 */
+        @keyframes shake-and-flash {
+            0% { transform: translate(1px, 1px) rotate(0deg); border-color: #ff0000; }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); border-color: #ffff00; }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); border-color: #ff0000; }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); border-color: #ff0000; }
+        }
+
+        /* 抖动效果类 */
+        .search-container-shake {
+            animation: shake-and-flash 0.1s infinite;
+            box-shadow: 0 0 15px #ff0000; 
+        }
+        
+        @media (min-width: 768px) {
+            .web-content {
+                height: calc(452px - 42px) !important;
+            }
+        }
+
+        /* 手机端适配 */
+        @media (max-width: 767px) {
+            .web-content {
+                height: auto !important; 
+                min-height: 500px; 
+                padding: 20px 15px !important; 
+            }
+            .text-sm {
+                font-size: 15px !important;
+            }
+            .leading-relaxed {
+                line-height: 1.9 !important;
+            }
+            .text-2xl {
+                font-size: 1.4rem !important;
+            }
+        }
+        /* 固定页脚到底部 */
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        footer {
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    
+    <header class="archive-header" id="archiveHeader">
+        <div class="archive-header-top archive-header-content">
+            <div class="flex items-center">
+                <img src="images/webtimetower.PNG" 
+                    alt="WebTimeTower Logo" 
+                    class="logo">
+            </div>
+            <div class="hidden md:block text-center text-[19px] text-white font-bold text-primary"> 
+                <div>您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<span class="underline">2005年10月13日</span>&nbsp;&nbsp;的网页存档</div>
+            </div>
+            <a href="webtimetower.html" class="return-home-btn flex items-center" id="returnHomeBtn">
+                <i class="fa fa-home mr-2"></i>返回首页
+            </a>
+        </div>
+        <div class="archive-info archive-header-content md:hidden">
+            <div class="text-center text-white font-bold">
+            您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<br><span class="underline">2005年10月13日</span>&nbsp;&nbsp;的网页存档
+            </div>
+        </div>
+        <div class="archive-info-lower archive-header-content md:hidden">
+            <div class="text-center text-sm font-semibold text-white" id="tower-placeholder-mobile">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+        <div class="archive-info-lower archive-header-content hidden md:block">
+            <div class="text-center text-[16px] font-bold text-white" id="tower-placeholder-pc">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+    </header>
+
+    <div class="content-wrapper pt-[138px]"> 
+        <div class="page-wrapper max-w-[960px] w-full min-w-[320px] mx-auto flex flex-col bg-gray-100 rounded-lg shadow-md">
+            
+            <div class="navbar-2005">
+                <div class="navbar-2005-inner">
+                    <nav>
+                        <a href="neweratv.com_20051013.html">首页</a>
+                        <span>|</span>
+                        <a href="neweratv.com_20051013_tvguide.html">电视指南</a>
+                        <span>|</span>
+                        <a href="neweratv.com_20051013_news.html">新闻</a>
+                        <span>|</span>
+                        <a href="neweratv.com_20051013_show.html">综艺</a>
+                        <span>|</span>
+                        <a href="neweratv.com_20051013_finance.html">财经</a>
+                        <span>|</span>
+                        <a href="neweratv.com_20051013_music.html">音乐</a>
+                        <span>|</span>
+                        <a href="#" class="ad-link">电视剧</a>
+                        <span>|</span>
+                        <a href="#" class="ad-link">少儿</a>
+                        <span>|</span>
+                        <a href="#" class="ad-link">体育</a>
+                        <span>|</span>
+                        <a href="neweratv.com_adservice.html">广告服务</a>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="main-content-2005">
+                <div class="top-bar-2005">
+                    <div class="top-bar-blue"></div>
+                    <div class="top-bar-orange">
+                        <img src="images/logo.png" 
+                            alt="新纪元电视台 Logo" 
+                        >
+                    </div>
+                    <div class="top-bar-search">
+                        <input type="text" placeholder="请输入搜索内容…" class="search-input-2005" id="siteSearchInput" />
+                        <button class="search-btn-2005" id="siteSearchBtn">站内搜索</button>
+                    </div>
+                </div>
+
+                <div class="w-[100%] h-[auto] mx-auto bg-white overflow-hidden">
+                    <div id="contents" class="contents-search-page">
+                        <main>
+                            <div class="search-results-container">
+                                <h2>搜索结果</h2>
+                                <div id="results-display"></div>
+                            </div>
+                        </main>
+                    </div>
+                </div>
+
+                <div class="section-footer-2005">
+                    <p>
+                        <a href="neweratv.com_about.html">关于我们</a> |
+                        <a href="neweratv.com_adservice.html">广告服务</a> |
+                        <a href="#" class="ad-link">版权声明</a> |
+                        <a href="neweratv.com_contact.html">联系我们</a>
+                    </p>
+                    
+                    <div class="footer-divider"></div>
+
+                    <p class="footer-copy">新纪元电视台版权所有</p>
+                    <p class="footer-note">
+                        建议使用：1024×768分辨率，16位以上颜色、<br>
+                        Netscape6.0、IE5.0以上版本浏览器和中文大字符集
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="mt-4 text-center text-sm" style="flex-shrink: 0;">
+        <small>
+            <span class="first-line block">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+            <span class="second-line block">Copyright&copy; Shiroki. All Rights Reserved.</span>
+        </small>
+    </footer>
+
+    <script src="js/md5.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.inview.min.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // DOM元素
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('q');
+            const resultsDisplay = document.getElementById('results-display');
+            const searchContainer = document.querySelector('.search-results-container');
+            const body = document.body;
+            const searchTitle = document.querySelector('.search-results-container h2');
+            const logoImg = document.querySelector('.logo');
+            
+            // 初始清理，确保默认状态
+            if (logoImg) {
+                logoImg.src = "images/webtimetower.PNG";
+                logoImg.alt = "WebTimeTower Logo";
+            }
+            body.classList.remove('body-forbidden');
+            searchContainer.classList.remove('search-container-forbidden');
+            searchContainer.classList.remove('search-container-shake'); 
+
+            // 函数: MD5 加密和 Base64 编码
+            function encode(str) {
+                if (typeof window.md5 !== 'function') {
+                    console.error("MD5 library (md5.min.js) is not loaded.");
+                    return '';
+                }
+                str = str.trim().toLowerCase();
+                const hex = window.md5(str);
+                let bytes = [];
+                for (let i = 0; i < hex.length; i += 2) {
+                    bytes.push(parseInt(hex.substr(i, 2), 16));
+                }
+                return btoa(String.fromCharCode.apply(null, bytes));
+            }
+
+            // --- 主搜索逻辑 ---
+            if (query) {
+                const encodedQuery = encode(query);
+                
+                // 1. 尝试加载 forbidden_keywords.json (最高优先级)
+                fetch('js/forbidden_keywords.json')
+                .then(res => {
+                    // 即使加载失败也继续，但要捕获错误
+                    if (!res.ok) throw new Error('Failed to load forbidden_keywords.json');
+                    return res.json();
+                })
+                .then(forbiddenKeywords => {
+                    let forbiddenConfig = null;
+                    
+                    // 遍历查找是否有匹配的禁用关键词
+                    Object.keys(forbiddenKeywords).forEach(key => {
+                        if (forbiddenKeywords[key].keywords.includes(encodedQuery)) {
+                            forbiddenConfig = forbiddenKeywords[key];
+                        }
+                    });
+
+                    if (forbiddenConfig) {
+                        searchTitle.textContent = "搜索结果";
+                        const textContent = forbiddenConfig.hidden 
+                            ? `<span class="hidden-text">${forbiddenConfig.text}</span>`
+                            : `<span class="visible-text">${forbiddenConfig.text}</span>`;
+
+                        resultsDisplay.innerHTML = `<div class="hidden-text-container">${textContent}</div>`;
+                        
+                        // >>>>>>>>>>>>>>>>>>>>>> 波动和重定向逻辑 <<<<<<<<<<<<<<<<<<<<<<<<
+                        if (forbiddenConfig.action === 'fluctuation_redirect') {
+                            searchContainer.classList.add('search-container-shake');
+                            searchTitle.textContent = "检测到波动...";
+                            resultsDisplay.innerHTML = `<p class="visible-text" style="text-align:center;">正在重定位...</p>`;
+                            
+                            // 2秒后重定向
+                            setTimeout(() => {
+                                window.location.href = "https://missing.shiroki-y.top/reservation.html"; // 请根据需要修改目标URL
+                            }, 2000); 
+                            
+                            return Promise.resolve(null); // 立即停止后续 Promise 链
+                        }
+                        // <<<<<<<<<<<<<<<<<<<<<<<< 波动和重定向逻辑 <<<<<<<<<<<<<<<<<<<<<<<<
+                        
+                        return Promise.resolve(null); // 命中任何禁词，都停止执行后续的普通搜索
+                    }
+
+                    // 2. 如果未命中禁用关键词，继续加载 encrypted_keywords.json (普通搜索)
+                    return fetch('js/encrypted_keywords.json');
+                })
+                .then(res => {
+                    if (res && !res.ok) throw new Error('Failed to load encrypted_keywords.json');
+                    if (res) return res.json();
+                    return null; // 如果命中禁用，则跳过这里
+                })
+                .then(keywordsMap => {
+                    if (keywordsMap === null) return; 
+
+                    // ------------------ 正常搜索结果 ------------------
+                    searchTitle.textContent = "搜索结果";
+                    searchContainer.classList.remove('search-container-shake'); // 确保移除抖动
+                    
+                    const results = keywordsMap[encodedQuery] || [];
+                    
+                    if (results.length > 0) {
+                        // 渲染搜索结果列表
+                        resultsDisplay.innerHTML = `
+                            <p>共有 <b>${results.length}</b> 项符合条件的结果：</p>
+                            ${results.map(r => `<a href="${r.url}" style="display:block;margin-top:10px;color:#337ab7;" target="_blank">${r.title}</a>`).join('')}
+                        `;
+                    } else {
+                        // 没找到结果
+                        resultsDisplay.innerHTML = `<p>抱歉，没有找到与"<b>${query}</b>"相关的结果。</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('搜索文件加载或解析错误:', error);
+                    // 仅在未命中关键词时显示普通错误
+                    if (error.message.includes('forbidden') || error.message.includes('encrypted')) {
+                        resultsDisplay.innerHTML = `<p style="color:red;">错误：无法加载搜索数据文件。请检查 JSON 文件路径或格式。</p>`;
+                    } else {
+                        resultsDisplay.innerHTML = `<p style="color:red;">发生未知错误。</p>`;
+                    }
+                    searchTitle.textContent = "搜索结果";
+                });
+
+            } else {
+                // 如果 URL 中没有 'q' 参数
+                searchTitle.textContent = "搜索结果";
+                resultsDisplay.innerHTML = "<p>请输入搜索关键字。</p>";
+            }
+            
+            // 确保在无参数时，页面也处于正常模式
+            body.classList.remove('body-forbidden');
+            searchContainer.classList.remove('search-container-forbidden');
+            searchContainer.classList.remove('search-container-shake');
+        });
+
+        /* === 反审查和右键禁用机制 === */
+document.addEventListener('contextmenu', function(e) {
+    // 阻止默认的右键菜单
+    e.preventDefault();
+    // 弹出提示窗口
+    alert("逃避不能解决问题");
+});
+
+document.addEventListener('keydown', function(e) {
+    // 检查是否是 F12 键
+    if (e.key === 'F12') {
+        e.preventDefault();
+        alert("逃避不能解决问题");
+    }
+
+    // 检查是否是 Ctrl/Cmd 组合键 (Ctrl/Cmd + U, Ctrl/Cmd + Shift + I)
+    if (e.ctrlKey || e.metaKey) { // metaKey 是 Mac 上的 Command 键
+        // Ctrl + U (查看源码)
+        if (e.key === 'u' || e.key === 'U') {
+            e.preventDefault();
+            alert("逃避不能解决问题");
+        }
+        
+        // Ctrl/Cmd + Shift + I (打开开发者工具)
+        if (e.shiftKey && (e.key === 'i' || e.key === 'I')) {
+             e.preventDefault();
+             alert("逃避不能解决问题");
+        }
+    }
+});
+/* === 反审查和右键禁用机制 结束 === */
+    </script>
+</body>
+</html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新纪元电视台-专栏</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/favicon_1/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="images/favicon_1/favicon.svg" />
+    <link rel="shortcut icon" href="images/favicon_1/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_1/apple-touch-icon.png" />
+    <link rel="manifest" href="images/favicon_1/site.webmanifest" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#f8fafc',
+                        accent: '#dc2626',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+<style type="text/tailwindcss">
+    @layer utilities {
+        .archive-header {
+            @apply fixed top-0 left-0 right-0 z-50 text-white shadow-md bg-gradient-to-r from-purple-500 to-blue-500;
+        }
+        .archive-header-content {
+            @apply container mx-auto px-4;
+        }
+        .archive-header-top {
+            @apply flex items-center justify-between py-2 transition-all duration-300; /* 原py-3 → 改为py-2，减少顶部区域高度 */
+        }
+        .archive-info {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少中间区域高度 */
+        }
+        .archive-info-lower {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少下段区域高度 */
+        }
+        .return-home-btn {
+            @apply bg-white text-primary px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors;
+        }
+        .logo {
+              @apply h-10 w-auto bg-white p-1 border border-gray-300 
+                 rounded-[8px]; 
+        }
+        .content-wrapper {
+              @apply mt-0 pt-0; /* 移除顶部外边距和内边距，后续通过 JS 动态设置 */
+        }
+        .page-wrapper {
+              @apply mt-0; /* 移除顶部外边距 */
+        }
+        /* 移动端顶部收起状态 */
+        .archive-header.top-hidden .archive-header-top {
+            @apply py-0 h-0 overflow-hidden;
+        }
+    }
+</style>
+<style>
+@media (min-width: 768px) {
+  .web-content {
+    height: calc(452px - 42px) !important;
+  }
+}
+
+/* 手机端强制加长容器，确保内容完整 */
+@media (max-width: 767px) {
+  .web-content {
+    height: auto !important; /* 容器高度随内容自动加长 */
+    min-height: 500px; /* 确保足够高度容纳所有文字 */
+    padding: 20px 15px !important; /* 增加内边距，避免拥挤 */
+  }
+  
+  .text-sm {
+    font-size: 15px !important; /* 适当放大文字 */
+  }
+  
+  .leading-relaxed {
+    line-height: 1.9 !important; /* 增加行高，提升可读性 */
+  }
+  
+  .text-2xl {
+    font-size: 1.4rem !important; /* 标题适配手机 */
+  }
+  
+  /* 移动端占满屏幕 */
+  body {
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* 移动端顶部条内容对齐 */
+  .archive-header-content {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  
+  /* 移动端顶部条第一行对齐 */
+  .archive-header-top {
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  
+  /* 移动端顶部条logo和按钮对齐 */
+  .archive-header-top > div:first-child,
+  .archive-header-top > a:last-child {
+    flex-shrink: 0 !important;
+  }
+  
+  .content-wrapper,
+  .page-wrapper {
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  
+  /* 移动端移除页面容器的圆角和阴影 */
+  .page-wrapper {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  
+  /* 移动端内容区域占满 */
+  .main-content-2005,
+  .navbar-2005,
+  .section-footer-2005 {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  /* 移动端内容区域响应式内边距 */
+  .w-\[100\%\] {
+    width: 100% !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  /* 移动端导航路径响应式内边距 */
+  .text-xs.text-gray-600 {
+    padding: 1rem !important;
+    margin: 0 !important;
+  }
+  
+  /* 移动端标题响应式内边距 */
+  h1.text-2xl {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  /* 移动端副标题响应式内边距 */
+  .text-center.text-sm.text-gray-700 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  /* 移动端正文区域响应式内边距 */
+  .news-article-text {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  /* 移动端图片保持PC端相同规格 */
+  .placeholder-2005-image {
+    width: 200px !important;
+    height: 150px !important;
+    max-width: 200px !important;
+    max-height: 150px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 0 !important;
+    background: #ffa65b !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  
+  .placeholder-2005-image img {
+    width: 200px !important;
+    height: 150px !important;
+    max-width: 200px !important;
+    max-height: 150px !important;
+    object-fit: contain !important;
+    display: block !important;
+  }
+}
+
+/* 固定页脚到底部 */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.content-wrapper {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+footer {
+    flex-shrink: 0;
+    margin-top: auto;
+}
+/* 移动端移除底部多余空白 */
+@media (max-width: 767px) {
+    body {
+        min-height: auto !important;
+        padding-bottom: 0 !important;
+    }
+    .content-wrapper {
+        min-height: auto !important;
+        padding-bottom: 0 !important;
+    }
+    footer {
+        margin-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    /* 移除所有底部多余的margin和padding */
+    .page-wrapper,
+    .main-content-2005,
+    .section-footer-2005 {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+}
+</style>
+</head>
+<body class="bg-gray-100">
+    <!-- 顶部固定条 -->
+    <header class="archive-header" id="archiveHeader">
+        <!-- 顶部区域：Logo和返回按钮 -->
+        <div class="archive-header-top archive-header-content">
+            <div class="flex items-center">
+                <img src="images/webtimetower.PNG" 
+                     alt="WebTimeTower Logo" 
+                     class="logo">
+            </div>
+            <!-- PC端中间信息区域 -->
+            <div class="hidden md:block text-center text-[19px] text-white font-bold text-primary"> 
+                <div>您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<span class="underline">2005年10月13日</span>&nbsp;&nbsp;的网页存档</div>
+            </div>
+            <a href="webtimetower.html" class="return-home-btn flex items-center" id="returnHomeBtn">
+                  <i class="fa fa-home mr-2"></i>返回首页
+            </a>
+        </div>
+        <!-- 移动端中间信息区域（隐藏） -->
+        <div class="archive-info archive-header-content md:hidden">
+            <div class="text-center text-white font-bold">
+            您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<br><span class="underline">2005年10月13日</span>&nbsp;&nbsp;的网页存档
+            </div>
+        </div>
+        <!-- 移动端下段文字区域（隐藏） -->
+        <div class="archive-info-lower archive-header-content md:hidden">
+            <div class="text-center text-sm font-semibold text-white" id="tower-placeholder-mobile">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+        <!-- PC端下段文字区域 -->
+        <div class="archive-info-lower archive-header-content hidden md:block">
+            <div class="text-center text-[16px] font-bold text-white" id="tower-placeholder-pc">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+    </header>
+  
+<div class="content-wrapper pt-[138px]"> <!-- header高度+margin -->
+ <div class="page-wrapper max-w-[960px] w-full min-w-[320px] mx-auto flex flex-col bg-gray-100 rounded-lg shadow-md">
+  <!-- 顶部黑色导航条 -->
+<div class="navbar-2005">
+  <div class="navbar-2005-inner">
+    <nav>
+      <a href="neweratv.com_20051013.html">首页</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_tvguide.html">电视指南</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_news.html">新闻</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_show.html">综艺</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_finance.html">财经</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_music.html">音乐</a>
+      <span>|</span>
+      <a href="#" class="ad-link">电视剧</a>
+      <span>|</span>
+      <a href="#" class="ad-link">少儿</a>
+      <span>|</span>
+      <a href="#" class="ad-link">体育</a>
+      <span>|</span>
+      <a href="neweratv.com_adservice.html">广告服务</a>
+    </nav>
+  </div>
+</div>
+
+<div class="main-content-2005">
+  <!-- 顶部蓝条 -->
+  <div class="top-bar-2005">
+    <div class="top-bar-blue"></div>
+    <div class="top-bar-orange">
+        <img src="images/logo.png" 
+             alt="新纪元电视台 Logo" 
+        >
+    </div>
+    <div class="top-bar-search">
+      <input type="text" placeholder="请输入搜索内容…" class="search-input-2005" id="siteSearchInput" />
+      <button class="search-btn-2005" id="siteSearchBtn">站内搜索</button>
+    </div>
+  </div>
+
+  <div class="w-[100%] h-[auto] mx-auto bg-white overflow-hidden">
+
+  <!-- 顶部导航路径 -->
+  <div class="text-xs text-gray-600 m-4">
+    <a href="neweratv.com_20051013.html" class="hover:underline text-blue-700">首页</a>
+    <span class="mx-1">&gt;</span>
+    <a href="#" class="hover:underline text-blue-700 ad-link">专栏</a>
+    <span class="mx-1">&gt;</span>
+    正文
+  </div>
+  <!-- 主标题 -->
+  <h1 class="text-2xl md:text-3xl font-extrabold text-blue-900 text-center mb-2 leading-tight tracking-tight" style="font-family:'Microsoft YaHei',Arial,sans-serif;">
+    《菁英会客厅》：聚光灯下的行业梦想
+  </h1>
+  <!-- 副标题 来源/日期 -->
+  <div class="text-center text-sm text-gray-700 mb-10">
+    文化专栏 (2005年10月10日)
+  </div>
+ 
+  <div class="flex justify-center items-center w-[200px] h-[150px] bg-orange-500 mx-auto placeholder-2005-image">
+    <img src="images/column_img1.jpg">
+  </div>
+  <!-- 正文 -->
+<div class="text-gray-900 text-base leading-relaxed mb-2 ml-2 mr-2 news-article-text text-auto-wrap">
+    <p></p>
+    <p>当电视荧屏被娱乐化浪潮席卷，一档名为《菁英会客厅》的访谈节目悄然诞生。每周四晚21:10，它准时拉开帷幕，邀请以传媒为主的各领域顶尖人物，分享经验、剖析行业、讲述人生。这档节目的诞生背后，究竟有着怎样的故事？我们来到了《菁英会客厅》的制作现场，与主创团队进行了一次深入的交流。</p>
+    <p>“我小时候特别喜欢听收音机，那时候就觉得电台里的声音特别神奇，能把故事、音乐传递到很远的地方。”导演<b>赵海涛</b>笑着回忆道，“从那时起，我就想长大之后自己也做一个节目，内容不讲别的，专门介绍电台的魅力。这个想法其实就是《菁英会客厅》创意的雏形。”</p>
+    <p>制片人<b>王振东</b>则有着更深远的考虑：“我们不光是给那些想入行的人一些经验，也希望能够和更多的业界人士建立合作关系，这也是很有意义的。”他补充道，“《菁英会客厅》是一个平台，我们希望更多的精英参与进来、讲述自己的故事，也希望更多企业关注本节目，大家一起促成合作。”</p>
+    <p>为了保证节目的质量，编剧<b>曹立刚</b>可谓是煞费苦心。“我觉得做这个节目，最重要的是要真实。” 他认真地说，“我们要把嘉宾的故事挖深挖透，把他们最真实的一面展现给观众。所以每次我都会根据嘉宾的经历重新设计提问，前不久还在我的提议下，节目组设置了观众互动环节。很高兴看到观众们更深入地参与节目。”</p>
+    <p>作为节目的主持人，<b>方睿</b>深感责任重大。“我希望通过我的提问，能够引导嘉宾说出更多有价值的东西，让观众在看节目的同时，也能有所思考，有所启发。” 她眼神坚定地说道。“在设置了观众互动环节后，筛选观众的提问也成了我的重要工作。我会努力把更有价值的问题抛给嘉宾，以及屏幕前的大家。”</p>
+    <p></p>
+    <div class="flex justify-center items-center w-[200px] h-[150px] bg-orange-500 mx-auto placeholder-2005-image">
+     <img src="images/column_img2.jpg" id="column-img2" alt="专栏图片">
+    </div>
+    <p></p>
+    <p>节目开播半年以来，已在各领域、尤其是传媒行业内引起广泛关注。王振东透露：“有嘉宾因出演节目被投资方关注，所以很多业界精英都主动联系我们，想讲一讲自己的故事。”赵海涛也非常非常欣慰地说道，“我们收到很多观众的短信互动，甚至还有学生表示，看了我们的节目后更加坚定了报考传媒院校的决心。若多年以后有人因这档节目找到方向、或行业因此产生了变革，便是我们的成功。</p>
+    <p>《菁英会客厅》主创团队对传媒行业的热爱和对节目的用心，令人印象深刻。相信在他们的共同努力下，《菁英会客厅》将会成为一档更具影响力、更具价值的访谈节目，为传媒行业的发展注入新的活力。每周四晚 21:10，让我们一起锁定《菁英会客厅》，感受精英的魅力！</p>
+</div>
+</div>
+  </div>
+
+<!-- 页脚导航 -->
+<div class="section-footer-2005">
+  <p>
+    <a href="neweratv.com_about.html">关于我们</a> |
+    <a href="neweratv.com_adservice.html">广告服务</a> |
+    <a href="#" class="ad-link">版权声明</a> |
+    <a href="neweratv.com_contact.html">联系我们</a>
+  </p>
+  
+  <!-- 插入分隔线 -->
+  <div class="footer-divider"></div>
+
+  <p class="footer-copy">新纪元电视台版权所有</p>
+  <p class="footer-note">
+    建议使用：1024×768分辨率，16位以上颜色、<br>
+    Netscape6.0、IE5.0以上版本浏览器和中文大字符集
+  </p>
+    </div>
+  </div>
+</div>
+<div class="hidden md:block h-[calc(100vh-800px)]"></div>
+<footer class="w-full mt-4 text-center text-sm px-0 mx-0" style="flex-shrink: 0;">
+  <small>
+    <span class="first-line block">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+    <span class="second-line block">Copyright&copy; Shiroki. All Rights Reserved.</span>
+  </small>
+</footer>
+
+<div class="page-number">
+
+14/43
+
+</div>
+
+<script src="js/main.js"></script>
+<script>
+(function() {
+    // 确保只执行一次的标志
+    let hasTriggered = false;
+    let imageFullyVisible = false;
+    let scrollListener = null;
+    let lastScrollY = window.scrollY;
+    let isWaitingForNextScroll = false;
+    
+    const targetImage = document.getElementById('column-img2');
+    if (!targetImage) return;
+    
+    const originalSrc = 'images/column_img2.jpg';
+    const replacementSrc = 'images/column_img3.png';
+    
+    // 使用 Intersection Observer 检测图片何时完全进入视口
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            // 当图片完全可见（从下方完整出现）时
+            if (entry.isIntersecting && entry.intersectionRatio >= 1) {
+                imageFullyVisible = true;
+                lastScrollY = window.scrollY; // 记录当前滚动位置
+                isWaitingForNextScroll = true; // 标记等待下一次滚动
+                // 开始监听滚动事件
+                if (!scrollListener && !hasTriggered) {
+                    scrollListener = handleScroll;
+                    window.addEventListener('scroll', scrollListener, { passive: true });
+                }
+            }
+        });
+    }, {
+        threshold: 1.0 // 完全可见时才触发
+    });
+    
+    observer.observe(targetImage);
+    
+    // 滚动处理函数
+    function handleScroll() {
+        // 如果已经触发过，则返回
+        if (hasTriggered) return;
+        
+        // 如果图片还未完全可见或还未等待下一次滚动，则返回
+        if (!imageFullyVisible || !isWaitingForNextScroll) return;
+        
+        // 检测是否有滚动（向上或向下都可以）
+        const currentScrollY = window.scrollY;
+        if (currentScrollY !== lastScrollY) {
+            // 触发图片替换
+            hasTriggered = true;
+            isWaitingForNextScroll = false;
+            
+            // 替换图片
+            targetImage.src = replacementSrc;
+            
+            // 0.3秒后恢复
+            setTimeout(() => {
+                targetImage.src = originalSrc;
+                // 移除滚动监听器
+                if (scrollListener) {
+                    window.removeEventListener('scroll', scrollListener);
+                    scrollListener = null;
+                }
+                // 停止观察
+                observer.disconnect();
+            }, 300);
+        }
+    }
+})();
+</script>
+</body>
+</html>

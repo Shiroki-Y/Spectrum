@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>《菁英会客厅》短信互动名单 2005.10.13</title>
+        <!-- Tailwind CSS v3 -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="css/style.css">
+        <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link rel="icon" type="image/png" href="images/favicon_1/favicon-96x96.png" sizes="96x96"/>
+        <link rel="icon" type="image/svg+xml" href="images/favicon_1/favicon.svg"/>
+        <link rel="shortcut icon" href="images/favicon_1/favicon.ico"/>
+        <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_1/apple-touch-icon.png"/>
+        <link rel="manifest" href="images/favicon_1/site.webmanifest"/>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: '#1e40af',
+                            secondary: '#f8fafc',
+                            accent: '#dc2626',
+                        },
+                        fontFamily: {
+                            sans: ['Inter', 'system-ui', 'sans-serif'],
+                        }
+                    }
+                }
+            }
+        </script>
+        <script src="js/md5.min.js"></script>
+        <style type="text/tailwindcss">
+            @layer utilities {
+                .archive-header {
+                    @apply fixed top-0 left-0 right-0 z-50 text-white shadow-md bg-gradient-to-r from-purple-500 to-blue-500; }
+
+                .archive-header-content {
+                    @apply container mx-auto px-4; }
+
+                .archive-header-top {
+                    @apply flex items-center justify-between py-2 transition-all duration-300; /* 原py-3 → 改为py-2，减少顶部区域高度 */
+                }
+
+                .archive-info {
+                    @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少中间区域高度 */
+                }
+
+                .archive-info-lower {
+                    @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少下段区域高度 */
+                }
+
+                .return-home-btn {
+                    @apply bg-white text-primary px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors; }
+
+                .logo {
+                    @apply h-10 w-auto bg-white p-1 border border-gray-300 rounded-[8px]; }
+
+                .content-wrapper {
+                    @apply mt-0 pt-0; /* 移除顶部外边距和内边距，后续通过 JS 动态设置 */
+                }
+
+                .page-wrapper {
+                    @apply mt-0; /* 移除顶部外边距 */
+                }
+
+                /* 移动端顶部收起状态 */
+                .archive-header.top-hidden .archive-header-top {
+                    @apply py-0 h-0 overflow-hidden; }
+            }
+        </style>
+        <style>
+            @media (min-width: 768px) {
+                .web-content {
+                    height: calc(452px - 42px) !important;
+                }
+            }
+
+            /* 手机端强制加长容器，确保内容完整 */
+            @media (max-width: 767px) {
+                .web-content {
+                    height: auto !important;
+                    /* 容器高度随内容自动加长 */
+                    min-height: 500px;
+                    /* 确保足够高度容纳所有文字 */
+                    padding: 20px 15px !important;
+                    /* 增加内边距，避免拥挤 */
+                }
+
+                .text-sm {
+                    font-size: 15px !important;
+                    /* 适当放大文字 */
+                }
+
+                .leading-relaxed {
+                    line-height: 1.9 !important;
+                    /* 增加行高，提升可读性 */
+                }
+
+                .text-2xl {
+                    font-size: 1.4rem !important;
+                    /* 标题适配手机 */
+                }
+
+                body {
+                    overflow-x: hidden;
+                }
+
+                .sms-table-wrapper {
+                    margin-left: -16px;
+                    margin-right: -16px;
+                    padding-left: 16px;
+                    padding-right: 16px;
+                }
+
+                .sms-table-scroll {
+                    overflow-x: auto;
+                    -webkit-overflow-scrolling: touch;
+                }
+
+                .subliminal-table {
+                    min-width: 640px;
+                }
+
+                .subliminal-table th,
+                .subliminal-table td {
+                    white-space: nowrap;
+                }
+            }
+        </style>
+
+<style>
+    /* 强力修复：保证 header 及其子元素不会撑出视口（只针对溢出问题，不破坏布局） */
+    html, body {
+      overflow-x: hidden !important;
+    }
+    
+    /* 防止 fixed header 带来的溢出（保留原有 flex 布局基础） */
+    .archive-header {
+      left: 0 !important;
+      right: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow-x: hidden !important;
+      box-sizing: border-box !important;
+      -webkit-overflow-scrolling: auto !important;
+    }
+    
+    /* 只针对文字内容限制换行，不影响 flex 子元素的布局属性 */
+    .archive-header {
+      min-width: 0 !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    /* 仅对文字容器设置换行（避免影响图片、按钮） */
+    .archive-header .text-center, /* 中间文字区域 */
+    .archive-header .return-home-btn span, /* 按钮文字 */
+    .archive-header div {
+      word-break: break-word !important;
+      white-space: normal !important;
+    }
+    
+    /* 图片保留 inline-block 特性，适配 flex 布局 */
+    .archive-header img {
+      max-width: 48px !important; /* 根据 Logo 实际尺寸调整 */
+      height: auto !important;
+      display: inline-block !important; /* 恢复 inline-block，配合 flex 横向对齐 */
+    }
+    
+    /* 保留返回按钮的 flex 布局（原样式是 flex items-center） */
+    .archive-header .return-home-btn {
+      display: flex !important; /* 强制保留 flex，确保 icon 和文字横向对齐 */
+      white-space: nowrap !important; /* 按钮内 icon+文字不换行 */
+    }
+    
+    /* 内边距优化，避免内容贴边 */
+    .archive-header-content {
+      padding-left: 12px !important;
+      padding-right: 12px !important;
+      box-sizing: border-box !important;
+    }
+  </style>
+        <style type="text/tailwindcss">
+            @layer utilities {
+                .archive-header {
+                    @apply fixed top-0 left-0 right-0 z-50 shadow-lg; color: #bababa;
+                    background: linear-gradient(90deg,#19181b 70%,#2e1432 100%);
+                    box-shadow: 0 4px 16px #b3121766;
+                }
+
+                .archive-header-content {
+                    @apply container mx-auto px-4; }
+
+                .archive-header-top {
+                    @apply flex items-center justify-between py-2 transition-all duration-300; background: linear-gradient(90deg,#101012 60%,#2e1432 100%);
+                }
+
+                .archive-info {
+                    @apply py-1; background: linear-gradient(90deg,#2e1432 0%,#19181b 100%);
+                }
+
+                .archive-info-lower {
+                    @apply py-1; background: linear-gradient(90deg,#19181b 0%,#2e1432 100%);
+                }
+
+                .return-home-btn {
+                    @apply px-4 py-2 rounded-md font-medium transition-colors border; background: #e94545;
+                    color: #19181b;
+                    border-color: #b31217;
+                    box-shadow: 0 2px 8px #b3121755;
+                }
+
+                .logo {
+                    @apply h-10 w-auto p-1 border rounded-[8px]; background: #101012;
+                    border-color: #2e1432;
+                    filter: grayscale(1) brightness(0.35);
+                }
+
+                .content-wrapper {
+                    @apply mt-0 pt-0; background: #101012;
+                }
+
+                .page-wrapper {
+                    @apply mt-0; background: #101012;
+                }
+
+                .archive-header.top-hidden .archive-header-top {
+                    @apply py-0 h-0 overflow-hidden; }
+
+                .footer-ad-bar {
+                    background: linear-gradient(90deg,#2e1432 0%,#19181b 100%);
+                    box-shadow: 0 -2px 16px #9b1b1b66;
+                }
+
+                .footer-ad-side {
+                    color: #e94545;
+                    background: #19181b;
+                }
+
+                .footer-ad-main {
+                    background: #101012;
+                }
+
+                .footer-ad-row a {
+                    color: #b31217;
+                }
+            }
+
+            /* 固定页脚到底部 */
+            body {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .content-wrapper {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* 页脚样式匹配深色主题 */
+            footer {
+                background: #101012 !important;
+                color: #bababa !important;
+                flex-shrink: 0;
+            }
+        </style>
+    </head>
+    <body class="bg-[#19181b]">
+        <!-- 顶部固定条 -->
+        <header class="archive-header" id="archiveHeader">
+            <!-- 顶部区域：Logo和返回按钮 -->
+            <div class="archive-header-top archive-header-content">
+                <div class="flex items-center">
+                    <img src="images/webtimetower.PNG" alt="WebTimeTower Logo" class="logo">
+                </div>
+                <!-- PC端中间信息区域 -->
+                <div class="hidden md:block text-center text-[19px] font-bold" style="color:#bababa;">
+                    <div>
+                        您正在浏览 &nbsp;&nbsp;<span class="underline" style="color:#e94545;">neweratv.com</span>
+                        &nbsp;&nbsp;于 &nbsp;&nbsp;<span class="underline" style="color:#e94545;">2005年10月13日</span>
+                        &nbsp;&nbsp;的网页存档
+                    </div>
+                </div>
+                <a href="webtimetower.html" class="return-home-btn flex items-center" id="returnHomeBtn">
+                    <i class="fa fa-home mr-2"></i>
+                    返回首页
+            
+                </a>
+            </div>
+            <!-- 移动端中间信息区域 -->
+            <div class="archive-info archive-header-content md:hidden">
+                <div class="text-center font-bold" style="color:#bababa;">
+                    您正在浏览 &nbsp;&nbsp;<span class="underline" style="color:#e94545;">neweratv.com</span>
+                    &nbsp;&nbsp;于<br>
+                    <span class="underline" style="color:#e94545;">2005年10月13日</span>
+                    &nbsp;&nbsp;的网页存档
+            
+                </div>
+            </div>
+            <!-- 移动端下段文字区域（仅移动端显示） -->
+            <div class="archive-info-lower archive-header-content md:hidden">
+                <div class="text-center text-sm font-semibold" style="color:#bababa;" id="tower-placeholder-mobile">（这里是小字占位符，可填写额外信息）</div>
+            </div>
+            <!-- PC端下段文字区域（仅PC端显示） -->
+            <div class="archive-info-lower archive-header-content hidden md:block">
+                <div class="text-center text-[16px] font-bold" style="color:#bababa;" id="tower-placeholder-pc">（这里是小字占位符，可填写额外信息）</div>
+            </div>
+        </header>
+        <div class="content-wrapper pt-[138px]">
+            <!-- header高度+margin -->
+            <div class="page-wrapper max-w-[960px] w-full min-w-[320px] mx-auto flex flex-col bg-gray-100 rounded-lg shadow-md">
+                <!-- 顶部黑色导航条 -->
+                <div class="navbar-2005">
+                    <div class="navbar-2005-inner">
+                        <nav>
+                            <a href="neweratv.com_20051013.html">首页</a>
+                            <span>|</span>
+                            <a href="neweratv.com_20051013_tvguide.html">电视指南</a>
+                            <span>|</span>
+                            <a href="neweratv.com_20051013_news.html">新闻</a>
+                            <span>|</span>
+                            <a href="neweratv.com_20051013_show.html">综艺</a>
+                            <span>|</span>
+                            <a href="neweratv.com_20051013_finance.html">财经</a>
+                            <span>|</span>
+                            <a href="neweratv.com_20051013_music.html">音乐</a>
+                            <span>|</span>
+      <a href="#" class="ad-link">电视剧</a>
+      <span>|</span>
+      <a href="#" class="ad-link">少儿</a>
+      <span>|</span>
+      <a href="#" class="ad-link">体育</a>
+                            <span>|</span>
+                            <a href="neweratv.com_adservice.html">广告服务</a>
+                        </nav>
+                    </div>
+                </div>
+                <div class="main-content-2005">
+                    <!-- 顶部蓝条 -->
+                    <div class="top-bar-2005">
+                        <div class="top-bar-blue"></div>
+                        <div class="top-bar-orange">
+                            <img src="images/logo.png" alt="新纪元电视台 Logo">
+                        </div>
+                        <div class="top-bar-search">
+                            <input type="text" placeholder="请输入搜索内容…" class="search-input-2005" id="siteSearchInput"/>
+                            <button class="search-btn-2005" id="siteSearchBtn">站内搜索</button>
+                        </div>
+                    </div>
+                    <div class="w-[100%] h-[auto] mx-auto bg-white overflow-hidden p-4 md:p-6">
+                        <!-- 表格标题 -->
+                        <h3 class="text-xl md:text-2xl font-bold text-blue-900 text-center mb-4">《菁英会客厅》短信互动名单 2005.10.13
+  </h3>
+                        <!-- 表格容器（小屏横向滚动） -->
+                        <div class="sms-table-wrapper">
+                            <div class="overflow-x-auto sms-table-scroll">
+                            <table class="w-full border-collapse subliminal-table">
+                                <!-- 表头 -->
+                                <thead>
+                                    <tr class="bg-blue-100">
+                                        <th class="border border-gray-700 px-3 py-2 text-center text-sm md:text-base font-bold text-gray-900">编号</th>
+                                        <th class="border border-gray-700 px-3 py-2 text-center text-sm md:text-base font-bold text-gray-900">姓名</th>
+                                        <th class="border border-gray-700 px-3 py-2 text-center text-sm md:text-base font-bold text-gray-900">手机号</th>
+                                        <th class="border border-gray-700 px-3 py-2 text-center text-sm md:text-base font-bold text-gray-900">所在城市</th>
+                                        <th class="border border-gray-700 px-3 py-2 text-center text-sm md:text-base font-bold text-gray-900">搭建结果</th>
+                                    </tr>
+                                </thead>
+                                <!-- 表格内容 -->
+                                <tbody>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">1</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">陈婷</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">136-3852-497</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">上海</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">2</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">刘建华</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">150-5723-198</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">天津</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">3</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">张丽萍</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">138-4592-716</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">深圳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">4</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">王军</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">159-2874-360</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">北京</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">5</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">陈志强</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">186-3951-824</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">苏州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">6</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">李晓梅</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">135-7246-901</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">杭州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">7</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">赵建国</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">177-5183-629</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">北京</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">8</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">黄静雯</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">139-8625-470</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">西安</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">9</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">吴国华</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">158-3791-582</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">成都</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">10</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">周伟</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">189-4602-937</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">北京</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">11</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">郑秀兰</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">136-5187-294</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">武汉</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">12</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">何伟明</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">157-2946-803</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">北京</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">13</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">徐海英</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">176-3850-169</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">南京</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">14</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">唐志勇</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">137-9024-651</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">北京</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">15</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">林桂珍</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">156-4817-390</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">重庆</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">16</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">曹翔</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">188-5703-269</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">沈阳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">17</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">马晓红</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">134-6295-817</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">北京</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">18</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">孙玉华</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">155-3081-742</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">长沙</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">19</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">胡志刚</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">175-4926-083</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">大连</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">20</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">高红敏</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">133-7158-924</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">北京</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">21</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">宋芳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">154-8260-519</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">济南</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">22</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">韩建中</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">187-6039-425</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">上海</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">23</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">罗桂芳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">132-9374-160</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">郑州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">24</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">谢志峰</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">153-5192-873</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">上海</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">25</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">王美玲</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">174-6805-391</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">青岛</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">26</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">宋华</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">131-8406-295</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">上海</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">27</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">张林斌</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">152-7031-648</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">昆明</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">28</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">程小丽</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">186-4918-502</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">上海</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">29</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">蒋海燕</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">130-5289-371</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">太原</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">30</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">薛军</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">151-6304-982</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">上海</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">31</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">于慧芳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">173-7912-650</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">石家庄</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">32</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">叶凯文</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">157-8517-403</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">江岳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">33</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">潘玉兰</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">150-9426-018</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">无锡</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">34</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">戴远辰</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">185-5039-721</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">江岳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-orange-600 font-bold">
+                                            <span class="text-lg">*</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">35</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">李红霞</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">157-6305-894</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">南昌</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">36</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">杜峰</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">180-7182-530</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">上海</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">37</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">孙文亮</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">184-6291-047</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">合肥</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">38</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">章晓娟</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">176-5419-380</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">上海</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">39</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">蔡志刚</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">148-8036-175</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">福州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">40</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">崔丽丽</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">183-7302-694</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">江岳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">41</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">陆子明</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">180-4928-051</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">贵阳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">42</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">彭桂英</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">147-9154-826</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">广州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">43</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">张志勇</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">182-6419-307</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">南宁</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">44</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">谭美华</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">176-3807-692</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">广州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">45</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">黎红民</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">146-5261-938</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">辽宁</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">46</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">钱玉珍</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">181-7528-410</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">广州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">47</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">孙波</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">189-2916-583</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">上海</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">48</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">王慧</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">145-6370-294</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">广州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">49</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">田磊</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">180-8639-521</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">珠海</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">50</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">安丽娜</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">188-1048-769</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">广州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">51</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">常国辉</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">144-7481-305</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">苏州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">52</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">任玉梅</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">179-9740-631</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">广州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">53</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">乔志成</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">181-0159-874</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">成都</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">54</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">汪建华</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">143-8592-416</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">广州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">55</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">杨秀英</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">178-8851-742</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">兰州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">56</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">王志宏</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">131-9260-985</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">江岳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">57</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">李丽娟</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">142-9603-527</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">西宁</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">58</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">沈义刚</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">177-9962-853</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">江岳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">59</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">魏琳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">150-8371-096</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">济南</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">60</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">方志伟</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">151-0714-638</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">江岳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">61</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">张依婷</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">176-1073-964</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">海口</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">62</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">许刚</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">139-7482-107</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">广州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">63</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">马海霞</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">149-1825-749</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">上海</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">64</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">苗利锋</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">175-2184-075</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">南京</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">65</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">段涛</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">178-6593-218</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">杭州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">66</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">康玉珍</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">139-2936-850</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">桂林</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">67</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">严慧萍</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">174-3295-186</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">洛阳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">68</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">顾伟明</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">187-5604-329</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">扬州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">69</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">刘洋</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">138-3047-961</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">广州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">70</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">王志刚</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">173-4306-297</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">北京</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">71</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">廖国庆</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">136-4715-430</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">丽江</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">72</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">石玉兰</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">137-4158-072</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">厦门</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">73</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">李立波</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">172-5417-308</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">泉州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">74</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">彭慧芳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">135-3826-541</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">珠海</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">75</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">章前进</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">136-5269-183</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">天津</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">76</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">林海燕</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">171-6528-419</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">宁波</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">77</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">范磊</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">180-2937-652</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">郑州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">78</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">苏建军</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">135-6370-294</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">广州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">79</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">赵霞</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">170-7639-520</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">广州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">80</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">鲁思敏</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">191-1048-763</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">北京</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">81</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">葛志明</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">134-7481-305</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">杭州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">82</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">杨阳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">169-8740-631</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">上海</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">83</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">唐晓丽</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">132-0159-874</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">太原</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">84</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">郭秀敏</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">133-8592-416</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">成都</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">85</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">刘慧君</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">168-9851-742</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">广州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">86</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">陈国栋</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">173-9260-985</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">临阳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">87</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">唐静</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">132-9603-527</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">大连</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">88</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">温志强</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">167-1062-853</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">苏州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">89</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">刘冰兰</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">172-5938-104</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">武汉</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">90</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">黄涛</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">156-8027-493</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">上海</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">91</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">林伊娜</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">139-4716-280</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">北京</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">92</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">潘军</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">132-5071-436</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">石家庄</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm text-green-600 font-bold">成功</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">93</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">向红艳</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">185-3069-741</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">广州</td>
+                                        <td class="border border-gray-700 px-3 py-2 text-center text-sm">失败</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
+                            <p style="margin-top: 20px;">
+                                <span class="text-lg text-orange-600 font-bold">*</span>
+                                此人尚年幼，但其<b>波长</b>与我们完美适配，且影响力还在不断成长。经测算，巅峰值将出现在20年以后。计划于<span id="nextDate"></span>
+                                对其实施<b>搭建</b>，务必保证成功。
+                            </p>
+                            <p>戴远辰现住址（实时更新）：江岳市江浦区宝宁东路 46 号尚品花园8号楼2单元503室</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 页脚导航 -->
+                <div class="section-footer-2005">
+                    <p>
+                         <a href="neweratv.com_about.html">关于我们</a> |
+                         <a href="neweratv.com_adservice.html">广告服务</a> |
+                         <a href="#" class="ad-link">版权声明</a> |
+                         <a href="neweratv.com_contact.html">联系我们</a>
+                    </p>
+  
+                     <!-- 插入分隔线 -->
+                     <div class="footer-divider"></div>
+
+                    <p class="footer-copy">新纪元电视台版权所有</p>
+                    <p class="footer-note">
+                        建议使用：1024×768分辨率，16位以上颜色、<br>Netscape6.0、IE5.0以上版本浏览器和中文大字符集
+  
+                    </p>
+                </div>
+            </div>
+        </div>
+        <footer class="mt-4 text-center text-sm" style="flex-shrink: 0;">
+            <small>
+                <span class="first-line block">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+                <span class="second-line block">Copyright &copy;Shiroki. All Rights Reserved.</span>
+            </small>
+        </footer>
+        <div class="page-number">
+
+        30/43
+    
+        </div>
+        <script src="js/main.js"></script>
+        <script>
+            // 获取当前日期并加1天
+            const today = new Date();
+            const nextDay = new Date(today);
+            nextDay.setDate(today.getDate() + 1);
+
+            // 提取年、月、日并补零（确保格式统一，如11月2日显示为11月02日）
+            const year = nextDay.getFullYear();
+            const month = nextDay.getMonth() + 1;
+            // 月份从0开始，需加1
+            const day = nextDay.getDate().toString().padStart(2, '0');
+
+            // 拼接成“XXXX年XX月XX日”格式并插入到页面
+            const formattedDate = `${year}年${month}月${day}日`;
+            document.getElementById('nextDate').textContent = formattedDate;
+        </script>
+    </body>
+</html>

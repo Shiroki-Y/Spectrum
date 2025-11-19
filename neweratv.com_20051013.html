@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新纪元电视台20051013</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/favicon_1/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="images/favicon_1/favicon.svg" />
+    <link rel="shortcut icon" href="images/favicon_1/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_1/apple-touch-icon.png" />
+    <link rel="manifest" href="images/favicon_1/site.webmanifest" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#f8fafc',
+                        accent: '#dc2626',
+                        orangePlaceholder: '#ffa65b',
+                        greenVideo: '#00ff00',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+<style type="text/tailwindcss">
+    @layer utilities {
+        .archive-header {
+            @apply fixed top-0 left-0 right-0 z-50 text-white shadow-md bg-gradient-to-r from-purple-500 to-blue-500;
+        }
+        .archive-header-content {
+            @apply container mx-auto px-4;
+        }
+        .archive-header-top {
+            @apply flex items-center justify-between py-2 transition-all duration-300;
+        }
+        .archive-info {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500;
+        }
+        .archive-info-lower {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500;
+        }
+        .return-home-btn {
+            @apply bg-white text-primary px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors;
+        }
+        .logo {
+              @apply h-10 w-auto bg-white p-1 border border-gray-300 rounded-[8px];
+        }
+        .content-wrapper {
+              @apply mt-0 pt-0;
+        }
+        .page-wrapper {
+              @apply mt-0;
+        }
+        .archive-header.top-hidden .archive-header-top {
+            @apply py-0 h-0 overflow-hidden;
+        }
+    }
+</style>
+<style>
+@media (min-width: 768px) {
+  .web-content {
+    height: calc(452px - 42px) !important;
+  }
+}
+
+/* 手机端强制加长容器，确保内容完整 */
+@media (max-width: 767px) {
+  .web-content {
+    height: auto !important;
+    min-height: 500px;
+    padding: 20px 15px !important;
+  }
+  
+  .text-sm {
+    font-size: 15px !important;
+  }
+  
+  .leading-relaxed {
+    line-height: 1.9 !important;
+  }
+  
+  .text-2xl {
+    font-size: 1.4rem !important;
+  }
+  
+  /* 移动端占满屏幕 */
+  body {
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* 移动端顶部条内容对齐 */
+  .archive-header-content {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  
+  /* 移动端顶部条第一行对齐 */
+  .archive-header-top {
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  
+  /* 移动端顶部条logo和按钮对齐 */
+  .archive-header-top > div:first-child,
+  .archive-header-top > a:last-child {
+    flex-shrink: 0 !important;
+  }
+  
+  .content-wrapper,
+  .page-wrapper {
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  
+  /* 移动端移除页面容器的圆角和阴影 */
+  .page-wrapper {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  
+  /* 移动端内容区域占满 */
+  .main-content-2005,
+  .navbar-2005,
+  .section-footer-2005 {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  /* 移动端隐藏视频上部的橙色区域 */
+  .main-area-topbar {
+    display: none !important;
+  }
+  
+  /* 移动端三栏布局改为垂直堆叠 */
+  .main-area-2005 {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  .main-area-row {
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  /* 移动端视频区域（绿色）占满宽度 */
+  .main-center-2005 {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    order: 1;
+    background: #00ff00 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  .main-center-2005 video {
+    width: 100% !important;
+    max-width: 100vw !important;
+    height: auto !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    object-fit: contain !important;
+  }
+  
+  /* 移动端橙色广告区域（两个gif横向排列，删除橙色边框） */
+  .main-left-2005 {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    order: 2;
+    display: flex !important;
+    flex-direction: row !important;
+    background: transparent !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  .main-left-box {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    max-width: 50% !important;
+    height: auto !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
+  
+  .main-left-box:first-child,
+  .main-left-box:last-child {
+    height: auto !important;
+    border-bottom: none !important;
+  }
+  
+  .main-left-box img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 0 !important;
+  }
+  
+  /* 确保容器高度完全由图片决定，消除任何额外空间 */
+  .main-left-box {
+    line-height: 0 !important;
+    font-size: 0 !important;
+  }
+  
+  /* 移动端节目介绍区域（右侧） */
+  .main-right-2005 {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    order: 3;
+    background: #fff !important;
+    padding: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  .main-right-title {
+    color: #fff !important;
+    text-align: center !important;
+    margin-bottom: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    background: linear-gradient(0deg, #6D6D6D -0.7%, #868686 32.22%, #BCBCBC 96.87%) !important;
+    box-shadow: 0 -1px 1px 0 rgba(0, 0, 0, 0.25) inset, 0 -1px 1px 0 rgba(255, 255, 255, 0.25) inset, 0 1px 0 0 rgba(255, 255, 255, 0.60) inset !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2) !important;
+    box-sizing: border-box !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
+  }
+  
+  .main-right-items-container {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 10px !important;
+    flex-wrap: nowrap !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    padding: 15px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  .main-right-item {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    max-width: calc(33.333% - 7px) !important;
+    background: transparent !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  .main-right-item img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    margin-bottom: 8px !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    object-fit: contain !important;
+  }
+  
+  .main-right-desc {
+    text-align: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+  
+  .right-desc-title {
+    color: #000 !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    margin-bottom: 4px !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    text-decoration: none !important;
+    display: block !important;
+  }
+  
+  .right-desc-title:hover {
+    text-decoration: underline !important;
+  }
+  
+  .right-desc-time {
+    color: #000 !important;
+    font-size: 11px !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+}
+
+/* 链接样式：确保 right-desc-title 作为链接时保持原有外观 */
+.right-desc-title {
+    text-decoration: none !important;
+    color: inherit !important;
+    display: block !important;
+}
+
+.right-desc-title:hover {
+    text-decoration: underline !important;
+}
+
+/* 固定页脚到底部 */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.content-wrapper {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+footer {
+    flex-shrink: 0;
+    margin-top: auto;
+}
+/* 移动端移除底部多余空白 */
+@media (max-width: 767px) {
+    body {
+        min-height: auto !important;
+        padding-bottom: 0 !important;
+    }
+    .content-wrapper {
+        min-height: auto !important;
+        padding-bottom: 0 !important;
+    }
+    footer {
+        margin-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    /* 移除所有底部多余的margin和padding */
+    .page-wrapper,
+    .main-content-2005,
+    .section-footer-2005 {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+}
+</style>
+</head>
+<body class="bg-gray-100">
+    <!-- 顶部固定条 -->
+    <header class="archive-header" id="archiveHeader">
+        <!-- 顶部区域：Logo和返回按钮 -->
+        <div class="archive-header-top archive-header-content">
+            <div class="flex items-center">
+                <img src="images/webtimetower.PNG" 
+                     alt="WebTimeTower Logo" 
+                     class="logo">
+            </div>
+            <!-- PC端中间信息区域 -->
+            <div class="hidden md:block text-center text-[19px] text-white font-bold text-primary"> 
+                <div>您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<span class="underline">2005年10月13日</span>&nbsp;&nbsp;的网页存档</div>
+            </div>
+            <a href="webtimetower.html" class="return-home-btn flex items-center" id="returnHomeBtn">
+                  <i class="fa fa-home mr-2"></i>返回首页
+            </a>
+        </div>
+        <!-- 移动端中间信息区域（隐藏） -->
+        <div class="archive-info archive-header-content md:hidden">
+            <div class="text-center text-white font-bold">
+            您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<br><span class="underline">2005年10月13日</span>&nbsp;&nbsp;的网页存档
+            </div>
+        </div>
+        <!-- 移动端下段文字区域（隐藏） -->
+        <div class="archive-info-lower archive-header-content md:hidden">
+            <div class="text-center text-sm font-semibold text-white" id="tower-placeholder-mobile">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+        <!-- PC端下段文字区域 -->
+        <div class="archive-info-lower archive-header-content hidden md:block">
+            <div class="text-center text-[16px] font-bold text-white" id="tower-placeholder-pc">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+    </header>
+  
+<div class="content-wrapper pt-[138px]"> <!-- header高度+margin -->
+ <div class="page-wrapper max-w-[960px] w-full min-w-[320px] mx-auto flex flex-col bg-gray-100 rounded-lg shadow-md">
+  <!-- 顶部黑色导航条 -->
+<div class="navbar-2005">
+  <div class="navbar-2005-inner">
+    <nav>
+      <a href="neweratv.com_20051013.html">首页</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_tvguide.html">电视指南</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_news.html">新闻</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_show.html">综艺</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_finance.html">财经</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_music.html">音乐</a>
+      <span>|</span>
+      <a href="#" class="ad-link">电视剧</a>
+      <span>|</span>
+      <a href="#" class="ad-link">少儿</a>
+      <span>|</span>
+      <a href="#" class="ad-link">体育</a>
+      <span>|</span>
+      <a href="neweratv.com_adservice.html">广告服务</a>
+    </nav>
+  </div>
+</div>
+
+<div class="main-content-2005">
+  <!-- 顶部蓝条 -->
+  <div class="top-bar-2005">
+    <div class="top-bar-blue"></div>
+    <div class="top-bar-orange">
+        <img src="images/logo.png" 
+             alt="新纪元电视台 Logo" 
+        >
+    </div>
+    <div class="top-bar-search">
+      <input type="text" placeholder="请输入搜索内容…" class="search-input-2005" id="siteSearchInput" />
+      <button class="search-btn-2005" id="siteSearchBtn">站内搜索</button>
+    </div>
+  </div>
+  <!-- 主体三栏 -->
+<div class="main-area-2005">
+  <div class="main-area-topbar">
+    <img src="images/homepage_banner.png">
+  </div>
+  <div class="main-area-row">
+    <div class="main-left-2005">
+      <div class="main-left-box">
+        <img src="images/homepage_ad_calling.gif">
+      </div>
+      <div class="main-left-box">
+        <img src="images/homepage_ad_message.gif">
+      </div>
+    </div>
+    <div class="main-center-2005">
+      <video src="images/newera_pv.mp4" controls class="w-full shadow-md"></video>
+    </div>
+    <div class="main-right-2005">
+      <div class="main-right-title">节目介绍</div>
+      <!-- 新增容器包裹三个栏目项 -->
+      <div class="main-right-items-container">
+        <div class="main-right-item">
+              <img src="images/poster_huiketing.png">
+          <div class="main-right-desc">
+            <a href="neweratv.com_20051013_finance.html" class="right-desc-title">菁英会客厅</a>
+            <div class="right-desc-time">周四 21:10</div>
+          </div>
+        </div>
+        <div class="main-right-item">
+          <img src="images/poster_quansuqianjin.png">
+          <div class="main-right-desc">
+            <a href="neweratv.com_20051013_show.html" class="right-desc-title">全速前进</a>
+            <div class="right-desc-time">周一、周三 20:20</div>
+          </div>
+        </div>
+        <div class="main-right-item">
+          <img src="images/poster_shijiyinlang.png">
+          <div class="main-right-desc">
+            <a href="neweratv.com_20051013_music.html" class="right-desc-title">世纪音浪</a>
+            <div class="right-desc-time">周二、周日 21:30</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- 节目表 -->
+ <div class="program-table-2005">
+  <div class="program-col">
+    <div class="program-table-title">今日看点</div>
+    <table class="program-table">
+      <tr>
+        <td>11:15</td><td>环球风情汇：南非</td>
+      </tr>
+      <tr>
+        <td>14:50</td><td>华夏掠影</td>
+      </tr>
+      <tr>
+        <td>16:00</td><td>美味厨房：可乐鸡翅</td>
+      </tr>
+      <tr>
+        <td>21:10</td><td>菁英会客厅</td>
+      </tr>
+      <tr>
+        <td>22:00</td><td>科学之光</td>
+      </tr>
+    </table>
+  </div>
+  <div class="program-col">
+    <div class="program-table-title">本周导视</div>
+    <table class="program-table">
+      <tr>
+        <td>周一、周三</td><td>全速前进</td>
+      </tr>
+      <tr>
+        <td>周二、周日</td><td>世纪音浪</td>
+      </tr>
+      <tr>
+        <td>周四</td><td>菁英会客厅</td>
+      </tr>
+      <tr>
+        <td>周四、周六</td><td>影视点播</td>
+      </tr>
+      <tr>
+        <td>周五</td><td>周五星发现</td>
+      </tr>
+    </table>
+  </div>
+</div>
+<!-- 公告栏 -->
+<div class="announce-2005">
+  <div class="announce-title">公告栏</div>
+  <div class="announce-content">
+    <div class="announce-row">
+      <span class="announce-link ad-link">菁英会客厅开通短信互动服务</span>
+      <img src="images/homepage_NEW.gif">
+    </div>
+    <div class="announce-row">
+      <span class="announce-link ad-link">科学之光栏目向广大观众征集节目主题</span>
+    </div>
+  </div>
+</div>
+<!-- 专栏 -->
+<div class="column-2005">
+  <div class="column-title">专栏</div>
+  <div class="column-body">
+    <img src="images/homepage_column.png">
+    <div class="column-text">
+      <a href="neweratv.com_20051013_column.html">《菁英会客厅》：聚光灯下的行业梦想</a>
+    </div>
+  </div>
+</div>
+<!-- 页脚导航 -->
+<div class="section-footer-2005">
+  <p>
+    <a href="neweratv.com_about.html">关于我们</a> |
+    <a href="neweratv.com_adservice.html">广告服务</a> |
+    <a href="#" class="ad-link">版权声明</a> |
+    <a href="neweratv.com_contact.html">联系我们</a>
+  </p>
+  
+  <!-- 插入分隔线 -->
+  <div class="footer-divider"></div>
+
+  <p class="footer-copy">新纪元电视台版权所有</p>
+  <p class="footer-note">
+    建议使用：1024×768分辨率，16位以上颜色、<br>
+    Netscape6.0、IE5.0以上版本浏览器和中文大字符集
+  </p>
+</div>
+</div>
+</div>
+</div>
+<footer class="w-full mt-4 text-center text-sm px-0 mx-0" style="flex-shrink: 0;">
+  <small>
+    <span class="first-line block">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+    <span class="second-line block">Copyright&copy; Shiroki. All Rights Reserved.</span>
+  </small>
+</footer>
+<div class="page-number">
+
+02/43
+
+</div>
+<script src="js/main.js"></script>
+</body>
+</html>

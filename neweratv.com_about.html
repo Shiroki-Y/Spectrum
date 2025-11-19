@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新纪元电视台-关于我们</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/favicon_1/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="images/favicon_1/favicon.svg" />
+    <link rel="shortcut icon" href="images/favicon_1/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_1/apple-touch-icon.png" />
+    <link rel="manifest" href="images/favicon_1/site.webmanifest" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#f8fafc',
+                        accent: '#dc2626',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+<script src="js/md5.min.js"></script>
+<style type="text/tailwindcss">
+    @layer utilities {
+        .archive-header {
+            @apply fixed top-0 left-0 right-0 z-50 text-white shadow-md bg-gradient-to-r from-purple-500 to-blue-500;
+        }
+        .archive-header-content {
+            @apply container mx-auto px-4;
+        }
+        .archive-header-top {
+            @apply flex items-center justify-between py-2 transition-all duration-300; /* 原py-3 → 改为py-2，减少顶部区域高度 */
+        }
+        .archive-info {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少中间区域高度 */
+        }
+        .archive-info-lower {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少下段区域高度 */
+        }
+        .return-home-btn {
+            @apply bg-white text-primary px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors;
+        }
+        .logo {
+              @apply h-10 w-auto bg-white p-1 border border-gray-300 
+                 rounded-[8px]; 
+        }
+        .content-wrapper {
+              @apply mt-0 pt-0; /* 移除顶部外边距和内边距，后续通过 JS 动态设置 */
+        }
+        .page-wrapper {
+              @apply mt-0; /* 移除顶部外边距 */
+        }
+        /* 移动端顶部收起状态 */
+        .archive-header.top-hidden .archive-header-top {
+            @apply py-0 h-0 overflow-hidden;
+        }
+    }
+</style>
+<style>
+@media (min-width: 768px) {
+  .web-content {
+    height: calc(452px - 42px) !important;
+  }
+}
+
+/* 手机端强制加长容器，确保内容完整 */
+@media (max-width: 767px) {
+  .web-content {
+    height: auto !important; /* 容器高度随内容自动加长 */
+    min-height: 500px; /* 确保足够高度容纳所有文字 */
+    padding: 20px 15px !important; /* 增加内边距，避免拥挤 */
+  }
+  
+  .text-sm {
+    font-size: 15px !important; /* 适当放大文字 */
+  }
+  
+  .leading-relaxed {
+    line-height: 1.9 !important; /* 增加行高，提升可读性 */
+  }
+  
+  .text-2xl {
+    font-size: 1.4rem !important; /* 标题适配手机 */
+  }
+}
+/* 固定页脚到底部 */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.content-wrapper {
+    flex: 1;
+}
+footer {
+    flex-shrink: 0;
+}
+</style>
+</head>
+<body class="bg-gray-100">
+    <!-- 顶部固定条 -->
+    <header class="archive-header" id="archiveHeader">
+        <!-- 顶部区域：Logo和返回按钮 -->
+        <div class="archive-header-top archive-header-content">
+            <div class="flex items-center">
+                <img src="images/webtimetower.PNG" 
+                     alt="WebTimeTower Logo" 
+                     class="logo">
+            </div>
+            <!-- PC端中间信息区域 -->
+            <div class="hidden md:block text-center text-[19px] text-white font-bold text-primary"> 
+                <div>您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<span class="underline">2005年10月13日</span>&nbsp;&nbsp;的网页存档</div>
+            </div>
+            <a href="webtimetower.html" class="return-home-btn flex items-center" id="returnHomeBtn">
+                  <i class="fa fa-home mr-2"></i>返回首页
+            </a>
+        </div>
+        <!-- 移动端中间信息区域（隐藏） -->
+        <div class="archive-info archive-header-content md:hidden">
+            <div class="text-center text-white font-bold">
+            您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<br><span class="underline">2005年10月13日</span>&nbsp;&nbsp;的网页存档
+            </div>
+        </div>
+        <!-- 移动端下段文字区域（隐藏） -->
+        <div class="archive-info-lower archive-header-content md:hidden">
+            <div class="text-center text-sm font-semibold text-white" id="tower-placeholder-mobile">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+        <!-- PC端下段文字区域 -->
+        <div class="archive-info-lower archive-header-content hidden md:block">
+            <div class="text-center text-[16px] font-bold text-white" id="tower-placeholder-pc">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+    </header>
+<div class="content-wrapper pt-[138px]"> <!-- header高度+margin -->
+ <div class="page-wrapper max-w-[960px] w-full min-w-[320px] mx-auto flex flex-col bg-gray-100 rounded-lg shadow-md">
+  <!-- 顶部黑色导航条 -->
+<div class="navbar-2005">
+  <div class="navbar-2005-inner">
+    <nav>
+      <a href="neweratv.com_20051013.html">首页</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_tvguide.html">电视指南</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_news.html">新闻</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_show.html">综艺</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_finance.html">财经</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_music.html">音乐</a>
+      <span>|</span>
+      <a href="#" class="ad-link">电视剧</a>
+      <span>|</span>
+      <a href="#" class="ad-link">少儿</a>
+      <span>|</span>
+      <a href="#" class="ad-link">体育</a>
+      <span>|</span>
+      <a href="neweratv.com_adservice.html">广告服务</a>
+    </nav>
+  </div>
+</div>
+
+<div class="main-content-2005">
+  <!-- 顶部蓝条 -->
+  <div class="top-bar-2005">
+    <div class="top-bar-blue"></div>
+    <div class="top-bar-orange">
+        <img src="images/logo.png" 
+             alt="新纪元电视台 Logo" 
+        >
+    </div>
+    <div class="top-bar-search">
+      <input type="text" placeholder="请输入搜索内容…" class="search-input-2005" id="siteSearchInput" />
+      <button class="search-btn-2005" id="siteSearchBtn">站内搜索</button>
+    </div>
+  </div>
+
+<!-- 信息区块 -->
+<div class="w-[100%] h-[auto] mx-auto bg-white overflow-hidden">
+  <div class="font-bold text-2xl py-3 px-4 text-center text-blue-800 mt-5">
+    关于我们
+  </div>
+  
+  <div class="web-content h-[calc(452px-42px)] p-6 text-gray-900 text-sm leading-relaxed">
+    <p class="mb-4" style="text-indent: 2em;">新纪元电视台成立于充满希望的1990年。为了迎接即将到来的 21 世纪，我们满怀憧憬地将电视台命名为 “新纪元”：全新的开始，全新的未来。透过电视荧屏，新纪元电视台已经成为了许多观众的老朋友；而在网络时代，新纪元电视台网站也希望能结识更多的新朋友。</p>
+    <p class="mb-4" style="text-indent: 2em;">从早期的报纸、收音机，到后来的电视，再到现在的网络，传媒技术不断进步，其影响力也日益扩大。电视的出现，让观众朋友们可以跨越地域的限制，随时收看丰富多彩的节目；而互联网的普及，则让网民朋友们不再受时间的束缚，随时随地都能找到自己感兴趣的内容。</p>
+    <p class="mb-4" style="text-indent: 2em;">作为一家立足电视媒体、积极拥抱互联网的电视台，我们希望能一直陪伴在广大观众和网友身边。电波已是我们交流的桥梁，数字信号又为我们开辟了更加宽广的沟通大道。我们将秉持 “制作优质节目，打造一流网站” 的理念，用我们的真诚和努力，赢得您的支持与信任。</p>
+    <p style="text-indent: 2em;">您关注的人与事，尽在新纪元。</p>
+  </div>
+</div>
+
+<!-- 页脚导航 -->
+<div class="section-footer-2005">
+  <p>
+    <a href="neweratv.com_about.html">关于我们</a> |
+    <a href="neweratv.com_adservice.html">广告服务</a> |
+    <a href="#" class="ad-link">版权声明</a> |
+    <a href="neweratv.com_contact.html">联系我们</a>
+  </p>
+  
+  <!-- 插入分隔线 -->
+  <div class="footer-divider"></div>
+
+  <p class="footer-copy">新纪元电视台版权所有</p>
+  <p class="footer-note">
+    建议使用：1024×768分辨率，16位以上颜色、<br>
+    Netscape6.0、IE5.0以上版本浏览器和中文大字符集
+  </p>
+    </div>
+  </div>
+</div>
+<div class="hidden md:block h-[calc(100vh-800px)]"></div>
+<footer class="mt-4 text-center text-sm">
+  <small>
+    <span class="first-line block">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+    <span class="second-line block">Copyright&copy; Shiroki. All Rights Reserved.</span>
+  </small>
+</footer>
+
+<div class="page-number">
+
+10/43
+
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>

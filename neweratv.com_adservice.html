@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新纪元电视台-广告服务</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/favicon_1/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="images/favicon_1/favicon.svg" />
+    <link rel="shortcut icon" href="images/favicon_1/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_1/apple-touch-icon.png" />
+    <link rel="manifest" href="images/favicon_1/site.webmanifest" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#f8fafc',
+                        accent: '#dc2626',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+<script src="js/md5.min.js"></script>
+<style type="text/tailwindcss">
+    @layer utilities {
+        .archive-header {
+            @apply fixed top-0 left-0 right-0 z-50 text-white shadow-md bg-gradient-to-r from-purple-500 to-blue-500;
+        }
+        .archive-header-content {
+            @apply container mx-auto px-4;
+        }
+        .archive-header-top {
+            @apply flex items-center justify-between py-2 transition-all duration-300; /* 原py-3 → 改为py-2，减少顶部区域高度 */
+        }
+        .archive-info {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少中间区域高度 */
+        }
+        .archive-info-lower {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少下段区域高度 */
+        }
+        .return-home-btn {
+            @apply bg-white text-primary px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors;
+        }
+        .logo {
+              @apply h-10 w-auto bg-white p-1 border border-gray-300 
+                 rounded-[8px]; 
+        }
+        .content-wrapper {
+              @apply mt-0 pt-0; /* 移除顶部外边距和内边距，后续通过 JS 动态设置 */
+        }
+        .page-wrapper {
+              @apply mt-0; /* 移除顶部外边距 */
+        }
+        /* 移动端顶部收起状态 */
+        .archive-header.top-hidden .archive-header-top {
+            @apply py-0 h-0 overflow-hidden;
+        }
+    }
+</style>
+<style>
+@media (min-width: 768px) {
+  .web-content {
+    height: calc(452px - 42px) !important;
+  }
+}
+
+/* 手机端强制加长容器，确保内容完整 */
+@media (max-width: 767px) {
+  .web-content {
+    height: auto !important; /* 容器高度随内容自动加长 */
+    min-height: 500px; /* 确保足够高度容纳所有文字 */
+    padding: 20px 15px !important; /* 增加内边距，避免拥挤 */
+  }
+  
+  .text-sm {
+    font-size: 15px !important; /* 适当放大文字 */
+  }
+  
+  .leading-relaxed {
+    line-height: 1.9 !important; /* 增加行高，提升可读性 */
+  }
+  
+  .text-2xl {
+    font-size: 1.4rem !important; /* 标题适配手机 */
+  }
+  
+  /* 移动端联系方式文本换行修复 */
+  .contact-info {
+    word-break: keep-all !important;
+  }
+  
+  .contact-info .no-break {
+    white-space: nowrap !important;
+    display: inline !important;
+  }
+  
+  .contact-info .email-address {
+    word-break: break-all !important;
+    word-wrap: break-word !important;
+    display: inline !important;
+  }
+  
+  /* 确保"邮箱"两个字不会被隔断 */
+  .contact-info .no-break {
+    unicode-bidi: bidi-override !important;
+  }
+  
+  /* 移动端邮箱行左对齐（和人名在同一个位置） */
+  .contact-info .email-indent {
+    display: none !important;
+  }
+}
+/* 固定页脚到底部 */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+footer {
+    flex-shrink: 0;
+}
+</style>
+</head>
+<body class="bg-gray-100">
+    <!-- 顶部固定条 -->
+    <header class="archive-header" id="archiveHeader">
+        <!-- 顶部区域：Logo和返回按钮 -->
+        <div class="archive-header-top archive-header-content">
+            <div class="flex items-center">
+                <img src="images/webtimetower.PNG" 
+                     alt="WebTimeTower Logo" 
+                     class="logo">
+            </div>
+            <!-- PC端中间信息区域 -->
+            <div class="hidden md:block text-center text-[19px] text-white font-bold text-primary"> 
+                <div>您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<span class="underline">2005年10月13日</span>&nbsp;&nbsp;的网页存档</div>
+            </div>
+            <a href="webtimetower.html" class="return-home-btn flex items-center" id="returnHomeBtn">
+                  <i class="fa fa-home mr-2"></i>返回首页
+            </a>
+        </div>
+        <!-- 移动端中间信息区域（隐藏） -->
+        <div class="archive-info archive-header-content md:hidden">
+            <div class="text-center text-white font-bold">
+            您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<br><span class="underline">2005年10月13日</span>&nbsp;&nbsp;的网页存档
+            </div>
+        </div>
+        <!-- 移动端下段文字区域（隐藏） -->
+        <div class="archive-info-lower archive-header-content md:hidden">
+            <div class="text-center text-sm font-semibold text-white" id="tower-placeholder-mobile">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+        <!-- PC端下段文字区域 -->
+        <div class="archive-info-lower archive-header-content hidden md:block">
+            <div class="text-center text-[16px] font-bold text-white" id="tower-placeholder-pc">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+    </header>
+<div class="content-wrapper pt-[138px]"> <!-- header高度+margin -->
+ <div class="page-wrapper max-w-[960px] w-full min-w-[320px] mx-auto flex flex-col bg-gray-100 rounded-lg shadow-md">
+  <!-- 顶部黑色导航条 -->
+<div class="navbar-2005">
+  <div class="navbar-2005-inner">
+    <nav>
+     <a href="neweratv.com_20051013.html">首页</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_tvguide.html">电视指南</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_news.html">新闻</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_show.html">综艺</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_finance.html">财经</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_music.html">音乐</a>
+      <span>|</span>
+      <a href="#" class="ad-link">电视剧</a>
+      <span>|</span>
+      <a href="#" class="ad-link">少儿</a>
+      <span>|</span>
+      <a href="#" class="ad-link">体育</a>
+      <span>|</span>
+      <a href="neweratv.com_adservice.html">广告服务</a>
+    </nav>
+  </div>
+</div>
+
+<div class="main-content-2005">
+  <!-- 顶部蓝条 -->
+  <div class="top-bar-2005">
+    <div class="top-bar-blue"></div>
+    <div class="top-bar-orange">
+        <img src="images/logo.png" 
+             alt="新纪元电视台 Logo" 
+        >
+    </div>
+    <div class="top-bar-search">
+      <input type="text" placeholder="请输入搜索内容…" class="search-input-2005" id="siteSearchInput" />
+      <button class="search-btn-2005" id="siteSearchBtn">站内搜索</button>
+    </div>
+  </div>
+
+<!-- 网络广告服务信息区块 -->
+<div class="w-[100%] h-[auto] mx-auto bg-white overflow-hidden px-4 py-4 md:px-10 md:py-10">
+  <div class="font-bold text-2xl mb-4 text-blue-900 text-center">网络广告服务简介</div>
+  
+  <div class="mb-3">
+    <div class="font-bold text-base text-blue-700 mb-1">网络广告形式</div>
+    <ul class="list-disc pl-6 text-gray-900 text-sm leading-relaxed">
+      <li><b>动画广告：</b>在网站首页、频道页等重要位置展示横幅或GIF动画广告，吸引用户点击。</li>
+      <li><b>弹出广告：</b>在用户浏览网页时弹出广告窗口，强制性展示，效果显著。</li>
+      <li><b>文字链接广告：</b>在网页内容中插入文字链接，引导用户访问客户网站。</li>
+    </ul>
+  </div>
+
+  <div class="mb-3">
+    <div class="font-bold text-base text-blue-700 mb-1">特色推荐</div>
+    <ul class="list-disc pl-6 text-gray-900 text-sm leading-relaxed">
+      <li><b>精准定位：</b>通过IP地址、Cookie等技术，实现广告的精准定位，提高广告转化率。</li>
+      <li><b>互动性强：</b>网络广告可以与用户进行互动，如在线调查、抽奖等，增强用户参与感。</li>
+      <li><b>成本可控：</b>网络广告可以根据实际效果付费，降低广告成本。</li>
+    </ul>
+  </div>
+
+  <div class="mb-3">
+    <div class="font-bold text-base text-blue-700 mb-1">我们的优势</div>
+    <ul class="list-disc pl-6 text-gray-900 text-sm leading-relaxed">
+      <li><b>技术领先：</b>我们拥有先进的网络广告技术，确保广告投放效果。</li>
+      <li><b>经验丰富：</b>我们拥有丰富的网络广告运营经验，为客户提供专业的服务。</li>
+      <li><b>资源丰富：</b>我们与本地各大网站、论坛建立了合作关系，拥有丰富的广告资源。</li>
+    </ul>
+  </div>
+
+  <div class="mb-2">
+    <div class="font-bold text-base text-blue-700 mb-2">联系我们</div>
+    <div class="text-gray-900 text-sm leading-relaxed mb-1 font-bold">广告联系负责人：</div>
+    <div class="text-gray-900 text-sm leading-relaxed mb-1 ml-4 contact-info">
+      王娟：&nbsp;手机 130-0145-347<br>
+      <span class="email-line"><span class="email-indent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="no-break">邮箱</span>&nbsp;&nbsp;<span class="email-address">newera_wj1996@coldmail.com</span></span><br>
+      马小阳：&nbsp;手机 138-1264-589<br>
+      <span class="email-line"><span class="email-indent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="no-break">邮箱</span>&nbsp;&nbsp;<span class="email-address">newera_mxy2002@coldmail.com</span></span><br>
+      郭磊：&nbsp;手机 139-8075-301<br>
+      <span class="email-line"><span class="email-indent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="no-break">邮箱</span>&nbsp;&nbsp;<span class="email-address">newera_gl1999@coldmail.com</span></span><br>
+      王振东（兼任）：&nbsp;手机 139-0192-568<br>
+      <span class="email-line"><span class="email-indent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="no-break">邮箱</span>&nbsp;&nbsp;<span class="email-address">newera_wzd1990@coldmail.com</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- 页脚导航 -->
+<div class="section-footer-2005">
+  <p>
+    <a href="neweratv.com_about.html">关于我们</a> |
+    <a href="neweratv.com_adservice.html">广告服务</a> |
+    <a href="#" class="ad-link">版权声明</a> |
+    <a href="neweratv.com_contact.html">联系我们</a>
+  </p>
+  
+  <!-- 插入分隔线 -->
+  <div class="footer-divider"></div>
+
+  <p class="footer-copy">新纪元电视台版权所有</p>
+  <p class="footer-note">
+    建议使用：1024×768分辨率，16位以上颜色、<br>
+    Netscape6.0、IE5.0以上版本浏览器和中文大字符集
+  </p>
+    </div>
+  </div>
+</div>
+</div>
+<footer class="mt-4 text-center text-sm" style="flex-shrink: 0;">
+  <small>
+    <span class="first-line block">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+    <span class="second-line block">Copyright&copy; Shiroki. All Rights Reserved.</span>
+  </small>
+</footer>
+
+<div class="page-number">
+
+09/43
+
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服从</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #e0e0e0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .page-number {
+  position: fixed; /* 固定位置，不受页面滚动影响 */
+  bottom: 20px; /* 距离底部 20px */
+  right: 20px; /* 距离右侧 20px */
+  background-color: black; /* 黑色背景 */
+  color: white; /* 白色文字 */
+  padding: 5px 10px; /* 内边距，使文字不紧贴边缘 */
+  border-radius: 20px; /* 圆角，使其变为椭圆形 */
+  font-size: 14px; /* 字体大小 */
+  font-family: Arial, sans-serif; /* 字体 */
+  z-index: 1000; /* 确保页码在其他内容之上 */
+}
+        /* 文字容器 */
+        .text-container {
+            position: relative;
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .text-line {
+            font-size: 28px;
+            color: #e0e0e0;
+            margin: 20px 0;
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .text-line.show {
+            opacity: 1;
+        }
+
+        .command-highlight {
+            color: #3a7afe;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 0 0 12px rgba(58, 122, 254, 0.6);
+        }
+
+        /* 红色闪屏 */
+        #redSplashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #9e1d1d;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.1s ease;
+        }
+
+        #redSplashScreen.show {
+            opacity: 1;
+        }
+
+        /* 白色屏幕 */
+        .white-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #fff;
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+
+        .white-screen.show {
+            opacity: 1;
+        }
+
+        /* 图片区域 */
+        .image-section {
+            position: relative;
+            width: 100%;
+            min-height: 60vh;
+            display: none; /* 初始隐藏 */
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            opacity: 0;
+            transition: opacity 2s ease;
+            padding: 40px 20px;
+        }
+
+        .image-section.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .image-section img {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+
+        .ending-mobile-link {
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ending-pc-img {
+    display: none !important; /* 强制所有设备都不显示这个 PC 专用的 img */
+}
+
+.ending-mobile-link {
+    /* 将原本在媒体查询中的显示规则提到全局 */
+    display: inline-flex; /* 确保链接以 flex 方式显示其内容（图片） */
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* 确保它占据 image-section 的全部宽度 */
+    height: 100%; /* 确保它占据 image-section 的全部高度 */
+    text-decoration: none; /* 如果需要移除默认的下划线 */
+}
+
+        /* 结论区域 */
+        .conclusion-section {
+            position: relative;
+            width: 100%;
+            min-height: 60vh;
+            background-color: transparent;
+            display: none; /* 初始隐藏 */
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 40px 20px;
+            padding-bottom: 100px;
+        }
+
+        .conclusion-section.show {
+            display: flex;
+        }
+
+        .conclusion-container {
+            text-align: center;
+            color: #000;
+            font-size: 1.2em;
+            padding: 20px;
+            padding-bottom: 70px;
+        }
+
+        .conclusion-title {
+            font-weight: bold;
+            color: #00fff1;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(0, 102, 255, 0.78);
+            margin-bottom: 20px;
+        }
+
+        .thank-you {
+            color: #ffffff !important;
+            font-size: 1.1em;
+            font-weight: bold; 
+        }
+
+        .social-media {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .social-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 220px;
+        }
+
+        .social-card img {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        .social-label {
+            color: #ffffff;
+            letter-spacing: 2px;
+            font-size: 0.9em;
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #bababa;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.7em;
+        }
+
+        footer small {
+            display: block;
+        }
+
+        footer span {
+            display: block;
+        }
+
+        footer .first-line {
+            margin-bottom: 5px;
+        }
+
+        /* 竖向排列的重复文字 */
+        .vertical-texts {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .vertical-text {
+            font-size: 28px;
+            color: #e0e0e0;
+            margin: 10px 0;
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+
+        .vertical-text.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- 红色闪屏 -->
+    <div id="redSplashScreen"></div>
+
+    <!-- 白色屏幕 -->
+    <div class="white-screen" id="whiteScreen"></div>
+
+    <!-- 文字阶段 -->
+    <div class="text-container" id="textContainer">
+        <div class="text-line" id="text1">整个江岳市的基站都集中在了这个小区，他们应该马上就来找我了。</div>
+        <div class="text-line" id="text2">我必须马上逃走</div>
+        <div class="text-line" id="text3">我不想成为基站。</div>
+        <div class="text-line" id="text4">这是你们强加给我的能力！</div>
+        <div class="text-line" id="text5">凭什么要我遭受这一切……</div>
+        <div class="text-line" id="text6">我…我究竟是谁？</div>
+        <div class="vertical-texts" id="verticalTexts"></div>
+        <div class="text-line" id="text7"></div>
+    </div>
+
+    <!-- 图片阶段 -->
+    <div class="image-section" id="imageSection">
+    <a class="ending-mobile-link" href="images/ending_obedience_news.jpg" target="_blank" rel="noopener">
+        <img src="images/ending_obedience_news.jpg" alt="Poster">
+    </a>
+</div>
+
+    <!-- 结论阶段 -->
+    <div class="conclusion-section" id="conclusionSection">
+        <div class="conclusion-container">
+            <p class="conclusion-title">调查结束 你是最强大的基站</p>
+            <p class="thank-you">《诡异广告调查事件》</p>
+            <p class="thank-you">制作：银河电灯Shiroki&nbsp;&nbsp;狂饮可乐</p>
+            <p class="thank-you">视频配音支持：春山&nbsp;&nbsp;环太</p>
+            <div class="social-media">
+                <div class="social-card">
+                    <img src="images/wechat.jpg" alt="公众号">
+                    <span class="social-label">公众号</span>
+                </div>
+                <div class="social-card">
+                    <img src="images/red.jpg" alt="小红书">
+                    <span class="social-label">小红书</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <small>
+            <span class="first-line">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+            <span class="second-line">Copyright&copy; Shiroki. All Rights Reserved.</span>
+        </small>
+    </footer>
+
+<div class="page-number">
+
+42/43
+
+</div>
+
+    <script>
+        const splashScreen = document.getElementById('redSplashScreen');
+        const whiteScreen = document.getElementById('whiteScreen');
+        const textContainer = document.getElementById('textContainer');
+        const imageSection = document.getElementById('imageSection');
+        const conclusionSection = document.getElementById('conclusionSection');
+
+        let interactionLocked = false;
+        let stepIndex = -1;
+        const steps = [];
+
+        function showText(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.classList.add('show');
+            }
+        }
+
+        function replaceText(id, newText) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = newText;
+            }
+        }
+
+        function showTextBelow(id, newText) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = newText;
+                element.classList.add('command-highlight');
+                element.classList.add('show');
+            }
+        }
+
+        function redFlash(action) {
+            interactionLocked = true;
+            splashScreen.classList.add('show');
+            setTimeout(() => {
+                splashScreen.classList.remove('show');
+                setTimeout(() => {
+                    if (typeof action === 'function') {
+                        action();
+                    }
+                    interactionLocked = false;
+                }, 300);
+            }, 100);
+        }
+
+         function whiteTransition() {
+            interactionLocked = true;
+            whiteScreen.style.display = 'block';
+            whiteScreen.classList.add('show');
+            setTimeout(() => {
+                whiteScreen.classList.remove('show');
+                setTimeout(() => {
+                    whiteScreen.style.display = 'none';
+                    textContainer.style.display = 'none';
+                    imageSection.classList.add('show');
+                    conclusionSection.classList.add('show');
+                    imageSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    // 正确设置背景图片和大小的方式
+                    document.body.style.backgroundImage = "url('images/ending_bg.png')";
+                    document.body.style.backgroundSize = "cover";
+
+                    // 添加错误处理，检查图片是否加载成功
+                    const img = new Image();
+                    img.onload = () => {
+                        console.log('Background image loaded successfully');
+                    };
+                    img.onerror = () => {
+                        console.error('Failed to load background image at images/ending_bg.png');
+                    };
+                    img.src = 'images/ending_bg.png';
+
+                    interactionLocked = false;
+                }, 600);
+            }, 1000);
+        }
+
+        function showVerticalTexts() {
+            const container = document.getElementById('verticalTexts');
+            if (!container) return;
+            container.innerHTML = '';
+            for (let i = 0; i < 5; i++) {
+                const textDiv = document.createElement('div');
+                textDiv.className = 'vertical-text';
+                textDiv.textContent = '能力越大，责任越大';
+                container.appendChild(textDiv);
+                setTimeout(() => {
+                    textDiv.classList.add('show');
+                }, i * 200);
+            }
+        }
+
+        function buildSteps() {
+            steps.push(() => showText('text2'));
+            steps.push(() => redFlash(() => replaceText('text2', '我要接受我的使命')));
+            steps.push(() => showText('text3'));
+            steps.push(() => redFlash(() => replaceText('text3', '这是我应尽的责任')));
+            steps.push(() => showText('text4'));
+            steps.push(() => redFlash(() => replaceText('text4', '我是被上天选中的人')));
+            steps.push(() => showText('text5'));
+            steps.push(() => redFlash(() => replaceText('text5', '能力越大，责任越大')));
+            steps.push(() => showVerticalTexts());
+            steps.push(() => showText('text6'));
+            steps.push(() => redFlash(() => showTextBelow('text7', '我是最强大的基站')));
+            steps.push(() => whiteTransition());
+        }
+
+        function advanceStep() {
+            if (interactionLocked) return;
+            stepIndex += 1;
+            if (stepIndex >= steps.length) {
+                document.removeEventListener('click', advanceStep);
+                return;
+            }
+            steps[stepIndex]();
+        }
+
+        window.addEventListener('load', () => {
+            showText('text1');
+            buildSteps();
+        });
+
+        document.addEventListener('click', advanceStep);
+    </script>
+</body>
+</html>
+

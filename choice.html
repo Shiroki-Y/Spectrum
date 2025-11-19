@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #e0e0e0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            overflow: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .page-number {
+  position: fixed; /* 固定位置，不受页面滚动影响 */
+  bottom: 20px; /* 距离底部 20px */
+  right: 20px; /* 距离右侧 20px */
+  background-color: black; /* 黑色背景 */
+  color: white; /* 白色文字 */
+  padding: 5px 10px; /* 内边距，使文字不紧贴边缘 */
+  border-radius: 20px; /* 圆角，使其变为椭圆形 */
+  font-size: 14px; /* 字体大小 */
+  font-family: Arial, sans-serif; /* 字体 */
+  z-index: 1000; /* 确保页码在其他内容之上 */
+}
+        /* 第一阶段：初始文字显示 */
+        .phase1 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .top-text {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: #e0e0e0;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .main-question {
+            font-size: 120px;
+            font-weight: bold;
+            color: #e0e0e0;
+            text-align: center;
+            text-shadow: 
+                3px 3px 0px #888,
+                6px 6px 0px #666,
+                9px 9px 0px #444,
+                12px 12px 0px #222;
+            animation: shake 0.3s infinite;
+            letter-spacing: 0.1em;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            10% { transform: translate(-2px, -1px) rotate(-0.5deg); }
+            20% { transform: translate(2px, 1px) rotate(0.5deg); }
+            30% { transform: translate(-1px, 2px) rotate(-0.3deg); }
+            40% { transform: translate(1px, -2px) rotate(0.3deg); }
+            50% { transform: translate(-2px, 1px) rotate(-0.5deg); }
+            60% { transform: translate(2px, -1px) rotate(0.5deg); }
+            70% { transform: translate(-1px, -2px) rotate(-0.3deg); }
+            80% { transform: translate(1px, 2px) rotate(0.3deg); }
+            90% { transform: translate(-2px, -1px) rotate(-0.5deg); }
+        }
+
+        /* 第二阶段：弹窗网格 */
+        .phase2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 60px); /* 减去footer高度 */
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-auto-rows: 1fr; /* 自适应高度 */
+            gap: 10px;
+            padding: 10px;
+            overflow: hidden; /* 不显示滚动条 */
+            z-index: 20;
+            justify-items: stretch;
+            align-items: stretch;
+        }
+
+        .phase2.show {
+            display: grid;
+        }
+
+        /* 2005年风格消息弹窗 - Windows XP风格 */
+        .message-popup-2005 {
+            background: #f0f0f0;
+            border: 2px outset #c0c0c0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            font-size: 12px;
+            color: #000;
+            width: 100%;
+            height: 100%;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-popup-2005-title {
+            background: linear-gradient(to bottom, #686fde 0%, #4c52b5 100%);
+            color: white;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            border-bottom: 1px solid #4c52b5;
+            height: 20px;
+            line-height: 20px;
+        }
+
+        .message-popup-2005-content {
+            background: #f0f0f0;
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 0; /* 允许flex子元素缩小 */
+        }
+
+        .message-popup-2005-text {
+            line-height: 1.5;
+            color: #000;
+            text-align: center;
+        }
+
+        .message-popup-2005 a {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 48px; /* 大3倍 */
+            font-weight: 500;
+        }
+
+        .message-popup-2005 a:hover {
+            color: #1e40af;
+            text-decoration: underline;
+        }
+
+        /* 中央输入框弹窗 */
+        .center-popup {
+            grid-column: span 1;
+            grid-row: span 1;
+        }
+
+        .center-popup .message-popup-2005-content {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .center-popup input {
+            width: 80%;
+            padding: 10px;
+            font-size: 14px;
+            border: 2px inset #c0c0c0;
+            background: #fff;
+            color: #000;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            text-align: center;
+        }
+
+        /* Footer样式 */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #bababa;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.7em;
+            z-index: 30;
+        }
+
+        footer small {
+            display: block;
+        }
+
+        footer span {
+            display: block;
+        }
+
+        footer .first-line {
+            margin-bottom: 5px;
+        }
+
+        .center-popup input:focus {
+            outline: 2px solid #1e40af;
+            outline-offset: -2px;
+        }
+
+        .center-popup button {
+            padding: 8px 20px;
+            font-size: 12px;
+            background: #f0f0f0;
+            border: 2px outset #c0c0c0;
+            cursor: pointer;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            color: #000;
+        }
+
+        .center-popup button:hover {
+            background: #e0e0e0;
+        }
+
+        .center-popup button:active {
+            border: 2px inset #c0c0c0;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .main-question {
+                font-size: 60px;
+            }
+
+            .top-text {
+                font-size: 14px;
+                top: 10%;
+            }
+
+            .phase2 {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                grid-auto-rows: 1fr;
+                gap: 8px;
+                padding: 8px;
+                height: calc(100vh - 60px);
+            }
+
+            footer {
+                font-size: 0.6em;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 第一阶段：初始文字 -->
+    <div class="phase1" id="phase1">
+        <div class="top-text">没有时间了，我、我要被抓去参加成为基站的仪式...</div>
+        <div class="main-question">我该怎么办？</div>
+    </div>
+
+    <!-- 第二阶段：弹窗网格 -->
+    <div class="phase2" id="phase2">
+        <!-- 弹窗将通过JavaScript动态生成 -->
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <small>
+            <span class="first-line">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+            <span class="second-line">Copyright&copy; Shiroki. All Rights Reserved.</span>
+        </small>
+    </footer>
+
+<div class="page-number">
+
+41/43
+
+</div>
+
+    <script>
+        // 计算需要多少个弹窗来填满屏幕（自适应，不滚动）
+        function calculatePopupCount() {
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight - 60; // 减去footer高度
+            const gap = 10;
+            const padding = 10;
+            
+            // 根据屏幕大小动态计算列数和行数
+            const availableWidth = viewportWidth - padding * 2;
+            const availableHeight = viewportHeight - padding * 2;
+            
+            // 计算能放多少列（最小200px宽度）
+            const cols = Math.max(2, Math.floor(availableWidth / (200 + gap)));
+            // 计算能放多少行（自适应高度）
+            const rows = Math.max(2, Math.floor(availableHeight / (150 + gap)));
+            
+            return cols * rows;
+        }
+
+        // 生成弹窗网格
+        function generatePopups() {
+            const phase2 = document.getElementById('phase2');
+            const popupCount = calculatePopupCount();
+
+            // 计算网格布局：使用固定列数，确保中央弹窗在视觉中心
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight - 60; // 减去footer高度
+            const gap = 10;
+            const padding = 10;
+            const availableWidth = viewportWidth - padding * 2;
+            const cols = Math.max(2, Math.floor(availableWidth / (200 + gap)));
+            const rows = Math.ceil(popupCount / cols);
+            
+            // 计算中心位置（确保在可视区域的中心）
+            const centerRow = Math.floor(rows / 2);
+            const centerCol = Math.floor(cols / 2);
+            const centerIndex = centerRow * cols + centerCol;
+
+            for (let i = 0; i < popupCount; i++) {
+                const popup = document.createElement('div');
+                popup.className = 'message-popup-2005';
+                
+                const title = document.createElement('div');
+                title.className = 'message-popup-2005-title';
+                
+                const content = document.createElement('div');
+                content.className = 'message-popup-2005-content';
+                
+                const text = document.createElement('div');
+                text.className = 'message-popup-2005-text';
+
+                // 判断是否是中心弹窗
+                if (i === centerIndex) {
+                    // 中央弹窗：输入框
+                    popup.classList.add('center-popup');
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.placeholder = '请输入...';
+                    input.id = 'centerInput';
+                    
+                    const button = document.createElement('button');
+                    button.textContent = '确认';
+                    button.onclick = function() {
+                        handleInput();
+                    };
+                    
+                    input.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            handleInput();
+                        }
+                    });
+                    
+                    content.appendChild(input);
+                    content.appendChild(button);
+                } else {
+                    // 普通弹窗：文字链接
+                    const link = document.createElement('a');
+                    link.href = 'obedience.html';
+                    link.textContent = '服从';
+                    text.appendChild(link);
+                    content.appendChild(text);
+                }
+
+                popup.appendChild(title);
+                popup.appendChild(content);
+                phase2.appendChild(popup);
+            }
+        }
+
+        // 处理输入
+        function handleInput() {
+            const input = document.getElementById('centerInput');
+            const value = input.value.trim();
+            
+            if (value === '始源-频谱-增幅-增幅-联结') {
+                window.location.href = '#'; // 第一个页面
+            } else {
+                window.location.href = '#'; // 第二个页面
+            }
+        }
+
+        // 5秒后切换到第二阶段
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const phase1 = document.getElementById('phase1');
+                const phase2 = document.getElementById('phase2');
+                
+                // 淡出第一阶段
+                phase1.style.opacity = '0';
+                phase1.style.transition = 'opacity 0.5s ease-out';
+                
+                setTimeout(function() {
+                    phase1.style.display = 'none';
+                    // 生成并显示弹窗
+                    generatePopups();
+                    phase2.classList.add('show');
+                }, 500);
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
+

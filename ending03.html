@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>结局03</title>
+    <style>
+        @font-face {
+            font-family: 'MaShanZheng-Regular';
+            src: url('css/MaShanZheng-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: sans-serif;
+            background: linear-gradient(to bottom, black, darkblue, white 70%);
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        section {
+            position: relative;
+            height: auto;
+            min-height: calc(100vh / 3);
+            font-size: 1.5em;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            text-align: center;
+            box-sizing: border-box;
+            margin-bottom: 0;
+            word-wrap: break-word;
+            word-break: break-all;
+            padding: 20px;
+            text-indent: 1.2em;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        section.in-view {
+            opacity: 1;
+        }
+
+        .shake {
+          display: inline-block;
+          animation: shake 0.5s;
+          animation-iteration-count: infinite;
+        }
+
+        @keyframes shake {
+          0% { transform: translate(1px, 1px) rotate(0deg); }
+          10% { transform: translate(-1px, -2px) rotate(-1deg); }
+          20% { transform: translate(-3px, 0px) rotate(1deg); }
+          30% { transform: translate(3px, 2px) rotate(0deg); }
+          40% { transform: translate(1px, -1px) rotate(1deg); }
+          50% { transform: translate(-1px, 2px) rotate(-1deg); }
+          60% { transform: translate(-3px, 1px) rotate(0deg); }
+          70% { transform: translate(3px, 1px) rotate(-1deg); }
+          80% { transform: translate(-1px, -1px) rotate(1deg); }
+          90% { transform: translate(1px, 2px) rotate(0deg); }
+          100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        .blur {
+          filter: blur(2px); /* 调整模糊程度 */
+        }
+        .guqing {
+            font-family: 'MaShanZheng-Regular', cursive;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #eee;
+            text-align: center;
+            padding: 5px;
+            font-size: 0.7em;
+        }
+
+        footer small {
+            display: block;
+        }
+
+        footer span {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            section {
+                font-size: 1.2em;
+                padding: 15px;
+                text-indent: 1em;
+            }
+
+            #section2 {
+                padding-top: 20px;
+            }
+
+            #section3 {
+                color: black !important;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            section {
+                font-size: 1.6m;
+                padding: 50px;
+                text-indent: 1.5em;
+                min-height: calc(100vh / 3);
+                margin-bottom: 80px;
+            }
+
+            #section1 {
+                padding-top: 80px;
+            }
+
+            #section2 {
+                padding-top: 60px;
+            }
+
+            #section3 {
+                padding-top: 80px;
+                color: black !important;
+            }
+        }
+
+        .conclusion-title {
+            font-weight: bold;
+            color: #009dff;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgb(0 102 255 / 78%);
+        }
+
+        .thank-you {
+            color: black;
+            font-size: 1em;
+        }
+
+        .conclusion-container {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .conclusion-container.in-view {
+            opacity: 1;
+        }
+        .red-shake {
+            color: red !important; /* <--- 增加 !important 强制覆盖父元素的内联 black */
+        }       
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <section id="section1">
+        <p class="guqing">凌晨三点四十分，山风裹挟着汗水，浸透的衣服贴在身上，我不禁打了个寒战。</p>
+        <p class="guqing">......</p>
+        <p class="guqing">石台中央，尚念正缓缓坐定。他翻开一本陈旧的书籍，看样子，是要开始 “诵咒” 了。</p>
+        <p class="guqing">......</p>
+        <p class="guqing">李福安和赵惠心的身体微微颤抖，终于开口道：“念念，要不还是算了吧。我们知道你做这一切都是为了我们，为了我们这个小家，但为此牺牲那么多无辜的人，实在是……”</p>
+        <p class="guqing">......</p>
+        <p class="guqing">我深吸一口气，掏出口袋里的符咒。时间不多了，必须阻止尚念！</p>
+        <p class="guqing">无数念头在脑海中飞速闪过，终于，我
+        <span class="shake blur">做</span>
+        <span class="shake blur">出</span>
+        <span class="shake blur">了</span>
+        <span class="shake blur">决</span>
+        <span class="shake blur">定</span>
+        </p>
+
+    </section>
+
+    <section id="section2">
+        <p class="guqing">我听到了奇怪的声音。</p>
+        <p class="guqing">准确地说，那并非是“听”—— 仿佛有什么东西绕过了感官，直接将信息注入我的脑海深处。只一瞬间，我便理解了它想要表达的一切，一种难以言喻的寒意瞬间涌上心头，让我浑身的汗毛都倒竖了起来。</p>
+        <p class="guqing">添福菩萨，是拥有相同能力的 “观测者” 们代代相传，从古至今在地球上使用的名号之一。而室利达摩无相秘法，是某个时期的 “添福菩萨” 不满足于普通的干涉而创造出的禁忌之术，早已超出了 “取乐” 的范畴。</p>
+        <p class="guqing">后世的 “添福菩萨” 们大多都反对这项仪式，但无奈的是，执行方法已经通过古籍在世间传播开来。每当执念过于强大的 “基站” 祈求执行秘法时，祂们也不得不做出回应 —— 就像现在他们回应尚念的这样。</p>
+        <p class="guqing">而就在这仪式即将成功之时，菩萨捕捉到了我的信号：我和尚念竟然都有成为核心基站的潜质。现在，祂开出了一个我无法拒绝的条件 ——</p>
+        <p class="guqing">只要我和尚念都愿意成为基站，祂愿意把我的弟弟还回来，并且治疗李叔赵姨的病。虽然无法满足尚念想要长生的任性，以及…无法帮助已经失去炁（也就是生命能力）的其他香客，但这对我们来说，或许是最好的结局。</p>
+        <p class="guqing">我下定决心、要紧牙关，缓缓走向尚念。</p>
+        <p class="guqing">“尚念，你别激动。我现在要给你讲一个，连我自己都不相信的故事……”</p>
+    </section>
+
+    <section id="section3">
+        <p class="guqing"><span style="color:#000 !important;">...... 自那个可怕的夜晚以来，已经过去了一个月。顾铭回来了，他毫发无损，恢复如初 —— 或者说，他根本没有任何问题，除了对自己失踪的事情一无所知。而李叔和赵姨的身体，也基本恢复了健康。听说在拿到李叔的最新化验单后，医生像看外星人般围着他打量了好几圈，简直不敢相信自己的眼睛。</span></p>
+        <p class="guqing"><span style="color:#000 !important;">至于我和尚念，我们成为了 “同事”。我从没想到事情竟然会发展成这样，更不敢去想我们传输的 “信号” 会否在某一天，成为威胁我们所在世界的元凶。</span></p>
+        <p class="guqing"><span style="color:#000 !important;">说到底，观测者究竟是如何干涉地球的？失踪事件解决了，但巨大的未知仍然横亘在我和真相之间。我决定利用 “核心基站” 的身份，从其他基站那里收集更多有关观测者的线索。</span></p>
+        <p class="guqing"><span style="color:#000 !important;">听说在不久之后，江岳市将爆发一场 “盛大的观测”……</span></p>
+    </section>
+
+    <div class="conclusion-container">
+        <div style="text-align: center; color: black; font-size: 1.2em; padding: 20px; padding-bottom: 70px;">
+            <p class="conclusion-title">调查结束 你<span id="replaceText">查明</span>了事件的真相</p>
+            <p class="thank-you">感谢你体验这部作品！&nbsp;《大学生登山失踪事件》&nbsp;&copy; 2025 Shiroki</p>
+        </div>
+    </div>
+
+    <footer>
+        <small>
+            <span class="first-line">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+            <span class="second-line">Copyright&copy; Shiroki. All Rights Reserved.</span>
+        </small>
+    </footer>
+
+<div class="page-number">
+
+ex/43
+
+</div>
+
+   <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.inview.min.js"></script>
+<script>
+    $(document).ready(function() {
+        
+        let hasReplaced = false; // 标记是否已经替换过
+
+        // 1. 页面加载后，第一个section直接浮现
+        $('#section1').addClass('in-view');
+
+        // 2. 处理section2、section3的浮现逻辑
+        // 同时也负责触发底部文字替换
+        $('section:not(#section1)').on('inview', function(event, isInView) {
+            if (isInView) {
+                $(this).addClass('in-view');
+                
+                // 关键：当section3浮现时，同步让结论区浮现
+                if ($(this).attr('id') === 'section3') {
+                    $('.conclusion-container').addClass('in-view');
+                    
+                    // 仅在 section3 第一次进入视口时，启动文字替换定时器
+                    if (!hasReplaced) {
+                        const replaceTextElement = document.getElementById('replaceText');
+                        
+                        if (replaceTextElement) {
+                            console.log('检测到section3进入视口，5秒后替换文字...');
+                            
+                            // 5秒后执行替换
+                            setTimeout(function() {
+                                if (!hasReplaced) {
+                                    // 替换文字，同时应用 shake 和 red-shake 样式
+                                    replaceTextElement.innerHTML = '<span class="shake red-shake">观测</span>';
+                                    hasReplaced = true;
+                                    console.log('文字已替换为"观测" (红色抖动)');
+                                }
+                            }, 5000);
+                        }
+                    }
+                }
+            } else {
+                // 当 section 离开视口时，移除 'in-view' 类
+                $(this).removeClass('in-view');
+                
+                // 当section3离开视口时，结论区也隐藏（可选，根据需要保留）
+                if ($(this).attr('id') === 'section3') {
+                    $('.conclusion-container').removeClass('in-view');
+                }
+            }
+        });
+
+        // 3. 配置inview插件的触发范围（上下各留50px容差，确保触发自然）
+        $('section').inview({
+            rootMargin: "-50px 0px -50px 0px",
+        });
+
+        // 备注：原始代码中关于底部文字替换的 initTextReplacement() 和 scroll 监听逻辑已被移除，
+        // 因为它们的功能已经合并到上述 $('section:not(#section1)').on('inview', ...) 逻辑中。
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互动留言板</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/favicon_1/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="images/favicon_1/favicon.svg" />
+    <link rel="shortcut icon" href="images/favicon_1/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_1/apple-touch-icon.png" />
+    <link rel="manifest" href="images/favicon_1/site.webmanifest" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#f8fafc',
+                        accent: '#dc2626',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+<script src="js/md5.min.js"></script>
+<style type="text/tailwindcss">
+    @layer utilities {
+        .archive-header {
+            @apply fixed top-0 left-0 right-0 z-50 text-white shadow-md bg-gradient-to-r from-purple-500 to-blue-500;
+        }
+        .archive-header-content {
+            @apply container mx-auto px-4;
+        }
+        .archive-header-top {
+            @apply flex items-center justify-between py-2 transition-all duration-300; /* 原py-3 → 改为py-2，减少顶部区域高度 */
+        }
+        .archive-info {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少中间区域高度 */
+        }
+        .archive-info-lower {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少下段区域高度 */
+        }
+        .return-home-btn {
+            @apply bg-white text-primary px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors;
+        }
+        .logo {
+              @apply h-10 w-auto bg-white p-1 border border-gray-300 
+                 rounded-[8px]; 
+        }
+        .content-wrapper {
+              @apply mt-0 pt-0; /* 移除顶部外边距和内边距，后续通过 JS 动态设置 */
+        }
+        .page-wrapper {
+              @apply mt-0; /* 移除顶部外边距 */
+        }
+        /* 移动端顶部收起状态 */
+        .archive-header.top-hidden .archive-header-top {
+            @apply py-0 h-0 overflow-hidden;
+        }
+    }
+</style>
+<style>
+  /* 强力修复：保证 header 及其子元素不会撑出视口（只针对溢出问题，不破坏布局） */
+  html, body {
+    overflow-x: hidden !important;
+  }
+  
+  /* 防止 fixed header 带来的溢出（保留原有 flex 布局基础） */
+  .archive-header {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+    -webkit-overflow-scrolling: auto !important;
+  }
+  
+  /* 只针对文字内容限制换行，不影响 flex 子元素的布局属性 */
+  .archive-header {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  /* 仅对文字容器设置换行（避免影响图片、按钮） */
+  .archive-header .text-center, /* 中间文字区域 */
+  .archive-header .return-home-btn span, /* 按钮文字 */
+  .archive-header div {
+    word-break: break-word !important;
+    white-space: normal !important;
+  }
+  
+  /* 图片保留 inline-block 特性，适配 flex 布局 */
+  .archive-header img {
+    max-width: 48px !important; /* 根据 Logo 实际尺寸调整 */
+    height: auto !important;
+    display: inline-block !important; /* 恢复 inline-block，配合 flex 横向对齐 */
+  }
+  
+  /* 保留返回按钮的 flex 布局（原样式是 flex items-center） */
+  .archive-header .return-home-btn {
+    display: flex !important; /* 强制保留 flex，确保 icon 和文字横向对齐 */
+    white-space: nowrap !important; /* 按钮内 icon+文字不换行 */
+  }
+  
+  /* 内边距优化，避免内容贴边 */
+  .archive-header-content {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    box-sizing: border-box !important;
+  }
+</style>
+  
+<style>
+.archive-header,
+.archive-header * {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+    word-break: break-all !important;
+}
+
+@media (min-width: 768px) {
+  .web-content {
+    height: calc(452px - 42px) !important;
+  }
+  .archive-header-top {
+    gap: 1rem !important; /* 元素之间留合理间距 */
+  }
+  /* 中间文字区域：自适应宽度，超出换行 */
+  .archive-header-top .hidden.md:block {
+    flex: 1 !important; /* 占满剩余宽度 */
+    min-width: 0 !important; /* 允许缩小 */
+    white-space: normal !important; /* 超出换行 */
+  }
+}
+
+/* 手机端强制加长容器，确保内容完整（保持与 about 页一致） */
+@media (max-width: 767px) {
+  .archive-header-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    box-sizing: border-box !important;
+}
+.archive-header-top {
+    flex-wrap: wrap !important;
+}
+.archive-header-top > * {
+    min-width: 0 !important;
+}
+  .web-content {
+    height: auto !important; /* 容器高度随内容自动加长 */
+    min-height: 500px; /* 确保足够高度容纳所有文字 */
+    padding: 20px 15px !important; /* 增加内边距，避免拥挤 */
+  }
+  
+  .text-sm {
+    font-size: 15px !important; /* 适当放大文字 */
+  }
+  
+  .leading-relaxed {
+    line-height: 1.9 !important; /* 增加行高，提升可读性 */
+  }
+  
+  .text-2xl {
+    font-size: 1.4rem !important; /* 标题适配手机 */
+  }
+
+  /* 让整页占满视口并禁止横向滚动（参考 20080410 页面） */
+  body {
+    overflow-x: hidden !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* 顶部固定条内容对齐，避免 logo / 按钮挤出 */
+  .archive-header-content {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .archive-header-top {
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .archive-header-top > div:first-child,
+  .archive-header-top > a:last-child {
+    flex-shrink: 0 !important;
+  }
+
+  /* 主容器铺满宽度，移除圆角/阴影避免露出背景 */
+  .content-wrapper,
+  .page-wrapper {
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* 顶部导航 / 内容区 / 页脚在手机端占满 */
+  .main-content-2005,
+  .navbar-2005,
+  .section-footer-2005 {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* 表单顶部条 - 移动端使用 title-mb */
+  .form-title-img {
+    display: none !important;
+  }
+  .form-title-img-mb {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+  
+  .form-title-img-mb.hidden {
+    display: block !important;
+  }
+  
+  /* 图片容器 - 移动端占满宽度，突破padding */
+  .contact-form-container > div:first-child {
+    margin-left: -15px !important;
+    margin-right: -15px !important;
+    margin-top: -15px !important;
+    width: calc(100% + 30px) !important;
+  }
+  
+  /* 表单容器 - 移动端样式 */
+  .contact-form-container {
+    width: 95% !important;
+    max-width: none !important;
+    margin-top: 30px !important;
+    margin-bottom: 30px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 15px !important;
+  }
+  
+  /* 姓名输入区域 - 移动端垂直布局 */
+  .name-input-wrapper {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    margin-bottom: 15px !important;
+    margin-left: 0 !important;
+  }
+  
+  .name-label-wrapper {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-bottom: 8px !important;
+    display: flex;
+    align-items: center;
+  }
+  
+  .name-input-field {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-top: 5px;
+  }
+  
+  /* 留言内容输入区域 - 移动端垂直布局 */
+  .message-input-wrapper {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    margin-bottom: 15px !important;
+    margin-left: 0 !important;
+  }
+  
+  .message-label-wrapper {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-bottom: 8px !important;
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  .message-textarea-field {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-top: 5px;
+  }
+  
+  /* 错误提示区域 */
+  #errorMessage {
+    margin: 10px 0 !important;
+  }
+  
+  /* 按钮区域 - 移动端 */
+  .button-wrapper {
+    gap: 40px !important;
+    margin-top: 20px;
+  }
+}
+/* 固定页脚到底部 (基于参考页面) */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.content-wrapper {
+    flex: 1;
+}
+footer {
+    flex-shrink: 0;
+}
+/* 按钮浮雕样式 - 2005年代风格 */
+#submitBtn, #resetBtn {
+  background-color: #808080 !important;
+  color: white !important;
+  border: 2px outset #808080 !important;
+  border-top-color: #ddd !important;
+  border-left-color: #ddd !important;
+  border-right-color: #555 !important;
+  border-bottom-color: #555 !important;
+  cursor: pointer;
+  padding: 6px 16px;
+  font-size: 14px;
+  font-family: sans-serif;
+}
+
+/* hover凹陷效果 */
+#submitBtn:hover, #resetBtn:hover {
+  border-style: inset !important;
+  border-top-color: #555 !important;
+  border-left-color: #555 !important;
+  border-right-color: #ddd !important;
+  border-bottom-color: #ddd !important;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+</style>
+</head>
+<body class="bg-gray-100">
+    <header class="archive-header" id="archiveHeader">
+        <div class="archive-header-top archive-header-content">
+            <div class="flex items-center">
+                <img src="images/webtimetower.PNG" 
+                     alt="WebTimeTower Logo" 
+                     class="logo">
+            </div>
+            <div class="hidden md:block text-center text-[19px] text-white font-bold text-primary"> 
+                <div>您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<span class="underline">2005年10月13日</span>&nbsp;&nbsp;的网页存档</div>
+            </div>
+            <a href="webtimetower.html" class="return-home-btn flex items-center" id="returnHomeBtn">
+                  <i class="fa fa-home mr-2"></i>返回首页
+            </a>
+        </div>
+        <div class="archive-info archive-header-content md:hidden">
+            <div class="text-center text-white font-bold break-words"> 
+            您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<br><span class="underline">2005年10月13日</span>&nbsp;&nbsp;的网页存档
+            </div>
+        </div> 
+        <div class="archive-info-lower archive-header-content md:hidden">
+            <div class="text-center text-sm font-semibold text-white" id="tower-placeholder-mobile">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+        <div class="archive-info-lower archive-header-content hidden md:block">
+            <div class="text-center text-[16px] font-bold text-white" id="tower-placeholder-pc">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+    </header>
+<div class="content-wrapper pt-[138px]"> 
+ <div class="page-wrapper max-w-[960px] w-full min-w-[320px] mx-auto flex flex-col bg-gray-100 rounded-lg shadow-md">
+  <div class="navbar-2005">
+  <div class="navbar-2005-inner">
+    <nav>
+      <a href="neweratv.com_20051013.html">首页</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_tvguide.html">电视指南</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_news.html">新闻</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_show.html">综艺</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_finance.html">财经</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_music.html">音乐</a>
+      <span>|</span>
+      <a href="#" class="ad-link">电视剧</a>
+      <span>|</span>
+      <a href="#" class="ad-link">少儿</a>
+      <span>|</span>
+      <a href="#" class="ad-link">体育</a>
+      <span>|</span>
+      <a href="neweratv.com_adservice.html">广告服务</a>
+    </nav>
+  </div>
+</div>
+
+<div class="main-content-2005">
+  <div class="top-bar-2005">
+    <div class="top-bar-blue"></div>
+    <div class="top-bar-orange">
+        <img src="images/logo.png" 
+             alt="新纪元电视台 Logo" 
+        >
+    </div>
+    <div class="top-bar-search">
+      <input type="text" placeholder="请输入搜索内容…" class="search-input-2005" id="siteSearchInput" />
+      <button class="search-btn-2005" id="siteSearchBtn">站内搜索</button>
+    </div>
+  </div>
+
+<div class="w-[100%] h-[auto] mx-auto bg-white overflow-hidden">
+  <img src="images/messageboard_banner.png" class="w-full"></div> 
+  
+  <div class="bg-gray-100 mx-auto my-8 border-[1px] border-[#666679] contact-form-container" style="width: 90%; max-width: 700px;">
+    <div class="w-full h-12">
+      <img src="images/title.png" 
+             alt="留言板" 
+             class="form-title-img">
+      <img src="images/title-mb.png" 
+             alt="留言板" 
+             class="form-title-img-mb hidden">
+    </div>
+    
+    <div class="p-6">
+      <form id="contactForm">
+        <div class="mb-4 flex items-center name-input-wrapper">
+          <div class="name-label-wrapper" style="width: 130px; display: flex; align-items: center; margin-left: 30px;">
+            <span style="color: #666; margin-right: 8px; font-size: 12px;">▶</span>
+            <label for="contactName" class="text-gray-900">姓名：</label>
+          </div>
+          <input type="text" id="contactName" name="name" maxlength="8" 
+                 class="border border-gray-400 bg-white px-2 py-1 text-gray-900 name-input-field"
+                 style="margin-left: 30px; width: calc(100% - 160px); max-width: 400px;">
+        </div>
+        
+        <div class="mb-6 flex items-start message-input-wrapper">
+          <div class="message-label-wrapper" style="width: 130px; display: flex; align-items: flex-start; margin-left: 30px;">
+            <span style="color: #666; margin-right: 8px; font-size: 12px; margin-top: 4px;">▶</span>
+            <label for="contactMessage" class="text-gray-900 mt-1">留言内容：</label>
+          </div>
+          <textarea id="contactMessage" name="message" rows="8" cols="50" maxlength="100"
+                class="border border-gray-400 bg-white px-2 py-1 text-gray-900 resize-y message-textarea-field"
+                style="margin-left: 30px; width: calc(100% - 160px); max-width: 400px; min-height: 120px;"></textarea>
+        </div>
+        
+        
+        <div id="errorMessage" class="text-center text-red-600 mb-4" style="min-height: 24px; visibility: hidden;"></div>
+        
+        <div class="flex justify-center button-wrapper" style="gap: 80px;">
+          <button type="submit" id="submitBtn">提交</button>
+          <button type="button" id="resetBtn">重置</button>
+          <a href="neweratv.com_chatroom.html" id="backToChatroomBtn" class="hidden" style="text-decoration: none;">
+            <button type="button" id="backToChatroom" style="background-color: #808080; color: white; border: 2px outset #808080; border-top-color: #ddd; border-left-color: #ddd; border-right-color: #555; border-bottom-color: #555; cursor: pointer; padding: 6px 16px; font-size: 14px; font-family: sans-serif;">回到当前消息</button>
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="section-footer-2005">
+  <p>
+    <a href="neweratv.com_about.html">关于我们</a> |
+    <a href="neweratv.com_adservice.html">广告服务</a> |
+    <a href="#" class="ad-link">版权声明</a> |
+    <a href="neweratv.com_contact.html">联系我们</a>
+  </p>
+  
+  <div class="footer-divider"></div>
+
+  <p class="footer-copy">新纪元电视台版权所有</p>
+  <p class="footer-note">
+    建议使用：1024×768分辨率，16位以上颜色、<br>
+    Netscape6.0、IE5.0以上版本浏览器和中文大字符集
+  </p>
+    </div>
+  </div>
+</div>
+<footer class="mt-4 text-center text-sm">
+  <small>
+    <span class="first-line block">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+    <span class="second-line block">Copyright&copy; Shiroki. All Rights Reserved.</span>
+  </small>
+</footer>
+
+<div class="page-number">
+
+11/43
+
+</div>
+
+<script src="js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('contactForm');
+  const nameInput = document.getElementById('contactName');
+  const messageInput = document.getElementById('contactMessage');
+  const submitBtn = document.getElementById('submitBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const errorMessage = document.getElementById('errorMessage');
+  const backToChatroomBtn = document.getElementById('backToChatroomBtn');
+  
+  // 检查是否已有聊天记录，如果有则显示"回到当前消息"按钮
+  function checkChatHistory() {
+    const chatHistory = localStorage.getItem('chatroom_messages');
+    if (chatHistory && JSON.parse(chatHistory).length > 0) {
+      backToChatroomBtn.classList.remove('hidden');
+    } else {
+      backToChatroomBtn.classList.add('hidden');
+    }
+  }
+  
+  // 页面加载时检查
+  checkChatHistory();
+  
+  // 提交按钮点击事件
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const name = nameInput.value.trim();
+    const message = messageInput.value.trim();
+    
+    // 检查字符限制
+    const nameTooLong = name.length > 8;
+    const messageTooLong = message.length > 100;
+    
+    if (nameTooLong || messageTooLong) {
+      errorMessage.textContent = '姓名限制8个字符，留言内容限制100个字符,请修改后再次输入！';
+      errorMessage.style.visibility = 'visible';
+      return;
+    }
+    
+    // 检查是否已有聊天记录
+    const chatHistory = localStorage.getItem('chatroom_messages');
+    if (chatHistory && JSON.parse(chatHistory).length > 0) {
+      errorMessage.textContent = '您当前已有聊天页面，请勿重复提交';
+      errorMessage.style.visibility = 'visible';
+      return;
+    }
+    
+    // 如果验证通过，隐藏错误消息
+    errorMessage.style.visibility = 'hidden';
+    
+    if (!name || !message) {
+      errorMessage.textContent = '请填写姓名和留言内容';
+      errorMessage.style.visibility = 'visible';
+      return;
+    }
+    
+    // 保存用户名到localStorage
+    localStorage.setItem('contact_user_name', name);
+    
+    // 创建第一条消息对象
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const timeStr = `<${hours}:${minutes}>`;
+    
+    const firstMessage = {
+      sender: name,
+      content: message,
+      time: timeStr,
+      timestamp: now.getTime()
+    };
+    
+    // 保存到localStorage
+    localStorage.setItem('chatroom_messages', JSON.stringify([firstMessage]));
+    
+    // 跳转到chatroom页面
+    window.location.href = 'neweratv.com_chatroom.html';
+  });
+  
+  // 重置按钮点击事件
+  resetBtn.addEventListener('click', function() {
+    nameInput.value = '';
+    messageInput.value = '';
+    errorMessage.textContent = '';
+    errorMessage.style.visibility = 'hidden';
+  });
+  
+  // 添加按钮hover效果
+  const backToChatroom = document.getElementById('backToChatroom');
+  if (backToChatroom) {
+    backToChatroom.addEventListener('mouseenter', function() {
+      this.style.borderStyle = 'inset';
+      this.style.borderTopColor = '#555';
+      this.style.borderLeftColor = '#555';
+      this.style.borderRightColor = '#ddd';
+      this.style.borderBottomColor = '#ddd';
+      this.style.boxShadow = 'inset 1px 1px 2px rgba(0, 0, 0, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.2)';
+    });
+    backToChatroom.addEventListener('mouseleave', function() {
+      this.style.borderStyle = 'outset';
+      this.style.borderTopColor = '#ddd';
+      this.style.borderLeftColor = '#ddd';
+      this.style.borderRightColor = '#555';
+      this.style.borderBottomColor = '#555';
+      this.style.boxShadow = 'none';
+    });
+  }
+});
+</script>
+</body>
+</html>

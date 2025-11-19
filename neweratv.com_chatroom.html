@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互动留言板</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/favicon_1/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="images/favicon_1/favicon.svg" />
+    <link rel="shortcut icon" href="images/favicon_1/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_1/apple-touch-icon.png" />
+    <link rel="manifest" href="images/favicon_1/site.webmanifest" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#f8fafc',
+                        accent: '#dc2626',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+<script src="js/md5.min.js"></script>
+<style type="text/tailwindcss">
+    @layer utilities {
+        .archive-header {
+            @apply fixed top-0 left-0 right-0 z-50 text-white shadow-md bg-gradient-to-r from-purple-500 to-blue-500;
+        }
+        .archive-header-content {
+            @apply container mx-auto px-4;
+        }
+        .archive-header-top {
+            @apply flex items-center justify-between py-2 transition-all duration-300; /* 原py-3 → 改为py-2，减少顶部区域高度 */
+        }
+        .archive-info {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少中间区域高度 */
+        }
+        .archive-info-lower {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500; /* 原py-2 → 改为py-1，减少下段区域高度 */
+        }
+        .return-home-btn {
+            @apply bg-white text-primary px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors;
+        }
+        .logo {
+              @apply h-10 w-auto bg-white p-1 border border-gray-300 
+                 rounded-[8px]; 
+        }
+        .content-wrapper {
+              @apply mt-0 pt-0; /* 移除顶部外边距和内边距，后续通过 JS 动态设置 */
+        }
+        .page-wrapper {
+              @apply mt-0; /* 移除顶部外边距 */
+        }
+        /* 移动端顶部收起状态 */
+        .archive-header.top-hidden .archive-header-top {
+            @apply py-0 h-0 overflow-hidden;
+        }
+    }
+</style>
+<style>
+  /* 强力修复：保证 header 及其子元素不会撑出视口（只针对溢出问题，不破坏布局） */
+  html, body {
+    overflow-x: hidden !important;
+  }
+  
+  /* 防止 fixed header 带来的溢出（保留原有 flex 布局基础） */
+  .archive-header {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+    -webkit-overflow-scrolling: auto !important;
+  }
+  
+  /* 只针对文字内容限制换行，不影响 flex 子元素的布局属性 */
+  .archive-header {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  /* 仅对文字容器设置换行（避免影响图片、按钮） */
+  .archive-header .text-center, /* 中间文字区域 */
+  .archive-header .return-home-btn span, /* 按钮文字 */
+  .archive-header div {
+    word-break: break-word !important;
+    white-space: normal !important;
+  }
+  
+  /* 图片保留 inline-block 特性，适配 flex 布局 */
+  .archive-header img {
+    max-width: 48px !important; /* 根据 Logo 实际尺寸调整 */
+    height: auto !important;
+    display: inline-block !important; /* 恢复 inline-block，配合 flex 横向对齐 */
+  }
+  
+  /* 保留返回按钮的 flex 布局（原样式是 flex items-center） */
+  .archive-header .return-home-btn {
+    display: flex !important; /* 强制保留 flex，确保 icon 和文字横向对齐 */
+    white-space: nowrap !important; /* 按钮内 icon+文字不换行 */
+  }
+  
+  /* 内边距优化，避免内容贴边 */
+  .archive-header-content {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    box-sizing: border-box !important;
+  }
+</style>
+
+<style>
+@media (min-width: 768px) {
+  .web-content {
+    height: calc(452px - 42px) !important;
+  }
+}
+
+/* 手机端强制加长容器，确保内容完整 */
+@media (max-width: 767px) {
+  .web-content {
+    height: auto !important; /* 容器高度随内容自动加长 */
+    min-height: 500px; /* 确保足够高度容纳所有文字 */
+    padding: 20px 15px !important; /* 增加内边距，避免拥挤 */
+  }
+  
+  .text-sm {
+    font-size: 15px !important; /* 适当放大文字 */
+  }
+  
+  .leading-relaxed {
+    line-height: 1.9 !important; /* 增加行高，提升可读性 */
+  }
+  
+  .text-2xl {
+    font-size: 1.4rem !important; /* 标题适配手机 */
+  }
+
+  /* —— 顶部固定条（移动端）对齐修复，仅影响手机端 —— */
+  .archive-header-content {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .archive-header-top {
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .archive-header-top > div:first-child,
+  .archive-header-top > a:last-child {
+    flex-shrink: 0 !important;
+  }
+}
+/* 固定页脚到底部 */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.content-wrapper {
+    flex: 1;
+}
+footer {
+    flex-shrink: 0;
+}
+/* 按钮浮雕样式 - 2005年代风格 */
+#submitBtn, #resetBtn {
+  background-color: #808080 !important;
+  color: white !important;
+  border: 2px outset #808080 !important;
+  border-top-color: #ddd !important;
+  border-left-color: #ddd !important;
+  border-right-color: #555 !important;
+  border-bottom-color: #555 !important;
+  cursor: pointer;
+  padding: 6px 16px;
+  font-size: 14px;
+  font-family: sans-serif;
+}
+
+/* hover凹陷效果 */
+#submitBtn:hover, #resetBtn:hover {
+  border-style: inset !important;
+  border-top-color: #555 !important;
+  border-left-color: #555 !important;
+  border-right-color: #ddd !important;
+  border-bottom-color: #ddd !important;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 聊天室样式 */
+.chatroom-content-wrapper {
+  background: #f5f5f5;
+  width: 100%;
+}
+
+/* 信息区块占满高度 */
+.w-\[100\%\].h-\[auto\] {
+  display: flex;
+  flex-direction: column;
+}
+
+.chatroom-messages {
+  /* 早期互联网风格滚动条 - 强制显示 */
+  overflow-y: scroll !important;
+  overflow-x: hidden !important;
+  scrollbar-width: auto;
+  scrollbar-color: #c0c0c0 #e0e0e0;
+  /* 强制显示滚动条轨道 */
+  scrollbar-gutter: stable both-edges;
+  /* 确保有明确的高度限制 */
+  max-height: 100%;
+  height: 100%;
+  /* 强制显示滚动条（即使内容少） */
+  min-height: 300px;
+}
+
+/* 红色闪屏效果 */
+#redSplashScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #9e1d1d;
+  z-index: 99999;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+/* WebKit浏览器滚动条样式 - 早期互联网风格 */
+.chatroom-messages::-webkit-scrollbar {
+  width: 16px;
+}
+
+.chatroom-messages::-webkit-scrollbar-track {
+  background: #e0e0e0;
+  border: 1px solid #808080;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #808080;
+  border-bottom: 1px solid #808080;
+  box-shadow: inset -1px -1px 0 #ffffff;
+}
+
+.chatroom-messages::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border: 1px solid #808080;
+  border-top: 1px solid #000000;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  box-shadow: inset 1px 1px 0 #808080;
+  min-height: 30px;
+}
+
+.chatroom-messages::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+.chatroom-messages::-webkit-scrollbar-button {
+  width: 16px;
+  height: 16px;
+  background: #c0c0c0;
+  border: 1px solid #808080;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #808080;
+  border-bottom: 1px solid #808080;
+  box-shadow: inset -1px -1px 0 #ffffff;
+}
+
+.chatroom-messages::-webkit-scrollbar-button:hover {
+  background: #a0a0a0;
+}
+
+.chatroom-messages::-webkit-scrollbar-button:active {
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  box-shadow: inset 1px 1px 0 #000000;
+}
+
+/* 滚动按钮箭头 */
+.chatroom-messages::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23333' d='M4 2L1 5h6L4 2z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.chatroom-messages::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23333' d='M4 6l3-3H1l3 3z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.message-item {
+  padding: 4px 0;
+}
+
+.message-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.message-content {
+  word-wrap: break-word;
+}
+
+/* 发送按钮样式 - 2005年代浮雕风格 */
+.send-btn {
+  background-color: #808080 !important;
+  color: white !important;
+  border: 2px outset #808080 !important;
+  border-top-color: #ddd !important;
+  border-left-color: #ddd !important;
+  border-right-color: #555 !important;
+  border-bottom-color: #555 !important;
+  cursor: pointer;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-family: sans-serif;
+}
+
+.send-btn:hover {
+  border-style: inset !important;
+  border-top-color: #555 !important;
+  border-left-color: #555 !important;
+  border-right-color: #ddd !important;
+  border-bottom-color: #ddd !important;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 移动端布局调整 */
+@media (max-width: 767px) {
+  /* 表单顶部条 - 移动端使用 title-mb */
+  .form-title-img {
+    display: none !important;
+  }
+  .form-title-img-mb {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+  
+  .form-title-img-mb.hidden {
+    display: block !important;
+  }
+  
+  /* 图片容器 - 移动端占满宽度，突破padding */
+  .contact-form-container > div:first-child {
+    margin-left: -15px !important;
+    margin-right: -15px !important;
+    margin-top: -15px !important;
+    width: calc(100% + 30px) !important;
+  }
+  
+  /* 表单容器 - 移动端样式 */
+  .contact-form-container {
+    width: 95% !important;
+    max-width: none !important;
+    margin-top: 30px !important;
+    margin-bottom: 30px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 15px !important;
+  }
+  
+  /* 聊天室内容 - 移动端 */
+  .chatroom-content-wrapper {
+    border-left: none !important;
+    border-right: none !important;
+  }
+  
+  /* 消息显示区域 - 移动端 */
+  .chatroom-messages {
+    height: 300px !important;
+    padding: 12px !important;
+    overflow-y: scroll !important;
+  }
+  
+  /* 底部输入区域 - 移动端 */
+  .chatroom-input {
+    flex-wrap: wrap !important;
+    padding: 10px !important;
+  }
+  
+  .chatroom-input label {
+    width: 60px !important;
+    flex-shrink: 0;
+  }
+  
+  #chatMessage {
+    flex: 1 !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+  
+  .send-btn {
+    width: auto !important;
+    margin-left: auto;
+  }
+}
+</style>
+</head>
+<body class="bg-gray-100">
+  <!-- 红色闪屏元素 -->
+  <div id="redSplashScreen" style="display: none;"></div>
+    <!-- 顶部固定条 -->
+    <header class="archive-header" id="archiveHeader">
+        <!-- 顶部区域：Logo和返回按钮 -->
+        <div class="archive-header-top archive-header-content">
+            <div class="flex items-center">
+                <img src="images/webtimetower.PNG" 
+                     alt="WebTimeTower Logo" 
+                     class="logo">
+            </div>
+            <!-- PC端中间信息区域 -->
+            <div class="hidden md:block text-center text-[19px] text-white font-bold text-primary"> 
+                <div>您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<span class="underline current-date">----年--月--日</span>&nbsp;&nbsp;的网页存档</div>
+            </div>
+            <a href="webtimetower.html" class="return-home-btn flex items-center" id="returnHomeBtn">
+                  <i class="fa fa-home mr-2"></i>返回首页
+            </a>
+        </div>
+        <!-- 移动端中间信息区域（隐藏） -->
+        <div class="archive-info archive-header-content md:hidden">
+            <div class="text-center text-white font-bold">
+            您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<br><span class="underline current-date">----年--月--日</span>&nbsp;&nbsp;的网页存档
+            </div>
+        </div>
+        <!-- 移动端下段文字区域（隐藏） -->
+        <div class="archive-info-lower archive-header-content md:hidden">
+            <div class="text-center text-sm font-semibold text-white" id="tower-placeholder-mobile">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+        <!-- PC端下段文字区域 -->
+        <div class="archive-info-lower archive-header-content hidden md:block">
+            <div class="text-center text-[16px] font-bold text-white" id="tower-placeholder-pc">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+    </header>
+<div class="content-wrapper pt-[138px] flex flex-col flex-1" style="min-height: 0;"> <!-- header高度+margin -->
+ <div class="page-wrapper max-w-[960px] w-full min-w-[320px] mx-auto flex flex-col flex-1 bg-gray-100 rounded-lg shadow-md" style="min-height: 0;">
+  <!-- 顶部黑色导航条 -->
+<div class="navbar-2005">
+  <div class="navbar-2005-inner">
+    <nav>
+      <a href="neweratv.com_20051013.html">首页</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_tvguide.html">电视指南</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_news.html">新闻</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_show.html">综艺</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_finance.html">财经</a>
+      <span>|</span>
+      <a href="neweratv.com_20051013_music.html">音乐</a>
+      <span>|</span>
+      <a href="#" class="ad-link">电视剧</a>
+      <span>|</span>
+      <a href="#" class="ad-link">少儿</a>
+      <span>|</span>
+      <a href="#" class="ad-link">体育</a>
+      <span>|</span>
+      <a href="neweratv.com_adservice.html">广告服务</a>
+    </nav>
+  </div>
+</div>
+
+<div class="main-content-2005 flex flex-col flex-1" style="min-height: 0;">
+  <!-- 顶部蓝条 -->
+  <div class="top-bar-2005 flex-shrink-0">
+    <div class="top-bar-blue"></div>
+    <div class="top-bar-orange">
+        <img src="images/logo.png" 
+             alt="新纪元电视台 Logo" 
+        >
+    </div>
+    <div class="top-bar-search">
+      <input type="text" placeholder="请输入搜索内容…" class="search-input-2005" id="siteSearchInput" />
+      <button class="search-btn-2005" id="siteSearchBtn">站内搜索</button>
+    </div>
+  </div>
+
+<!-- 信息区块 -->
+<div class="w-[100%] mx-auto bg-white overflow-hidden flex flex-col flex-1" style="min-height: 0;">
+  <!-- 顶部橙色条 -->
+  <img src="images/messageboard_banner.png"></div>
+  
+  <!-- 留言板容器 - 占满整个信息区块 -->
+  <div class="flex flex-col flex-1 w-full" style="min-height: 0;">
+    <!-- 表单顶部条 - PC端 -->
+    <div class="w-full h-12 flex-shrink-0" style="margin-bottom: 0; padding-bottom: 0;">
+      <img src="images/title.png" 
+             alt="留言板" 
+             class="form-title-img">
+      <img src="images/title-mb.png" 
+             alt="留言板" 
+             class="form-title-img-mb hidden">
+    </div>
+    
+    <!-- 聊天室内容 -->
+    <div class="chatroom-content-wrapper flex flex-col flex-1 w-full" style="border-left: none; border-right: none; border-top: none; border-bottom: none; margin-top: 0; min-height: 0;">
+      <!-- 消息显示区域 -->
+      <div class="chatroom-messages bg-white p-4" id="chatroomMessages" style="overflow-y: scroll !important; overflow-x: hidden !important; border-left: 1px solid #e0e0e0; border-right: 1px solid #e0e0e0; border-top: none; position: relative; flex: 1 1 0; min-height: 400px;">
+        <!-- 消息将从localStorage加载，初始为空 -->
+      </div>
+      
+      <!-- 底部输入区域 -->
+      <div class="chatroom-input bg-gray-300 px-4 py-2 flex items-center gap-2 flex-shrink-0" style="border-top: 1px solid #999;">
+        <label for="chatMessage" class="text-black">信息：</label>
+        <input type="text" id="chatMessage"
+               class="flex-1 border border-gray-400 bg-white px-2 py-1 text-black"
+               style="max-width: 300px;">
+        <button type="button" id="sendBtn" class="send-btn">发送</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 页脚导航 -->
+<div class="section-footer-2005">
+  <p>
+     <a href="neweratv.com_about.html">关于我们</a> |
+    <a href="neweratv.com_adservice.html">广告服务</a> |
+    <a href="#" class="ad-link">版权声明</a> |
+    <a href="neweratv.com_contact.html">联系我们</a>
+  </p>
+  
+  <!-- 插入分隔线 -->
+  <div class="footer-divider"></div>
+  
+  <p class="footer-copy">新纪元电视台版权所有</p>
+  <p class="footer-note">
+    建议使用：1024×768分辨率，16位以上颜色、<br>
+    Netscape6.0、IE5.0以上版本浏览器和中文大字符集
+  </p>
+    </div>
+  </div>
+</div>
+<div class="hidden md:block h-[calc(100vh-800px)]"></div>
+<footer class="mt-4 text-center text-sm">
+  <small>
+    <span class="first-line block">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+    <span class="second-line block">Copyright&copy; Shiroki. All Rights Reserved.</span>
+  </small>
+</footer>
+
+<div class="page-number">
+
+12/43
+
+</div>
+
+<script src="js/main.js"></script>
+<script>
+// 生成「年+月+日」格式（用于网页存档日期）
+function getCurrentDate() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const day = now.getDate().toString().padStart(2, '0');
+  return `${year}年${month}月${day}日`;
+}
+
+// 确保页面完全加载（包括移动端元素）后执行
+window.addEventListener('load', function() {
+  // 1. 替换基站名单标题的日期（ID 定位）
+  const titleDate = document.getElementById('current-date');
+  if (titleDate) {
+    titleDate.textContent = getCurrentYearMonth();
+  }
+
+  // 2. 替换网页存档的日期（类名定位，选中所有 current-date 元素，包括移动端）
+  const archiveDates = document.querySelectorAll('.current-date');
+  const currentDateText = getCurrentDate();
+  archiveDates.forEach(dateElement => {
+    dateElement.textContent = currentDateText;
+    // 强制添加下划线样式，确保移动端显示
+    dateElement.style.textDecoration = 'underline';
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const messagesContainer = document.getElementById('chatroomMessages');
+  const messageInput = document.getElementById('chatMessage');
+  const sendBtn = document.getElementById('sendBtn');
+  
+  // 从localStorage获取用户在contact页面输入的姓名
+  let userName = localStorage.getItem('contact_user_name') || '姓名';
+  
+  // 加载聊天记录
+  function loadChatHistory() {
+    const chatHistory = localStorage.getItem('chatroom_messages');
+    const fromGaojingranFile = localStorage.getItem('from_gaojingran_file') === 'true';
+    
+    // 如果从特定页面跳转过来，清除标记并显示新消息序列
+    if (fromGaojingranFile) {
+      localStorage.removeItem('from_gaojingran_file');
+      // 保留之前的聊天记录，但添加新的消息序列
+      if (chatHistory) {
+        const messages = JSON.parse(chatHistory);
+        messagesContainer.innerHTML = '';
+        messages.forEach(function(msg) {
+          const isImage = msg.isImage || false;
+          renderMessage(msg.sender, msg.content, msg.time, false, isImage);
+        });
+      }
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      
+      // 显示高景然的新消息序列
+      showGaojingranMessages();
+      return;
+    }
+    
+    if (chatHistory) {
+      const messages = JSON.parse(chatHistory);
+      messagesContainer.innerHTML = '';
+      const hasAutoReply = messages.some(function(msg) {
+        return msg.sender.indexOf('新纪元电视台') !== -1;
+      });
+      
+      messages.forEach(function(msg) {
+        const isImage = msg.isImage || false;
+        renderMessage(msg.sender, msg.content, msg.time, false, isImage);
+      });
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      
+      // 如果只有一条用户消息且还没有自动回复，1.5秒后显示
+      if (messages.length === 1 && !hasAutoReply && messages[0].sender.indexOf('新纪元电视台') === -1) {
+        setTimeout(function() {
+          showAutoReply();
+        }, 1500);
+      }
+    }
+  }
+  
+  // 显示高景然的新消息序列
+function showGaojingranMessages() {
+    const timeStr1 = getCurrentTimeStr();
+    addMessage('高景然', '我叫高景然，相信你已经知道我是什么人了。没错，那则广告就是我负责投放的。《菁英会客厅》不会真的播出，那只是个诱饵，让你在好奇心驱使下主动踏入我们的领域。成为基站的第一步，就是理解并接受"他们"的存在。那些无法理解，或是心智无法承受真相的人，都会被清除相关记忆。现在，恭喜你顺利通过了第一步。', timeStr1, true, false);
+
+    // 5秒后显示第二条
+    setTimeout(function() {
+        const timeStr2 = getCurrentTimeStr();
+        addMessage('高景然', '为了欢迎你的加入，我们还为你精心准备了一条专用的咒语。那五个词语，已经被他们赋予了神力。使用之后，你就能在一瞬间将频谱增幅到超广域范围，控制并读取范围内所有基站的思想。所有基站，都将听候你的差遣！\n\n我们对你很期待。', timeStr2, true, false);
+
+        // 5秒后：不再显示红色闪屏，直接设置标记，等待用户操作
+        setTimeout(function() {
+            // 立即设置等待标记，并设置 gaojingran_mode
+            // 此时对话停止，等待用户点击输入框
+            localStorage.setItem('awaiting_user_prompt', 'true');
+            localStorage.setItem('gaojingran_mode', 'true');
+            
+        }, 5000);
+    }, 5000);
+}
+  
+  // 显示自动回复
+  function showAutoReply() {
+    const chatHistory = localStorage.getItem('chatroom_messages');
+    const messages = chatHistory ? JSON.parse(chatHistory) : [];
+    
+    // 检查是否已经有自动回复
+    const hasAutoReply = messages.some(function(msg) {
+      return msg.sender.indexOf('新纪元电视台') !== -1;
+    });
+    
+    if (!hasAutoReply) {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const timeStr = `<${hours}:${minutes}>`;
+      
+      const autoReplyContent = `你好。\n我是一名新纪元电视台的老员工。前些日子，我偶然间翻到了这个已经废弃的新纪元官网。本是用来缅怀旧事，却赫然发现自己的照片出现在某节目主创团队的报道中——文章还引用了我的评价，但我却完全不记得有过这段经历。\n\n我在新纪元工作多年，经手项目虽不敢说全部记得，但至少应有大致印象。我可以断言：我没有任何参与过此节目组的记忆。\n\n此事让我耿耿于怀。此后，我调查了新纪元在网络上的零星痕迹——包括这个官网——试图找回与这段缺失记忆相关的线索。\n\n不过，个人力量终究有限。还好我在职时也曾负责新纪元官网的广告合作业务，保留着留言板控制权限，才能将自动回复改成这段话。\n\n能看到这里，说明你对这个官网有兴趣。无论是一时兴起，还是另有目的，我愿与你合作、各取所需。电视台停办时，出于安全考虑，网页搜索框被设置了使用权限，但我从老同事那里拿到了密钥。若你愿协助调查，我很乐意分享。\n\n但在此之前，我想测试一下你的调查能力，避免无谓沟通：【我究竟是谁？】请回答我的名字（汉字）。若答对，密钥即刻奉上。\n\n期待你的回复。`;
+      
+      addMessage('==>> 新纪元电视台 自动回复 <<==', autoReplyContent, timeStr, true, false);
+    }
+  }
+  
+  // 渲染消息到界面（支持图片）
+  function renderMessage(sender, content, timeStr, saveToStorage, isImage) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message-item mb-3';
+    
+    // 判断发送者样式
+    let senderClass = 'text-red-600';
+    if (sender === userName) {
+      senderClass = 'text-blue-500';
+    } else if (sender === '新纪元电视台' || sender.indexOf('新纪元电视台') !== -1) {
+      senderClass = 'text-red-600';
+    } else if (sender === 'zhendong_Wang') {
+      senderClass = 'text-red-600'; // 王振东的消息也是红色
+    } else if (sender === '高景然') {
+      senderClass = 'text-red-600'; // 高景然的消息也是红色
+    } else if (sender === '观测者') {
+      senderClass = 'text-red-600 font-bold'; // 观测者的消息是红色加粗
+    }
+    
+    // 处理内容：如果是图片则显示图片，否则处理换行
+    let formattedContent = '';
+    if (isImage && content) {
+      // 图片消息 - 固定大小300px x 300px
+      formattedContent = `<img src="${content}" alt="图片" style="width: 300px; height: 300px; margin-top: 5px; object-fit: contain;">`;
+    } else {
+      // 文本消息，处理换行
+      formattedContent = content.replace(/\n/g, '<br>');
+    }
+    
+    messageDiv.innerHTML = `
+      <div class="message-header">
+        <span class="${senderClass}">${sender}</span>
+        <span class="text-black">${timeStr}</span>
+      </div>
+      <div class="message-content text-black text-sm mt-1">
+        ${formattedContent}
+      </div>
+    `;
+    
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+    // 保存到localStorage
+    if (saveToStorage) {
+      const chatHistory = localStorage.getItem('chatroom_messages');
+      const messages = chatHistory ? JSON.parse(chatHistory) : [];
+      messages.push({
+        sender: sender,
+        content: content,
+        time: timeStr,
+        timestamp: new Date().getTime(),
+        isImage: isImage || false
+      });
+      localStorage.setItem('chatroom_messages', JSON.stringify(messages));
+    }
+  }
+  
+  // 添加消息函数（用户发送的消息）
+  function addMessage(sender, content, timeStr, saveToStorage, isImage) {
+    renderMessage(sender, content, timeStr, saveToStorage, isImage);
+  }
+  
+  // 获取当前时间字符串
+  function getCurrentTimeStr() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `<${hours}:${minutes}>`;
+  }
+  
+  // 红色闪屏效果
+  function showRedSplash() {
+    const splashScreen = document.getElementById('redSplashScreen');
+    if (splashScreen) {
+      splashScreen.style.display = 'block';
+      splashScreen.style.opacity = '1';
+      
+      setTimeout(() => {
+        splashScreen.style.opacity = '0';
+        setTimeout(() => {
+          splashScreen.style.display = 'none';
+        }, 100);
+      }, 100); // 闪屏持续0.1s (100ms)
+    }
+  }
+  
+  // 检查是否已经答对
+  function hasAnsweredCorrectly() {
+    const chatHistory = localStorage.getItem('chatroom_messages');
+    if (!chatHistory) return false;
+    const messages = JSON.parse(chatHistory);
+    return messages.some(function(msg) {
+      return msg.sender === 'zhendong_Wang';
+    });
+  }
+  
+  // 处理用户消息的自动回复
+  function handleUserMessage(message) {
+    const gaojingranMode = localStorage.getItem('gaojingran_mode') === 'true';
+    
+    // 如果是高景然模式
+    if (gaojingranMode) {
+      // 检查是否使用了咒语
+      const isSpell = message.trim() === '始源-频谱-增幅-增幅-联结';
+      
+      if (isSpell) {
+        // 使用了咒语，3秒后回复
+        setTimeout(function() {
+          const timeStr = getCurrentTimeStr();
+          // 用户名是"高景然"，内容是加粗的"观测者"
+          addMessage('高景然', '<b>观测者</b>', timeStr, true, false);
+          
+          // 3秒后再次回复
+          setTimeout(function() {
+            const timeStr2 = getCurrentTimeStr();
+            // 用户名依然是"高景然"
+            addMessage('高景然', '你对我使用了咒语？刚刚在我脑中闪过的那种被窥探的感触，和与他们对话时如出一辙。真不愧是被选中的人……\n\n我们这就去接你。', timeStr2, true, false);
+            
+            // 设置标记，表示已使用咒语，之后所有回复都变成标准回复
+            localStorage.setItem('spell_used', 'true');
+            localStorage.setItem('gaojingran_mode', 'false'); // 退出高景然模式
+          }, 3000);
+        }, 3000);
+      } else {
+        // 检查是否已使用咒语
+        const spellUsed = localStorage.getItem('spell_used') === 'true';
+        if (spellUsed) {
+          // 已使用咒语，显示标准回复
+          setTimeout(function() {
+            const timeStr = getCurrentTimeStr();
+            addMessage('==>> 新纪元电视台 自动回复 <<==', '感谢您对本站的支持！您的留言我们已经收到，会尽快处理。', timeStr, true, false);
+          }, 1000);
+        } else {
+          // 没有使用咒语，显示标准回复
+          setTimeout(function() {
+            const timeStr = getCurrentTimeStr();
+            addMessage('==>> 新纪元电视台 自动回复 <<==', '你再说任何话也无济于事，能洞悉我内心的只有他们。', timeStr, true, false);
+          }, 1000);
+        }
+      }
+      return;
+    }
+    
+    const hasAnswered = hasAnsweredCorrectly();
+    
+    // 如果已经答对，所有回复都是标准回复
+    if (hasAnswered) {
+      setTimeout(() => {
+        const timeStr = getCurrentTimeStr();
+        addMessage('==>> 新纪元电视台 自动回复 <<==', '感谢您对本站的支持！您的留言我们已经收到，会尽快处理。', timeStr, true, false);
+      }, 1000);
+      return;
+    }
+    
+    // 检查是否已使用咒语
+    const spellUsed = localStorage.getItem('spell_used') === 'true';
+    if (spellUsed) {
+      setTimeout(() => {
+        const timeStr = getCurrentTimeStr();
+        addMessage('==>> 新纪元电视台 自动回复 <<==', '感谢您对本站的支持！您的留言我们已经收到，会尽快处理。', timeStr, true, false);
+      }, 1000);
+      return;
+    }
+    
+    // 检查消息是否包含"王振东"
+    const containsName = message.indexOf('王振东') !== -1;
+    
+    if (!containsName) {
+      // 不包含"王振东"，1秒后回复
+      setTimeout(() => {
+        const timeStr = getCurrentTimeStr();
+        addMessage('==>> 新纪元电视台 自动回复 <<==', '那不是我的名字', timeStr, true, false);
+      }, 1000);
+    } else {
+      // 包含"王振东"，2秒后开始一系列自动回复
+      setTimeout(() => {
+        const timeStr = getCurrentTimeStr();
+        addMessage('zhendong_Wang', '答对了。我是王振东，就是报道里提到的《菁英会客厅》制片人。新纪元创台以来，我参与过不少节目。但唯独对《菁英会客厅》这个名字完全没有印象。\n\n不过，经过这几天的调查与回想，总算还是理出了一些脉络：以我开始接手另一档节目为分界点，我才隐约意识到台里存在这么个节目，但当时制片人已经不是我了。而自此往前一段时间的经历，就彻底想不起来了。', timeStr, true, false);
+        
+        // 5秒后发送第二条
+        setTimeout(() => {
+          const timeStr2 = getCurrentTimeStr();
+          addMessage('zhendong_Wang', '所以最合理的推论是：我确实担任过《菁英会客厅》制片，但这段记忆不知为何被抹去了；后来我卸任，记忆才慢慢恢复。', timeStr2, true, false);
+          
+          // 5秒后发送第三条
+          setTimeout(() => {
+            const timeStr3 = getCurrentTimeStr();
+            addMessage('zhendong_Wang', '不多说了，我这就把密钥发给你。【3K7p-9xQ2-fS5d】输入搜索框点搜索，就能解除限制。提醒你一句，要是清了浏览器缓存或是换了设备，就得重新输一遍，所以务必记好，最好找个地方存下来。', timeStr3, true, false);
+            
+            // 5秒后发送第四条
+            setTimeout(() => {
+              const timeStr4 = getCurrentTimeStr();
+              addMessage('zhendong_Wang', '我能帮的就这么多了，接下来就看你的了。若不知从何搜起，不妨先试试主创成员的名字——包括我的。不过说实话，我实在看不出哪里不对劲。总之，有发现随时联系我，我会守在屏幕前等你的消息。', timeStr4, true, false);
+              
+              // 5秒后触发红色闪屏，然后发送第五条
+              setTimeout(() => {
+                showRedSplash();
+                
+                setTimeout(() => {
+                  const timeStr5 = getCurrentTimeStr();
+                  addMessage('zhendong_Wang', '对了，账号的邮箱里还有一封颇为蹊跷的邮件，说若在显示特定图标的页面搜索框中输入密钥，就可以进入隐藏的页面。我还没有研究明白其中深意，先把图标和密钥发给你，希望你用的上。\n\n\n\n0mn1516h7', timeStr5, true, false);
+                  
+                  // 紧接着发送图片
+                  setTimeout(() => {
+                    const timeStr6 = getCurrentTimeStr();
+                    addMessage('zhendong_Wang', 'images/symbol.jpg', timeStr6, true, true);
+                  }, 1500);
+                }, 350);
+              }, 5000);
+            }, 5000);
+          }, 6000);
+        }, 5000);
+      }, 3000);
+    }
+  }
+  
+  // 页面加载时加载聊天记录
+  loadChatHistory();
+  
+  // 确保滚动条始终可见 - 添加足够的占位内容
+  function ensureScrollbarVisible() {
+    // 检查是否需要添加占位元素
+    const hasSpacer = messagesContainer.querySelector('#scrollbar-spacer');
+    const chatHistory = localStorage.getItem('chatroom_messages');
+    const messages = chatHistory ? JSON.parse(chatHistory) : [];
+    
+    // 如果内容很少或为空，添加占位元素确保滚动条显示
+    if (messages.length === 0 || messages.length === 1) {
+      if (!hasSpacer) {
+        const spacer = document.createElement('div');
+        spacer.id = 'scrollbar-spacer';
+        spacer.style.cssText = 'height: 800px; width: 1px; opacity: 0; pointer-events: none; position: absolute;';
+        messagesContainer.appendChild(spacer);
+      }
+    } else if (hasSpacer && messages.length > 1) {
+      // 如果有多条消息，移除占位元素
+      hasSpacer.remove();
+    }
+  }
+  
+  // 延迟执行以确保DOM已渲染
+  setTimeout(ensureScrollbarVisible, 200);
+  
+  // 监听内容变化，动态调整
+  const observer = new MutationObserver(function() {
+    setTimeout(ensureScrollbarVisible, 50);
+  });
+  observer.observe(messagesContainer, { childList: true, subtree: true });
+
+  messageInput.addEventListener('focus', function() {
+  const awaitingPrompt = localStorage.getItem('awaiting_user_prompt') === 'true';
+  const gaojingranMode = localStorage.getItem('gaojingran_mode') === 'true';
+
+  // 只有在等待用户提问阶段 并且 处于高景然模式时，才自动发送
+  if (awaitingPrompt && gaojingranMode) {
+    // 移除等待标记，确保只触发一次
+    localStorage.removeItem('awaiting_user_prompt');
+
+    // 闪烁屏幕并发送玩家消息
+    showRedSplash();
+    
+    setTimeout(function() {
+      const timeStr3 = getCurrentTimeStr();
+      // 玩家消息，用户名为蓝色
+      addMessage(userName, '"他们"到底是谁？', timeStr3, true, false);
+      
+      // 3秒后显示高景然的回复
+      setTimeout(function() {
+        const timeStr4 = getCurrentTimeStr();
+        addMessage('高景然', '等你成为基站后，我很乐意与你分享有关他们的信息。但现在，无可奉告。', timeStr4, true, false);
+      }, 3000);
+    }, 350);
+  }
+});
+  // 发送按钮点击事件
+  sendBtn.addEventListener('click', function() {
+    sendMessage();
+  });
+  
+  // 回车键发送
+  messageInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  
+  // 发送消息函数
+  function sendMessage() {
+    const message = messageInput.value.trim();
+    if (message) {
+      const timeStr = getCurrentTimeStr();
+      
+      // 检查是否已经有第一次自动回复（长消息）
+      const chatHistory = localStorage.getItem('chatroom_messages');
+      const messages = chatHistory ? JSON.parse(chatHistory) : [];
+      const hasFirstAutoReply = messages.some(function(msg) {
+        return msg.sender.indexOf('新纪元电视台') !== -1 && msg.content.indexOf('你好。') !== -1;
+      });
+      
+      // 发送用户消息
+      addMessage(userName, message, timeStr, true, false);
+      messageInput.value = '';
+      
+      // 检查是否在高景然模式
+      const gaojingranMode = localStorage.getItem('gaojingran_mode') === 'true';
+      
+      // 如果是在高景然模式，或者有第一次自动回复，则处理用户消息
+      if (gaojingranMode || hasFirstAutoReply) {
+        handleUserMessage(message);
+      }
+    }
+  }
+  
+  // 确保滚动条正常工作，支持鼠标滚轮
+  messagesContainer.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    this.scrollTop += e.deltaY;
+  });
+  
+  // 添加滚动按钮功能（早期互联网风格）
+  function setupScrollButtons() {
+    const scrollUpBtn = messagesContainer.querySelector('.scroll-btn-up');
+    const scrollDownBtn = messagesContainer.querySelector('.scroll-btn-down');
+    
+    if (!scrollUpBtn) {
+      // 创建顶部滚动按钮
+      const upBtn = document.createElement('div');
+      upBtn.className = 'scroll-btn-up';
+      upBtn.innerHTML = '▲';
+      upBtn.style.cssText = 'position: absolute; right: 0; top: 0; width: 16px; height: 16px; background: #c0c0c0; border: 1px solid #808080; border-top: 1px solid #ffffff; border-left: 1px solid #ffffff; border-right: 1px solid #808080; border-bottom: 1px solid #808080; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 8px; color: #333; user-select: none;';
+      
+      upBtn.addEventListener('mousedown', function() {
+        scrollUp();
+        const interval = setInterval(scrollUp, 50);
+        const stopScroll = function() {
+          clearInterval(interval);
+          document.removeEventListener('mouseup', stopScroll);
+        };
+        document.addEventListener('mouseup', stopScroll);
+      });
+      
+      // 创建底部滚动按钮
+      const downBtn = document.createElement('div');
+      downBtn.className = 'scroll-btn-down';
+      downBtn.innerHTML = '▼';
+      downBtn.style.cssText = 'position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; background: #c0c0c0; border: 1px solid #808080; border-top: 1px solid #ffffff; border-left: 1px solid #ffffff; border-right: 1px solid #808080; border-bottom: 1px solid #808080; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 8px; color: #333; user-select: none;';
+      
+      downBtn.addEventListener('mousedown', function() {
+        scrollDown();
+        const interval = setInterval(scrollDown, 50);
+        const stopScroll = function() {
+          clearInterval(interval);
+          document.removeEventListener('mouseup', stopScroll);
+        };
+        document.addEventListener('mouseup', stopScroll);
+      });
+      
+      // 滚动函数
+      function scrollUp() {
+        messagesContainer.scrollTop -= 20;
+      }
+      
+      function scrollDown() {
+        messagesContainer.scrollTop += 20;
+      }
+      
+      // 添加按钮悬停效果
+      upBtn.addEventListener('mouseenter', function() {
+        this.style.background = '#a0a0a0';
+      });
+      upBtn.addEventListener('mouseleave', function() {
+        this.style.background = '#c0c0c0';
+      });
+      
+      downBtn.addEventListener('mouseenter', function() {
+        this.style.background = '#a0a0a0';
+      });
+      downBtn.addEventListener('mouseleave', function() {
+        this.style.background = '#c0c0c0';
+      });
+      
+      // 注意：WebKit浏览器的::-webkit-scrollbar-button已经提供了滚动按钮
+      // 这里我们主要确保鼠标滚轮功能正常工作
+    }
+  }
+  
+  // 初始化滚动按钮（如果需要自定义按钮）
+  // setupScrollButtons();
+});
+
+  /* === 反审查和右键禁用机制 === */
+document.addEventListener('contextmenu', function(e) {
+    // 阻止默认的右键菜单
+    e.preventDefault();
+    // 弹出提示窗口
+    alert("逃避不能解决问题");
+});
+
+document.addEventListener('keydown', function(e) {
+    // 检查是否是 F12 键
+    if (e.key === 'F12') {
+        e.preventDefault();
+        alert("逃避不能解决问题");
+    }
+
+    // 检查是否是 Ctrl/Cmd 组合键 (Ctrl/Cmd + U, Ctrl/Cmd + Shift + I)
+    if (e.ctrlKey || e.metaKey) { // metaKey 是 Mac 上的 Command 键
+        // Ctrl + U (查看源码)
+        if (e.key === 'u' || e.key === 'U') {
+            e.preventDefault();
+            alert("逃避不能解决问题");
+        }
+        
+        // Ctrl/Cmd + Shift + I (打开开发者工具)
+        if (e.shiftKey && (e.key === 'i' || e.key === 'I')) {
+             e.preventDefault();
+             alert("逃避不能解决问题");
+        }
+    }
+});
+/* === 反审查和右键禁用机制 结束 === */
+</script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网络时光塔 (Web Time Tower)</title>
+    <script src="js/md5.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="images/favicon_1/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="images/favicon_1/favicon.svg" />
+    <link rel="shortcut icon" href="images/favicon_1/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_1/apple-touch-icon.png" />
+    <link rel="manifest" href="images/favicon_1/site.webmanifest" />
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #28249b;
+            color: #fff;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            padding: 10px;
+            display: flex; /* 使用flex布局 */
+            align-items: center; /* 垂直居中 */
+            justify-content: center; /* 水平居中 */
+            margin-left: -50px; /* 向左移动 50px */
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* 左对齐 */
+        }
+        .container {
+            width: 85%;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            padding-bottom: 80px;
+            border-radius: 10px;
+            color: #333;
+            flex: 1;
+            min-height: 700px;
+            box-sizing: border-box;
+        }
+        #visitedPagesList {
+      list-style-type: none; /* 移除黑点 */
+      padding-left: 0; /* 移除左侧内边距，使链接更贴边 */
+    }
+           #visitedPagesList {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        #pagination {
+            margin-top: 10px;
+        }
+
+        #pagination button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        #pagination button.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .loading-dots {
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+        .loading-dots span {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #bbb;
+            margin: 0 3px;
+            opacity: 0.5;
+            animation: loadingFade 1s infinite;
+        }
+        .loading-dots span:nth-child(2) {
+            animation-delay: 0.33s;
+        }
+        .loading-dots span:nth-child(3) {
+            animation-delay: 0.66s;
+        }
+        @keyframes loadingFade {
+            0%   { opacity: 0.5; background: #bbb; }
+            50%  { opacity: 1; background: #666; }
+            100% { opacity: 0.5; background: #bbb; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="chronoscape-header">
+            <div class="header-content">
+                <img src="images/webtimetower.PNG" alt="Logo" class="chronoscape-logo">
+                <div class="chronoscape-title-wrapper">
+                    <h1 class="chronoscape-title">网络时光塔</h1>
+                    <p class="chronoscape-description">-记录网络变迁，储存时间记忆-</p>
+                </div>
+            </div>
+        </header>
+
+        <section id="chronoscape-search-section">
+            <p class="chronoscape-search-instruction">网络时光塔提供网页存档服务，是互联网的“时光胶囊”</p>
+            <p class="chronoscape-search-instruction">输入任何网址，查看其在本站保存的历史版本</p>
+            <div class="chronoscape-search-box">
+                <input type="text" value="neweratv.com" readonly class="chronoscape-search-input" id="chronoscape-search-input">
+                <button class="chronoscape-search-btn" id="chronoscape-search-btn">查询</button>
+            </div>
+        </section>
+        
+        <section id="chronoscape-results-section-outer">
+            <div id="chronoscape-results-section-inner">
+                <div class="results-wrapper results-gradient-bg" id="results-wrapper">
+                    <p class="chronoscape-results-summary"><span style="font-size: 20px; font-weight: bold;">不褪色的回忆，就在这里</span></p>
+                </div>
+            </div>
+        </section>
+
+        <h2>访问记录：</h2>
+    <ul id="visitedPagesList">
+        <!-- 链接将在这里动态生成 -->
+    </ul>
+    <div id="pagination"></div>
+    </div>
+    <footer>
+        <small>
+            <span class="first-line">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+            <span class="second-line">Copyright&copy; Shiroki. All Rights Reserved.</span>
+        </small>
+    </footer>
+
+<div class="page-number">
+
+01/43
+
+</div>
+
+<script>
+document.getElementById('chronoscape-search-btn').onclick = function() {
+    var wrapper = document.getElementById('results-wrapper');
+    wrapper.className = 'results-wrapper results-gradient-bg';
+    wrapper.innerHTML = `
+        <p class="chronoscape-results-summary" style="font-size:18px;">
+            正在查询，请稍等
+            <span class="loading-dots">
+                <span></span><span></span><span></span>
+            </span>
+        </p>
+    `;
+    // 2秒后显示结果
+    setTimeout(function(){
+        wrapper.className = 'results-wrapper results-bordered';
+        wrapper.innerHTML = `
+            <p class="chronoscape-results-summary">
+            共找到 <a href="javascript:void(0)">2</a> 条 来自 <a href="javascript:void(0)">2005年10月13日</a> 至 <a href="javascript:void(0)">2008年4月10日</a> 的网页存档</p>
+            <ul class="chronoscape-results-list">
+                <li class="chronoscape-results-item"><a href="neweratv.com_20051013.html" class="chronoscape-results-link stylized-link">20051013</a></li>
+                <li class="chronoscape-results-item"><a href="neweratv.com_20080410.html" class="chronoscape-results-link stylized-link">20080410</a></li>
+            </ul>
+        `;
+    }, 2000);
+};
+    // 每页显示的记录数
+        const recordsPerPage = 10;
+
+        // 获取当前页码
+        let currentPage = parseInt(localStorage.getItem('currentPage')) || 1;
+
+        // 获取用于显示链接的 <ul> 元素
+        const visitedPagesList = document.getElementById('visitedPagesList');
+
+        // 从 localStorage 中获取已访问页面的链接列表
+        let visitedLinks = localStorage.getItem('visitedLinks');
+
+        // 如果 localStorage 中没有链接列表，则创建一个空数组
+        if (!visitedLinks) {
+            visitedLinks = '[]';
+        }
+
+        // 将链接列表解析为 JavaScript 数组
+        visitedLinks = JSON.parse(visitedLinks);
+
+        // 计算总页数
+        const totalPages = Math.ceil(visitedLinks.length / recordsPerPage);
+
+        // 函数：显示指定页码的记录
+        function displayRecords(page) {
+            visitedPagesList.innerHTML = ''; // 清空列表
+
+            const startIndex = (page - 1) * recordsPerPage;
+            const endIndex = Math.min(startIndex + recordsPerPage, visitedLinks.length);
+
+            for (let i = startIndex; i < endIndex; i++) {
+                const link = visitedLinks[i];
+                const listItem = document.createElement('li');
+                const anchor = document.createElement('a');
+                anchor.href = link.url; // 设置链接 URL
+                anchor.textContent = link.title || link.url; // 设置链接文本为页面标题，如果标题为空则使用 URL
+                listItem.appendChild(anchor);
+                visitedPagesList.appendChild(listItem);
+            }
+        }
+
+        // 函数：创建页码按钮
+        function createPaginationButtons() {
+            const paginationContainer = document.getElementById('pagination');
+            if (!paginationContainer) {
+                return; // 如果没有分页容器，则不创建按钮
+            }
+
+            paginationContainer.innerHTML = ''; // 清空按钮
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.addEventListener('click', () => {
+                    currentPage = i;
+                    displayRecords(currentPage);
+                    updateActiveButton(); // 更新激活按钮
+                    localStorage.setItem('currentPage', currentPage); // 保存当前页码
+                });
+                paginationContainer.appendChild(button);
+            }
+            updateActiveButton(); // 初始化激活按钮
+        }
+
+        // 函数：更新激活按钮样式
+        function updateActiveButton() {
+            const buttons = document.querySelectorAll('#pagination button');
+            buttons.forEach((button, index) => {
+                if (index + 1 === currentPage) {
+                    button.classList.add('active'); // 添加激活样式
+                } else {
+                    button.classList.remove('active'); // 移除激活样式
+                }
+            });
+        }
+
+        // 在页面加载时执行
+        window.onload = () => {
+            displayRecords(currentPage); // 显示当前页码的记录
+            createPaginationButtons(); // 创建页码按钮
+        };
+</script>
+</body>
+</html>

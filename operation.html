@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实行</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #e0e0e0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+            transition: background-color 0.4s ease;
+        }
+
+        body.white-bg {
+            background-color: #fff;
+            color: #000;
+        }
+
+        main {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            padding: 40px 20px 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .page-number {
+  position: fixed; /* 固定位置，不受页面滚动影响 */
+  bottom: 20px; /* 距离底部 20px */
+  right: 20px; /* 距离右侧 20px */
+  background-color: black; /* 黑色背景 */
+  color: white; /* 白色文字 */
+  padding: 5px 10px; /* 内边距，使文字不紧贴边缘 */
+  border-radius: 20px; /* 圆角，使其变为椭圆形 */
+  font-size: 14px; /* 字体大小 */
+  font-family: Arial, sans-serif; /* 字体 */
+  z-index: 1000; /* 确保页码在其他内容之上 */
+}
+        .intro-line {
+            font-size: 30px;
+            line-height: 1.6;
+            max-width: 900px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .intro-line.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .intro-line.fade-out {
+            opacity: 0;
+        }
+
+        .dialogue-stage {
+            width: 100%;
+            max-width: 960px;
+            min-height: 320px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: visible;
+        }
+
+        #dialogueContainer {
+            position: relative;
+            width: 100%;
+            min-height: 280px;
+        }
+
+        .dialogue-line {
+            color: #000;
+            padding: 24px 28px;
+            border-radius: 22px;
+            font-size: 22px;
+            line-height: 1.7;
+            opacity: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.55));
+            box-shadow:
+                inset 0 0 35px rgba(255, 255, 255, 0.9),
+                inset 0 0 60px rgba(255, 255, 255, 0.4),
+                0 25px 60px rgba(255, 255, 255, 0.15);
+            pointer-events: none;
+        }
+
+        .dialogue-line.left {
+            text-align: left;
+        }
+
+        .dialogue-line.right {
+            text-align: right;
+        }
+
+        .dialogue-line.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .dialogue-line.left.show {
+            transform: translate(calc(-50% - 50px), -50%) scale(1);
+        }
+
+        .dialogue-line.right.show {
+            transform: translate(calc(-50% + 50px), -50%) scale(1);
+        }
+
+        .dialogue-line.fade-out {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.75);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .highlight-red {
+            color: #d3002d;
+            font-weight: bold;
+        }
+
+        .narrative-stage,
+        .final-stage {
+            width: 100%;
+            max-width: 900px;
+            display: none;
+            flex-direction: column;
+            gap: 24px;
+            min-height: 60vh;
+        }
+
+        .final-stage.active {
+            display: flex;
+        }
+
+        .narrative-line,
+        .final-line {
+            font-size: 24px;
+            line-height: 1.8;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .narrative-line.show,
+        .final-line.show {
+            opacity: 1;
+        }
+
+        .final-command {
+            color: #3a7afe;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 0 0 12px rgba(58, 122, 254, 0.6);
+        }
+
+        .white-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #fff;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 2s ease;
+            z-index: 999;
+        }
+
+        .white-overlay.show {
+            opacity: 1;
+        }
+
+        .status-section {
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+            margin: 60px auto 0;
+            display: none;
+        }
+
+        .status-section.visible {
+            display: block;
+        }
+
+        .status-text {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #00fff1;
+            text-shadow: 0 0 10px rgba(0, 102, 255, 0.78);
+            margin-bottom: 20px;
+        }
+
+        .status-text.red {
+            color: #ff2d2d;
+        }
+
+        .status-sub {
+            margin-top: 10px;
+            font-size: 1.1em;
+            color: #ffffff !important;
+            font-weight:bold;
+        }
+
+        .status-media {
+            margin-top: 30px;
+            display: none;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .status-media.show {
+            display: flex;
+        }
+
+        .media-card {
+            position: relative;
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .media-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .media-label {
+            font-size: 0.9em;
+            letter-spacing: 2px;
+            color:#ffffff;
+        }
+
+        .wechat-hotspot {
+            position: absolute;
+            top: 12%;
+            left: 28%;
+            width: 44%;
+            height: 76%;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.02);
+            border: none;
+            padding: 0;
+        }
+
+        .wechat-hotspot:focus-visible {
+            outline: 2px solid #009dff;
+        }
+
+        .alt-ending {
+            width: 100%;
+            max-width: 900px;
+            margin: 30px auto 0;
+            text-align: center;
+            display: none;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .alt-ending.show {
+            display: flex;
+        }
+
+        .alt-text {
+            font-size: 1.2em;
+            color: #ff2d2d;
+            font-weight: bold;
+        }
+
+        .alt-form {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .alt-input {
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            min-width: 240px;
+        }
+
+        .alt-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .alt-button {
+            padding: 10px 22px;
+            border: none;
+            border-radius: 6px;
+            background: #009dff;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .alt-button:hover {
+            background: #2ea6ff;
+        }
+
+        .input-shake {
+            animation: input-shake 0.4s ease;
+        }
+
+        @keyframes input-shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-4px); }
+            100% { transform: translateX(0); }
+        }
+
+        .shake {
+            display: inline-block;
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        footer {
+            position: relative;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #bababa;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.7em;
+            margin-top: 80px;
+        }
+
+        footer small {
+            display: block;
+        }
+
+        footer span {
+            display: block;
+        }
+
+        footer .first-line {
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding: 24px 16px 140px;
+            }
+
+            .intro-line {
+                font-size: 22px;
+            }
+
+            .dialogue-line {
+                font-size: 18px;
+            }
+
+            .narrative-line,
+            .final-line {
+                font-size: 20px;
+            }
+
+            .final-command {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="white-overlay" id="whiteOverlay"></div>
+    <main>
+        <div class="intro-line" id="introLine">
+            我再次使用了那个咒语。与第一次不同，这次的我清晰地认识到了这份力量的强大，内心也变得前所未有的坚定。霎时间，无数基站的记忆如潮水般涌入我的脑海中。<br>......<br>......<br>......
+        </div>
+
+        <section class="dialogue-stage" id="dialogueStage">
+            <div id="dialogueContainer"></div>
+        </section>
+
+        <section class="narrative-stage" id="narrativeStage" style="display:none;">
+            <p class="narrative-line" id="nLine1">这成百上千的记忆纷繁复杂，令人窒息。但出人意料的是，它们竟全部都围绕着同一个主题：观测者来干涉我们的世界，<span class="highlight-red">不为支配、不为掠夺，仅仅是为了取乐</span>。</p>
+            <p class="narrative-line" id="nLine2">唯独一人——他们对高景然说，自己的目的是“重建人类的秩序”。</p>
+            <p class="narrative-line" id="nLine3">我瞬间理解了他们的意图：他们早就洞悉了高景然“能力越大，责任越大”的那套理论。由于高景然对我的了解，他们需要他来主导对我的“搭建”，所以才编造出这个能够迎合他的谎言。</p>
+            <p class="narrative-line" id="nLine4">原来，真正被困在虚无的责任感中无路可逃的人，是他。</p>
+            <p class="narrative-line" id="nLine5">即使真实目的与我预想的截然不同，我也绝不能允许所谓的“观测者”在我们的世界为所欲为。我集中全部精神，感受着咒语与“信号”的增幅，向所有基站发布了最初，也是最后一条指令——</p>
+            <p class="narrative-line final-command" id="nLine6">“永久断开和观测者的链接。”</p>
+        </section>
+
+        <section class="final-stage" id="finalStage" style="display:none;">
+            <p class="final-line" id="fLine1">我打开门，高景然就瘫坐在我的门口。我感到一阵莫名的寒意从脊椎升起：如果没有及时发动指令，现在的我，恐怕已经被他们抓去参加那场荒诞的仪式了。我环顾四周，不见其他任何一名基站的身影。他们是感应到自身能力的消失，四散奔逃了吗？而此刻的高景然神情木然，丝毫没有注意到我的出现。他还需要时间来承受这一切。</p>
+            <p class="final-line" id="fLine2">能力越大，就变得越脆弱的人；能力越大，就变得越傲慢的人。这世界无法像它被期待的那样精确地运作。承担或是不承担，当选择已被做出时，或许先学会接受这世间种种的不公平与不确定，才是真正解决问题的第一步。</p>
+            <p class="final-line" id="fLine3">我站在门口，静静地看着他。世界前所未有地安静。</p>
+        </section>
+
+        <div class="status-section" id="statusSection">
+            <p class="status-text" id="statusText">调查结束 你查明了事件的真相</p>
+            <p class="status-sub" id="statusSub">《诡异广告调查事件》</p>
+            <p class="status-sub" id="statusSub">制作：银河电灯Shiroki&nbsp;&nbsp;狂饮可乐</p>
+            <p class="status-sub" id="statusSub">视频配音支持：春山&nbsp;&nbsp;环太</p>
+            <div class="status-media" id="statusMedia">
+                <div class="media-card">
+                    <img src="images/wechat_spell.jpg" alt="公众号二维码">
+                    <button class="wechat-hotspot" id="wechatHotspot" aria-label="公众号二维码"></button>
+                    <span class="media-label">公众号</span>
+                </div>
+                <div class="media-card">
+                    <img src="images/red.jpg" alt="小红书">
+                    <span class="media-label">小红书</span>
+                </div>
+            </div>
+            <div class="alt-ending" id="altEnding">
+                <p class="alt-text">那个故事还有另一个结局……你想知道吗？</p>
+                <div class="alt-form">
+                    <input type="text" id="observerInput" class="alt-input" placeholder="输入祂的编号" autocomplete="off">
+                    <button class="alt-button" id="observerSubmit">确定</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <small>
+            <span class="first-line">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+            <span class="second-line">Copyright&copy; Shiroki. All Rights Reserved.</span>
+        </small>
+    </footer>
+
+<div class="page-number">
+
+43/43
+
+</div>
+
+    <script>
+        const introLine = document.getElementById('introLine');
+        const dialogueContainer = document.getElementById('dialogueContainer');
+        const whiteOverlay = document.getElementById('whiteOverlay');
+        const body = document.body;
+        const statusText = document.getElementById('statusText');
+        const statusSection = document.getElementById('statusSection');
+        const statusMedia = document.getElementById('statusMedia');
+        const statusSub = document.getElementById('statusSub');
+        const altEnding = document.getElementById('altEnding');
+        const observerInput = document.getElementById('observerInput');
+        const observerSubmit = document.getElementById('observerSubmit');
+        const wechatHotspot = document.getElementById('wechatHotspot');
+        const dialogueStage = document.getElementById('dialogueStage');
+        const narrativeStage = document.getElementById('narrativeStage');
+        const finalStage = document.getElementById('finalStage');
+
+        const dialogues = [
+            {
+                html: '“我相信你们的能力了，请让我成为基站！我不求别的，只希望有朝一日能请那位‘飞升者’，帮我转生到你们的世界……实在是太累了，我真的坚持不下去了。我受够了被人玩弄的人生，我必须要成为观测者，从<span class="highlight-red">掌控他人的立场</span>，重新开始……”',
+                align: 'left',
+                width: '62%'
+            },
+            {
+                html: '“平行世界……我活了五十多年，世上竟有如此匪夷所思之事！然而，更让我难以置信的，是知道真相后仍选择咽下这一切，成为了基站的我自己。纵使积攒再多财富，也抵不过<span class="highlight-red">‘使用超能力，从上位观测下位’</span>的美梦所带来的诱惑……”',
+                align: 'right',
+                width: '70%'
+            },
+            {
+                html: '“你们、你们的目的究竟是什么？说什么干涉我们只是为了<span class="highlight-red">取乐</span>，我怎么可能相信！如果你们的真实目的是毁灭地球，我岂不成了助纣为虐的帮凶？！”',
+                align: 'left',
+                width: '58%'
+            },
+            {
+                html: '“干涉人类只为取乐……虽然听起来很荒唐，却又带着一种难以抗拒的说服力。基站搭建失败，甚至现存的基站想要中途放弃时，你们采取的行动只是清除记忆。这让我不得不相信，你们的目的<span class="highlight-red">并不在于伤害人类</span>。”',
+                align: 'right',
+                width: '66%'
+            },
+            {
+                html: '“知道我为什么立马就理解了你们的话吗？哈哈，我一直在等待属于我们的报应！只要稍微一换位思考，在你们这些‘人类’面前，我们只不过是‘动物’，这一切不就说得通了吗？人类在不需要从动物身上索取什么的时候主动去干涉它们，<span class="highlight-red">除了取乐，还能有什么目的呢</span>？”',
+                align: 'left',
+                width: '72%'
+            }
+        ];
+
+        const narrativeIds = ['nLine1', 'nLine2', 'nLine3', 'nLine4', 'nLine5', 'nLine6'];
+        const finalIds = ['fLine1', 'fLine2', 'fLine3'];
+        const persistentIds = new Set([...narrativeIds, ...finalIds]);
+
+        let sequence = [];
+        let sequenceIndex = -1;
+        let currentElement = null;
+        let interactionLocked = false;
+        let statusShown = false;
+        let statusRevealTimer = null;
+        let statusFlashTimer = null;
+        let statusResetTimer = null;
+        let statusMediaTimer = null;
+
+        function fadeOutCurrent() {
+            if (!currentElement) return;
+            currentElement.classList.remove('show');
+            const removable = currentElement.dataset && currentElement.dataset.dynamic === 'true' ? currentElement : null;
+            if (removable) {
+                removable.classList.add('fade-out');
+                setTimeout(() => {
+                    if (removable.parentElement) {
+                        removable.parentElement.removeChild(removable);
+                    }
+                }, 500);
+            }
+            currentElement = null;
+        }
+
+        function showElement(element) {
+            if (!element) return;
+            const isPersistent = persistentIds.has(element.id);
+            if (!isPersistent) {
+                fadeOutCurrent();
+                requestAnimationFrame(() => element.classList.add('show'));
+                currentElement = element;
+            } else {
+                if (currentElement && !persistentIds.has(currentElement.id)) {
+                    fadeOutCurrent();
+                }
+                requestAnimationFrame(() => element.classList.add('show'));
+            }
+        }
+
+        function showDialogue(idx) {
+            const data = dialogues[idx];
+            let previousBubble = null;
+            if (currentElement && currentElement.dataset && currentElement.dataset.dynamic === 'true') {
+                previousBubble = currentElement;
+            } else {
+                fadeOutCurrent();
+            }
+
+            const div = document.createElement('div');
+            div.className = `dialogue-line ${data.align}`;
+            div.dataset.dynamic = 'true';
+            if (data.width) {
+                div.style.width = data.width;
+                div.style.maxWidth = '780px';
+            }
+            div.style.zIndex = 20 + idx;
+            div.innerHTML = data.html;
+            dialogueContainer.appendChild(div);
+            requestAnimationFrame(() => div.classList.add('show'));
+
+            if (previousBubble && previousBubble !== div) {
+                previousBubble.classList.remove('show');
+                previousBubble.classList.add('fade-out');
+                setTimeout(() => {
+                    if (previousBubble.parentElement) {
+                        previousBubble.parentElement.removeChild(previousBubble);
+                    }
+                }, 500);
+            }
+
+            currentElement = div;
+        }
+
+        function showNarrativeStage() {
+            dialogueStage.style.display = 'none';
+            narrativeStage.style.display = 'flex';
+            narrativeStage.style.opacity = '1';
+        }
+
+        function showFinalStage() {
+            narrativeStage.style.display = 'none';
+            finalStage.style.display = 'flex';
+            finalStage.classList.add('active');
+        }
+
+        function startWhiteTransition(mode) {
+            fadeOutCurrent();
+            interactionLocked = true;
+            whiteOverlay.style.transition = 'opacity 2s ease';
+            whiteOverlay.classList.add('show');
+
+            setTimeout(() => {
+                whiteOverlay.style.transition = 'opacity 0s';
+                whiteOverlay.classList.remove('show');
+
+                setTimeout(() => {
+                    whiteOverlay.style.transition = 'opacity 2s ease';
+                    if (mode === 'stay') {
+                        body.style.backgroundImage = "url('images/ending_bg.png')"; // 替换成你的图片URL
+                        body.style.backgroundSize = "cover"; // 可选：设置背景图片大小
+                        body.style.backgroundColor = "#ffffff"; // 可选：设置背景颜色，以防图片加载失败
+                        body.classList.add('white-bg');
+                    } else {
+                        body.classList.remove('white-bg');
+                    }
+                    interactionLocked = false;
+                    advanceSequence(true);
+                }, 50);
+            }, 2000);
+        }
+
+        function buildSequence() {
+            sequence = [];
+            sequence.push({ type: 'text', element: introLine });
+
+            dialogues.forEach((_, idx) => {
+                sequence.push({ type: 'dialogue', index: idx });
+            });
+
+            sequence.push({ type: 'white', mode: 'return' });
+            sequence.push({ type: 'stage', action: 'narrative' });
+
+            narrativeIds.forEach(id => {
+                sequence.push({ type: 'text', element: document.getElementById(id) });
+            });
+
+            sequence.push({ type: 'white', mode: 'stay' });
+            sequence.push({ type: 'stage', action: 'final' });
+
+            finalIds.forEach(id => {
+                sequence.push({ type: 'text', element: document.getElementById(id) });
+            });
+        }
+
+        function advanceSequence(auto = false) {
+            if (!auto && interactionLocked) return;
+            sequenceIndex += 1;
+            if (sequenceIndex >= sequence.length) {
+                document.removeEventListener('click', handleUserAdvance);
+                return;
+            }
+            const step = sequence[sequenceIndex];
+            handleStep(step);
+        }
+
+        function handleStep(step) {
+            switch (step.type) {
+                case 'text':
+                    showElement(step.element);
+                    break;
+                case 'dialogue':
+                    showDialogue(step.index);
+                    break;
+                case 'white':
+                    startWhiteTransition(step.mode);
+                    return;
+                case 'stage':
+                    if (step.action === 'narrative') {
+                        showNarrativeStage();
+                    } else if (step.action === 'final') {
+                        showFinalStage();
+                    }
+                    advanceSequence(true);
+                    return;
+                default:
+                    break;
+            }
+
+            if (step.type === 'text' && step.element && step.element.id === 'fLine3') {
+                scheduleStatusReveal();
+            }
+        }
+
+        function handleUserAdvance() {
+            advanceSequence(false);
+        }
+
+        function scheduleStatusReveal() {
+            if (statusShown) return;
+            statusShown = true;
+            statusRevealTimer = setTimeout(() => {
+                statusSection.classList.add('visible');
+                if (statusMedia) {
+                    statusMedia.classList.remove('show');
+                    if (statusMediaTimer) clearTimeout(statusMediaTimer);
+                    statusMediaTimer = setTimeout(() => {
+                        statusMedia.classList.add('show');
+                    }, 1000);
+                }
+                triggerStatusFlash();
+            }, 1000);
+        }
+
+        function triggerStatusFlash() {
+            statusFlashTimer = setTimeout(() => {
+                statusText.classList.add('red', 'shake');
+                statusText.textContent = '调查结束 一次精彩纷呈的观测';
+                statusResetTimer = setTimeout(() => {
+                    statusText.classList.remove('red', 'shake');
+                    statusText.textContent = '调查结束 你查明了事件的真相';
+                }, 700);
+            }, 3000);
+        }
+
+        document.addEventListener('click', handleUserAdvance);
+
+        function revealAltEnding() {
+            if (!altEnding) return;
+            altEnding.classList.add('show');
+            if (observerInput) {
+                observerInput.focus();
+            }
+        }
+
+        function handleObserverSubmit() {
+            if (!observerInput) return;
+            const value = observerInput.value.trim().toUpperCase();
+            if (value === 'OBSERVER-CN-003') {
+                window.location.href = 'ending03.html';
+            } else {
+                observerInput.classList.remove('input-shake');
+                // force reflow
+                void observerInput.offsetWidth;
+                observerInput.classList.add('input-shake');
+                observerInput.value = '';
+            }
+        }
+
+        if (wechatHotspot) {
+            wechatHotspot.addEventListener('click', (event) => {
+                event.stopPropagation();
+                revealAltEnding();
+            });
+        }
+
+        if (observerSubmit) {
+            observerSubmit.addEventListener('click', (event) => {
+                event.stopPropagation();
+                handleObserverSubmit();
+            });
+        }
+
+        if (observerInput) {
+            observerInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    handleObserverSubmit();
+                }
+            });
+        }
+
+        window.addEventListener('load', () => {
+            buildSequence();
+            advanceSequence(true);
+        });
+    </script>
+</body>
+</html>
+
