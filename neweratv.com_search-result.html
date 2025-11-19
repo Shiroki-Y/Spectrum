@@ -335,19 +335,27 @@
             searchContainer.classList.remove('search-container-shake'); 
 
             // 函数: MD5 加密和 Base64 编码
-            function encode(str) {
-                if (typeof window.md5 !== 'function') {
-                    console.error("MD5 library (md5.min.js) is not loaded.");
-                    return '';
-                }
-                str = str.trim().toLowerCase();
-                const hex = window.md5(str);
-                let bytes = [];
-                for (let i = 0; i < hex.length; i += 2) {
-                    bytes.push(parseInt(hex.substr(i, 2), 16));
-                }
-                return btoa(String.fromCharCode.apply(null, bytes));
-            }
+            // 函数: MD5 加密和 Base64 编码 (修正版本)
+function encode(str) {
+    if (typeof window.md5 !== 'function') {
+        // 错误信息也更正为检查全局可用性
+        console.error("MD5 library (md5.min.js) is not loaded or available globally.");
+        return '';
+    }
+    
+    // 1. 清理输入 (保留这部分逻辑，确保大小写和空格一致性)
+    str = str.trim().toLowerCase();
+
+    // 2. 核心修正：调用 md5 函数，第三个参数设为 true，强制返回原始的二进制字符串（16字节）
+    // 这样才能生成与您 JSON 密钥格式（MD5 原始结果 + Base64）匹配的值。
+    const binaryString = window.md5(str, null, true); 
+
+    // 3. 对原始二进制字符串进行 Base64 编码
+    // btoa 只能处理纯 ASCII 字符串，而 md5(..., true) 返回的正是这样的字符串。
+    const base64Result = btoa(binaryString);
+
+    return base64Result;
+}
 
             // --- 主搜索逻辑 ---
             if (query) {
