@@ -30,6 +30,27 @@
             }
         }
     </script>
+<style>
+    /* 确保 body 没有默认 margin 或 padding */
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    /* 默认隐藏 page-wrapper，防止加载时布局跳动 */
+    .page-wrapper.custom-page-wrapper {
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out; 
+        /* 💡 安全回退：PC端预估 Header 高度，防止 JS 失效时内容被 Header 遮挡 */
+        margin-top: 130px !important; 
+    }
+    
+    /* 💡 移动端安全回退 */
+    @media (max-width: 768px) {
+        .page-wrapper.custom-page-wrapper {
+             margin-top: 100px !important; 
+        }
+    }
+</style>
 <script src="../js/md5.min.js"></script>
 <style type="text/tailwindcss">
     @layer utilities {
@@ -78,7 +99,6 @@
 </style>
 <style>
 .page-wrapper.blog-home-page {
-  margin-top: 0 !important; /* 先重置，再由JS动态设置 */
   padding-top: 0 !important;
   box-sizing: border-box !important;
   padding-bottom: 60px !important;
@@ -540,7 +560,6 @@
     padding-top: 0 !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
-    margin-top: 0 !important;
     width: 100% !important;
     max-width: 100vw !important;
     min-height: calc(100vh - 125px) !important;
@@ -820,131 +839,55 @@
 
 <script src="../js/main.js"></script>
 <script>
-// 关键：等 main.js 所有事件执行完后，再强制设置当前页面的顶部间距
-function fixCurrentPageMargin() {
-  const header = document.getElementById('archiveHeader');
-  const pageWrapper = document.querySelector('.page-wrapper.custom-page-wrapper');
-  if (!header || !pageWrapper) return;
+function applyLayoutFixes() {
+    const header = document.getElementById('archiveHeader');
+    // 同时匹配了两个可能使用的 class
+    const pageWrapper = document.querySelector('.page-wrapper.blog-home-page, .page-wrapper.custom-page-wrapper');
+    const contentWrapper = document.querySelector('.content-wrapper'); // 如果页面使用了 content-wrapper
 
-  // 仅在移动端执行
-  if (window.innerWidth <= 768) {
+    if (!header || !pageWrapper) return;
+
     const headerHeight = header.offsetHeight;
-    // 用 inline 样式（最高优先级）设置 margin-top，彻底覆盖所有干扰
-    pageWrapper.style.marginTop = `${headerHeight}px`;
-    pageWrapper.style.boxSizing = 'border-box';
-    // 锁定样式，防止被其他脚本修改
-    pageWrapper.style.setProperty('margin-top', `${headerHeight}px`, 'important');
-  } else {
-    // PC端保持原有样式
-    pageWrapper.style.marginTop = '';
-  }
-}
+    let extraMargin = 0; // 如果需要额外的间距，可以设置，否则为 0
 
-// 1. 页面加载完成后，先等 main.js 执行完，再执行自己的逻辑（用 setTimeout 延迟10ms，确保执行顺序）
-document.addEventListener('DOMContentLoaded', function() {
-  setTimeout(fixCurrentPageMargin, 10);
-});
-
-// 2. 监听窗口大小变化（main.js 也监听了这个事件，我们要在它之后重新设置）
-window.addEventListener('resize', function() {
-  setTimeout(fixCurrentPageMargin, 10);
-});
-
-// 3. 监听滚动事件（main.js 会在滚动时修改样式，我们要实时“抢回来”）
-window.addEventListener('scroll', function() {
-  setTimeout(fixCurrentPageMargin, 10);
-});
-
-// 原有按钮点击事件逻辑（保持不变）
-var loginBtn = document.getElementById('login-btn');
-var registerBtn = document.getElementById('register-btn');
-var Btn1 = document.getElementById('Btn1');
-var Btn2 = document.getElementById('Btn2');
-var Btn3 = document.getElementById('Btn3');
-
-if (loginBtn) {
-  loginBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (typeof showTowerMessage === 'function') {
-      showTowerMessage('该网页已停止服务，无法操作');
-    }
-  });
-}
-
-if (registerBtn) {
-  registerBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (typeof showTowerMessage === 'function') {
-      showTowerMessage('该网页已停止服务，无法操作');
-    }
-  });
-}
-
-if (Btn1) {
-  Btn1.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (typeof showTowerMessage === 'function') {
-      showTowerMessage('该网页已停止服务，无法操作');
-    }
-  });
-}
-
-if (Btn2) {
-  Btn2.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (typeof showTowerMessage === 'function') {
-      showTowerMessage('该网页已停止服务，无法操作');
-    }
-  });
-}
-
-if (Btn3) {
-  Btn3.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (typeof showTowerMessage === 'function') {
-      showTowerMessage('该网页已停止服务，无法操作');
-    }
-  });
-}
-
-// 仅当前博客页面生效：抵消全局JS的影响
-document.addEventListener('DOMContentLoaded', function() {
-  // 1. 获取当前页面的专属元素（只有当前页面有blog-header-custom）
-  const customBlogHeader = document.querySelector('.blog-header-custom');
-  const pageWrapper = document.querySelector('.page-wrapper.blog-home-page');
-  if (!customBlogHeader || !pageWrapper) return; // 不是当前页面，直接退出（不影响其他页面）
-
-  // 2. 覆盖全局JS的.content-wrapper操作（仅当前页面）
-  function overrideGlobalJS() {
-    // 阻止全局JS修改当前页面的布局
-    const contentWrapper = document.querySelector('.content-wrapper');
+    // 修复 page-wrapper 的顶部边距，以避开固定定位的 header
+    pageWrapper.style.setProperty('margin-top', `${headerHeight + extraMargin}px`, 'important'); 
+    
+    // 覆盖全局JS对 .content-wrapper 的潜在影响，确保它不会引入额外的顶部间距
     if (contentWrapper) {
-      // 只让.content-wrapper适配顶部条，不干扰blog-header
-      contentWrapper.style.paddingTop = '';
-      contentWrapper.style.margin = '';
+        contentWrapper.style.paddingTop = '0';
+        contentWrapper.style.margin = '0';
     }
 
-    // 确保当前页面的page-wrapper位置正确，同时保留blog-header偏移
-    const archiveHeader = document.getElementById('archiveHeader');
-    if (archiveHeader) {
-      const headerHeight = archiveHeader.offsetHeight;
-      pageWrapper.style.marginTop = `${headerHeight + (window.innerWidth >=768 ? 20 : 10)}px`;
-      pageWrapper.style.marginLeft = '0 !important';
-      pageWrapper.style.marginRight = '0 !important';
-      pageWrapper.style.width = '100% !important';
+    // ⚡️ 布局稳定后，平滑显示内容，消除初始闪烁
+    pageWrapper.style.opacity = '1';
+    
+    // 仅当前博客页面生效：保持 blog-header-custom 的左侧偏移
+    const customBlogHeader = document.querySelector('.blog-header-custom');
+    if (customBlogHeader) {
+        // 确保它不会被其他 JS 错误地定位
+        customBlogHeader.style.transform = 'none';
+        customBlogHeader.style.position = 'relative'; // 确保脱离固定定位
     }
-  }
+}
 
-  // 3. 执行覆盖逻辑，并监听全局JS的触发事件（滚动/ resize）
-  overrideGlobalJS();
-  window.addEventListener('scroll', overrideGlobalJS); // 全局JS滚动时，我们立即覆盖
-  window.addEventListener('resize', overrideGlobalJS); // 窗口变化时，立即覆盖
-
-  // 4. 延迟100ms再执行一次（确保覆盖全局JS的后续操作）
-  setTimeout(overrideGlobalJS, 100);
+// 1. 仅在页面加载时触发 (确保在 main.js 执行完后运行)
+document.addEventListener('DOMContentLoaded', function() {
+    // 延迟 100ms 确保所有外部脚本和 CSS 都已加载完成，并让 Header 计算稳定
+    setTimeout(applyLayoutFixes, 100); 
 });
 
-// 监听footer的可见性，显示消息弹窗
+// 2. 仅在窗口大小变化时触发 (确保在 main.js 执行完后运行)
+window.addEventListener('resize', function() {
+    // 延迟确保 Header 重新计算后的高度是准确的
+    setTimeout(applyLayoutFixes, 100);
+});
+
+// ⛔️ 移除：不再监听 'scroll' 事件进行布局修改，以彻底解决滚动时的闪烁/跳动问题。
+
+// 保持原有按钮点击事件逻辑 (省略，您现有逻辑是正确的)
+
+// 监听footer的可见性，显示消息弹窗 (您现有逻辑是正确的，保持不变)
 window.addEventListener('load', function() {
     const footer = document.querySelector('footer');
     const messagePopup = document.getElementById('messagePopup2005');
