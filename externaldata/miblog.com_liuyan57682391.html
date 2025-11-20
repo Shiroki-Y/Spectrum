@@ -751,10 +751,10 @@ function applyLayoutFixes() {
     if (isMobile) {
         // 移动端/平板端：顶部 Header高度 + 少量间距 (10px)，防止重叠
         // 使用 setProperty('...','...','important') 确保最高优先级
-        pageWrapper.style.setProperty('margin-top', `${headerHeight + 10}px`, 'important');
+        pageWrapper.style.setProperty('margin-top', `${headerHeight + 5}px`, 'important');
     } else {
         // PC端：顶部 Header高度 + 少量间距 (20px)，保持布局稳定
-        pageWrapper.style.setProperty('margin-top', `${headerHeight + 20}px`, 'important');
+        pageWrapper.style.setProperty('margin-top', `${headerHeight + 10}px`, 'important');
     }
     
     // 覆盖全局JS对 .content-wrapper 的潜在影响，确保它不会引入额外的顶部间距
