@@ -119,6 +119,75 @@
   }
 </style>
 <style>
+/* --- 开幕特效样式 (更新版) --- */
+
+  /* 1. 红色闪屏 */
+  #redSplashScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #9e1d1d;
+    z-index: 99999;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .splash-hidden {
+    opacity: 0 !important;
+  }
+
+  /* 2. 箭头组基础样式 - 改为竖排 */
+  .arrow-effect-group {
+    position: absolute;
+    top: 50%; /* 垂直居中 */
+    /* 初始不显示 */
+    display: none; 
+    /* 关键修改：改为纵向排列 */
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    gap: 5px; /* 箭头之间的垂直间距 */
+    
+    color: #dc2626;
+    font-size: 32px; /* 箭头大小 */
+    font-weight: bold;
+    z-index: 50;
+  }
+
+  /* 左侧箭头位置 - 往左移出图片区域 */
+  .arrow-group-left {
+    left: -50px; /* 负值越大，离图片越远 */
+  }
+
+  /* 右侧箭头位置 - 往右移出图片区域 */
+  .arrow-group-right {
+    right: -50px; /* 负值越大，离图片越远 */
+  }
+
+  /* 3. 抖动动画关键帧 (保持不变，左右抖动) */
+  @keyframes shakeX {
+    0%, 100% { transform: translateY(-50%) translateX(0); }
+    25% { transform: translateY(-50%) translateX(-8px); }
+    75% { transform: translateY(-50%) translateX(8px); }
+  }
+
+  /* 激活抖动的类 */
+  .arrow-shaking {
+    display: flex !important; /* 强制显示 */
+    animation: shakeX 0.1s infinite; /* 快速剧烈抖动 */
+  }
+
+  /* 移动端微调 */
+  @media (max-width: 767px) {
+    .arrow-effect-group { font-size: 24px; }
+    /* 手机屏幕窄，稍微收一点距离，避免被屏幕切掉 */
+    .arrow-group-left { left: -35px; }
+    .arrow-group-right { right: -35px; }
+  }
+  /* --- 开幕特效样式结束 --- */
+    
 @media (min-width: 768px) {
   .web-content {
     height: calc(452px - 42px) !important;
@@ -206,6 +275,7 @@ footer {
 </style>
 </head>
 <body class="bg-gray-100">
+    <div id="redSplashScreen"></div>
     <!-- 顶部固定条 -->
     <header class="archive-header" id="archiveHeader">
         <!-- 顶部区域：Logo和返回按钮 -->
@@ -289,9 +359,23 @@ footer {
   <h1 class="text-2xl md:text-3xl font-bold text-blue-900 text-center mb-2 leading-tight tracking-tight pt-6 pb-4" style="font-family:'Microsoft YaHei',Arial,sans-serif;">
     菁英会客厅节目介绍
   </h1>
-  <div class="flex justify-center items-center w-[200px] h-[150px] mb-4 mx-auto placeholder-2005-image">
+  <div class="flex justify-center items-center w-[200px] h-[150px] mb-4 mx-auto placeholder-2005-image relative">
+    
+    <div class="arrow-effect-group arrow-group-left" id="arrowsLeft">
+        <i class="fa fa-arrow-right"></i>
+        <i class="fa fa-arrow-right"></i>
+        <i class="fa fa-arrow-right"></i>
+    </div>
+
     <img src="images/elitesalon_img.png" id="elitesalonImg" title="点击查看大图" style="cursor: pointer;">
-  </div>
+
+    <div class="arrow-effect-group arrow-group-right" id="arrowsRight">
+        <i class="fa fa-arrow-left"></i>
+        <i class="fa fa-arrow-left"></i>
+        <i class="fa fa-arrow-left"></i>
+    </div>
+
+</div>
   <!-- 正文 -->
 <div class="text-gray-900 text-base leading-relaxed mb-2 news-article-text text-auto-wrap px-12">
     <p>《菁英会客厅》是新纪元电视台于2005年推出的一档高端访谈节目，每周四晚21:10准时与观众见面。节目每期邀请传媒及各行业的领军人物担任嘉宾，由主持人方睿展开深度对谈，为您呈现他们的行业洞察与人生智慧。</p>
@@ -380,6 +464,43 @@ footer {
             });
         }
     })();
+    window.addEventListener('load', function() {
+        const splashScreen = document.getElementById('redSplashScreen');
+        const arrowsLeft = document.getElementById('arrowsLeft');
+        const arrowsRight = document.getElementById('arrowsRight');
+
+        // 1. 页面加载完毕，立即淡出红色闪屏
+        if (splashScreen) {
+            // 稍微延迟一丁点确保渲染完成，然后淡出
+            setTimeout(() => {
+                splashScreen.classList.add('splash-hidden');
+            }, 100);
+
+            // 0.3s 淡出动画结束后，将闪屏元素移除（可选，或者只是保持隐藏）
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+            }, 400); // 100ms 延迟 + 300ms 动画
+        }
+
+        // 2. 闪屏淡出后，箭头出现并抖动
+        // 设定在闪屏开始淡出后不久触发 (比如 200ms 后)
+        setTimeout(() => {
+            if (arrowsLeft && arrowsRight) {
+                // 添加抖动类，使其显示并动起来
+                arrowsLeft.classList.add('arrow-shaking');
+                arrowsRight.classList.add('arrow-shaking');
+
+                // 3. 持续 0.8秒 后消失
+                setTimeout(() => {
+                    arrowsLeft.classList.remove('arrow-shaking');
+                    arrowsRight.classList.remove('arrow-shaking');
+                    // 彻底隐藏
+                    arrowsLeft.style.display = 'none';
+                    arrowsRight.style.display = 'none';
+                }, 800); // 持续 0.8s
+            }
+        }, 200); // 这里的延迟可以根据需要微调，控制箭头何时开始出现
+    });
 </script>
 </body>
 </html>
