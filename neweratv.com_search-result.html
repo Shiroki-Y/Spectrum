@@ -364,7 +364,6 @@ function encode(str) {
                 // 1. 尝试加载 forbidden_keywords.json (最高优先级)
                 fetch('js/forbidden_keywords.json')
                 .then(res => {
-                    // 即使加载失败也继续，但要捕获错误
                     if (!res.ok) throw new Error('Failed to load forbidden_keywords.json');
                     return res.json();
                 })
@@ -383,28 +382,55 @@ function encode(str) {
                         searchContainer.classList.add('search-container-forbidden');
                         
                         searchTitle.textContent = "搜索结果";
-                        const textContent = forbiddenConfig.hidden 
+                        
+                        // 默认显示逻辑（如果不是特殊action，就显示配置里的text）
+                        let textContent = forbiddenConfig.hidden 
                             ? `<span class="hidden-text">${forbiddenConfig.text}</span>`
                             : `<span class="visible-text">${forbiddenConfig.text}</span>`;
 
-                        resultsDisplay.innerHTML = `<div class="hidden-text-container">${textContent}</div>`;
-                        
                         // >>>>>>>>>>>>>>>>>>>>>> 波动和重定向逻辑 <<<<<<<<<<<<<<<<<<<<<<<<
                         if (forbiddenConfig.action === 'fluctuation_redirect') {
+                            resultsDisplay.innerHTML = `<div class="hidden-text-container">${textContent}</div>`;
                             searchContainer.classList.add('search-container-shake');
                             searchTitle.textContent = "检测到波动...";
                             resultsDisplay.innerHTML = `<p class="visible-text" style="text-align:center;">正在重定位...</p>`;
                             
-                            // 2秒后重定向
                             setTimeout(() => {
-                                window.location.href = "https://missing.shiroki-y.top/reservation.html"; // 请根据需要修改目标URL
+                                window.location.href = "https://missing.shiroki-y.top/reservation.html"; 
                             }, 2000); 
                             
                             return null;
                         }
                         // <<<<<<<<<<<<<<<<<<<<<<<< 波动和重定向逻辑 <<<<<<<<<<<<<<<<<<<<<<<<
+
+                        // >>>>>>>>>>>>>>>>>>>>>> 江岳市：无限循环逻辑 <<<<<<<<<<<<<<<<<<<<<<<<
+                        if (forbiddenConfig.action === 'infinite_loop') {
+                            // 1. 定义显示的文字模板
+                            // 注意：这里我们忽略 json 里的 text，直接使用正常的“无结果”格式
+                            const loopMessage = `<p>抱歉，没有找到与"<b>${query}</b>"相关的结果。</p>`;
+                            
+                            // 2. 初始显示第一条
+                            resultsDisplay.innerHTML = loopMessage;
+                            
+                            // 3. 设置定时器，每 0.6 秒 (600ms) 追加一次
+                            const loopInterval = setInterval(() => {
+                                // 使用 insertAdjacentHTML 比 innerHTML += 性能更好，且不会重置现有内容状态
+                                resultsDisplay.insertAdjacentHTML('beforeend', loopMessage);
+                            }, 600);
+
+                            // 4. 设置 10 分钟后停止 (10 * 60 * 1000 = 600000 ms)
+                            setTimeout(() => {
+                                clearInterval(loopInterval);
+                            }, 600000);
+
+                            return null; // 阻断后续逻辑
+                        }
+                        // <<<<<<<<<<<<<<<<<<<<<<<< 江岳市：无限循环逻辑 <<<<<<<<<<<<<<<<<<<<<<<<
+
+                        // 如果是其他普通禁用词，显示默认配置的文本
+                        resultsDisplay.innerHTML = `<div class="hidden-text-container">${textContent}</div>`;
                         
-                       return null;
+                        return null;
                     }
 
                     // 2. 如果未命中禁用关键词，继续加载 encrypted_keywords.json (普通搜索)
