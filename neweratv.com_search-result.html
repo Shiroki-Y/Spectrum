@@ -378,59 +378,63 @@ function encode(str) {
                     });
 
                     if (forbiddenConfig) {
-                        
-                        searchTitle.textContent = "搜索结果";
-                        
-                        // 默认显示逻辑（如果不是特殊action，就显示配置里的text）
-                        let textContent = forbiddenConfig.hidden 
-                            ? `<span class="hidden-text">${forbiddenConfig.text}</span>`
-                            : `<span class="visible-text">${forbiddenConfig.text}</span>`;
+                        body.classList.add('body-forbidden'); // 页面整体禁用样式
+                        searchContainer.classList.add('search-container-forbidden');
+                        
+                        searchTitle.textContent = "搜索结果";
+                        
+                        // 默认显示逻辑（如果不是特殊action，就显示配置里的text）
+                        let textContent = forbiddenConfig.hidden 
+                            ? `<span class="hidden-text">${forbiddenConfig.text}</span>`
+                            : `<span class="visible-text">${forbiddenConfig.text}</span>`;
 
-                        // >>>>>>>>>>>>>>>>>>>>>> 波动和重定向逻辑 <<<<<<<<<<<<<<<<<<<<<<<<
-                        if (forbiddenConfig.action === 'fluctuation_redirect') {
-                            // 仅在波动重定向时添加黑红主题类
-                            **body.classList.add('body-forbidden');**
-                            **searchContainer.classList.add('search-container-forbidden');**
-                            
-                            resultsDisplay.innerHTML = `<div class="hidden-text-container">${textContent}</div>`;
-                            searchContainer.classList.add('search-container-shake');
-                            searchTitle.textContent = "检测到波动...";
-                            resultsDisplay.innerHTML = `<p class="visible-text" style="text-align:center;">正在重定位...</p>`;
-                            
-                            setTimeout(() => {
-                                window.location.href = "https://missing.shiroki-y.top/reservation.html"; 
-                            }, 2000); 
-                            
-                            return null;
-                        }
-                        // <<<<<<<<<<<<<<<<<<<<<<<< 波动和重定向逻辑 <<<<<<<<<<<<<<<<<<<<<<<<
+                        // >>>>>>>>>>>>>>>>>>>>>> 波动和重定向逻辑 <<<<<<<<<<<<<<<<<<<<<<<<
+                        if (forbiddenConfig.action === 'fluctuation_redirect') {
+                            resultsDisplay.innerHTML = `<div class="hidden-text-container">${textContent}</div>`;
+                            searchContainer.classList.add('search-container-shake');
+                            searchTitle.textContent = "检测到波动...";
+                            resultsDisplay.innerHTML = `<p class="visible-text" style="text-align:center;">正在重定位...</p>`;
+                            
+                            setTimeout(() => {
+                                window.location.href = "https://missing.shiroki-y.top/reservation.html"; 
+                            }, 2000); 
+                            
+                            return null;
+                        }
+                        // <<<<<<<<<<<<<<<<<<<<<<<< 波动和重定向逻辑 <<<<<<<<<<<<<<<<<<<<<<<<
 
-                        // >>>>>>>>>>>>>>>>>>>>>> 江岳市：无限循环逻辑 <<<<<<<<<<<<<<<<<<<<<<<<
+                        // >>>>>>>>>>>>>>>>>>>>>> 江岳市：无限循环逻辑 (已移除样式) <<<<<<<<<<<<<<<<<<<<<<<<
                         if (forbiddenConfig.action === 'infinite_loop') {
-                            // 注意：此处没有添加任何 body-forbidden 或 search-container-forbidden 类
+                            // 仅移除所有禁用样式，确保页面背景和颜色正常
+                            body.classList.remove('body-forbidden');
+                            searchContainer.classList.remove('search-container-forbidden');
+                            searchContainer.classList.remove('search-container-shake');
+
+                            // 1. 定义显示的文字模板
                             const loopMessage = `<p>抱歉，没有找到与"<b>${query}</b>"相关的结果。</p>`;
                             
+                            // 2. 初始显示第一条
                             resultsDisplay.innerHTML = loopMessage;
                             
+                            // 3. 设置定时器，每 0.6 秒 (600ms) 追加一次
                             const loopInterval = setInterval(() => {
                                 resultsDisplay.insertAdjacentHTML('beforeend', loopMessage);
                             }, 600);
 
+                            // 4. 设置 10 分钟后停止
                             setTimeout(() => {
                                 clearInterval(loopInterval);
                             }, 600000);
 
                             return null; // 阻断后续逻辑
                         }
-                        // <<<<<<<<<<<<<<<<<<<<<<<< 江岳市：无限循环逻辑 <<<<<<<<<<<<<<<<<<<<<<<<
+                        // <<<<<<<<<<<<<<<<<<<<<<<< 江岳市：无限循环逻辑 (已移除样式) <<<<<<<<<<<<<<<<<<<<<<<<
 
-                        // 如果是其他普通禁用词（非波动/重定向，非无限循环），显示默认配置的文本并添加黑红样式
-                        **body.classList.add('body-forbidden');**
-                        **searchContainer.classList.add('search-container-forbidden');**
-                        resultsDisplay.innerHTML = `<div class="hidden-text-container">${textContent}</div>`;
-                        
-                        return null;
-                    }
+                        // 如果是其他普通禁用词，显示默认配置的文本
+                        resultsDisplay.innerHTML = `<div class="hidden-text-container">${textContent}</div>`;
+                        
+                        return null;
+                    }
 
                     // 2. 如果未命中禁用关键词，继续加载 encrypted_keywords.json (普通搜索)
                     return fetch('js/encrypted_keywords.json');
@@ -478,11 +482,6 @@ function encode(str) {
                 searchTitle.textContent = "搜索结果";
                 resultsDisplay.innerHTML = "<p>请输入搜索关键字。</p>";
             }
-            
-            // 确保在无参数时，页面也处于正常模式
-            body.classList.remove('body-forbidden');
-            searchContainer.classList.remove('search-container-forbidden');
-            searchContainer.classList.remove('search-container-shake');
         });
 
         /* === 反审查和右键禁用机制 === */
