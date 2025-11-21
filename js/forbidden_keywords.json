@@ -5,7 +5,16 @@
       "fojsE4FsGwtfJ1Mgvlm8+A=="
     ],
     "action": "fluctuation_redirect",
-    "hidden": false, 
+    "hidden": false,
     "text": "检测到波动......"
+  },
+  "jiangyue_glitch": {
+    "keywords": [
+      "A91XhZUF2rWmeNfyeiJEtg==",
+      "kUy4A0XXRArH0JhXI6uaGw=="
+    ],
+    "action": "infinite_loop",
+    "hidden": false,
+    "text": "搜索结果"
   }
 }
