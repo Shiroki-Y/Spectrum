@@ -967,8 +967,9 @@ if (Btn3) {
 // 1. 定义博文数据 (密码和提示) - 保持不变
 const posts = {
     '1': { 
-        password: '19510207', 
-        prompt: '我的生日（8位数字）',
+        password: 'kandianying', 
+        prompt: '<img src="../images/phone.jpg" alt="我喜欢" style="max-width: 100%; height: auto; margin-bottom: 10px; border: 1px solid #ccc;">' + 
+                '<span style="display: block;">526/3426/9464 拼音</span>',
         url: 'miblog.com_liuyan57682391_public_z6Qc8.html'
     },
     '2': { 
@@ -1004,7 +1005,7 @@ function showModal(postId) {
     errorElement.textContent = '';
     
     // 设置提示语
-    promptElement.textContent = post.prompt; 
+    promptElement.innerHTML = post.prompt;
     
     // 显示弹窗
     backdrop.style.display = 'flex';
