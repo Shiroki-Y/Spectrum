@@ -461,7 +461,7 @@ footer {
             // 替换图片
             targetImage.src = replacementSrc;
             
-            // 0.3秒后恢复
+            // 0.7秒后恢复
             setTimeout(() => {
                 targetImage.src = originalSrc;
                 // 移除滚动监听器
@@ -471,7 +471,7 @@ footer {
                 }
                 // 停止观察
                 observer.disconnect();
-            }, 300);
+            }, 700);
         }
     }
 })();
