@@ -68,6 +68,21 @@
     }
 </style>
 <style>
+.symbol-bg {
+    background-image: url('images/symbol.jpg');
+    background-size: 100px 100px;
+    background-repeat: no-repeat;
+    background-position: right bottom;
+    opacity: 0.20;
+    z-index: 0;
+    pointer-events: none;
+    /* 保持定位和尺寸规则不变 */
+    position: absolute;
+    bottom: 3rem; /* 对应 bottom-12 */
+    right: 3rem;  /* 对应 right-12 */
+    inset: 0;
+}
+    
 @media (min-width: 768px) {
   .web-content {
     height: calc(452px - 42px) !important;
