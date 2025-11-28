@@ -68,6 +68,21 @@
     }
 </style>
 <style>
+.symbol-bg {
+    background-image: url('images/symbol.jpg');
+    background-size: 100px 100px;
+    background-repeat: no-repeat;
+    background-position: right bottom;
+    opacity: 0.20;
+    z-index: 0;
+    pointer-events: none;
+    /* 保持定位和尺寸规则不变 */
+    position: absolute;
+    bottom: 3rem; /* 对应 bottom-12 */
+    right: 3rem;  /* 对应 right-12 */
+    inset: 0;
+}
+    
 @media (min-width: 768px) {
   .web-content {
     height: calc(452px - 42px) !important;
@@ -191,7 +206,7 @@ footer {
   <div class="relative w-[100%] h-auto mx-auto overflow-hidden">
 
   <!-- ⭐ 背景图层 -->
-  <div class="absolute bottom-12 right-12 inset-0 bg-[url('images/symbol.jpg')] bg-[length:100px_100px] bg-no-repeat bg-right-bottom opacity-20 z-0 pointer-events-none"></div>
+  <div class="symbol-bg"></div>
 
   <!-- ⭐ 内容层 -->
   <div class="relative z-10">
