@@ -289,24 +289,28 @@ footer {
         const searchBtn = document.getElementById("siteSearchBtn");
         const searchInput = document.getElementById("siteSearchInput");
 
-        // 移除可能存在的旧事件，避免冲突
-        searchBtn.removeEventListener('click', handleSearchClick);
-        searchInput.removeEventListener('keydown', handleSearchEnter);
+        const newSearchInput = searchInput.cloneNode(true);
+        const newSearchBtn = searchBtn.cloneNode(true);
+
+        // 移除元素上的所有事件监听器（通过克隆元素并替换）
+        searchInput.parentNode.replaceChild(newSearchInput, searchInput);
+        searchBtn.parentNode.replaceChild(newSearchBtn, searchBtn);
+        
 
         // 定义新的点击事件处理函数
         function handleSearchClick(e) {
             e.preventDefault();
-            const value = searchInput.value.trim();
+            const value = newSearchInput.value.trim();
 
             // 第一步：权限认证优先
             if (!isSearchboxAuthed()) {
                 if (value === AUTH_KEY) {
                     setSearchboxAuthed();
                     alert("您已通过权限认证！请输入特殊关键词跳转");
-                    searchInput.value = "";
+                    newSearchInput.value = "";
                 } else {
                     alert("搜索框已设置权限保护，请先输入密钥");
-                    searchInput.value = "";
+                    newSearchInput.value = "";
                 }
                 return;
             }
@@ -331,8 +335,8 @@ footer {
         }
 
         // 绑定新事件（确保覆盖main.js的旧绑定）
-        searchBtn.addEventListener('click', handleSearchClick);
-        searchInput.addEventListener('keydown', handleSearchEnter);
+        newSearchBtn.addEventListener('click', handleSearchClick);
+        newSearchInput.addEventListener('keydown', handleSearchEnter);
     });
 </script>
 </body>
