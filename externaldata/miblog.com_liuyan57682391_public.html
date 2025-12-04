@@ -1073,36 +1073,57 @@ inputElement.addEventListener('keydown', function(e) {
     }
 });
 
-/* === 反审查和右键禁用机制 === */
-document.addEventListener('contextmenu', function(e) {
-    // 阻止默认的右键菜单
-    e.preventDefault();
-    // 弹出提示窗口
-    alert("逃避不能解决问题");
-});
+/* === 反审查和右键禁用机制（仅限非移动设备） === */
 
-document.addEventListener('keydown', function(e) {
-    // 检查是否是 F12 键
-    if (e.key === 'F12') {
+/**
+ * 检查当前设备是否为移动设备 (手机/平板)
+ * @returns {boolean} 如果是移动设备返回 true，否则返回 false
+ */
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// 只有在非移动设备上才启用以下机制
+if (!isMobileDevice()) {
+    
+    // 右键禁用机制
+    document.addEventListener('contextmenu', function(e) {
+        // 阻止默认的右键菜单
         e.preventDefault();
+        // 弹出提示窗口
         alert("逃避不能解决问题");
-    }
+    });
 
-    // 检查是否是 Ctrl/Cmd 组合键 (Ctrl/Cmd + U, Ctrl/Cmd + Shift + I)
-    if (e.ctrlKey || e.metaKey) { // metaKey 是 Mac 上的 Command 键
-        // Ctrl + U (查看源码)
-        if (e.key === 'u' || e.key === 'U') {
+    // 键盘快捷键禁用机制 (F12, Ctrl+U, Ctrl+Shift+I)
+    document.addEventListener('keydown', function(e) {
+        
+        // 检查是否是 F12 键
+        if (e.key === 'F12') {
             e.preventDefault();
             alert("逃避不能解决问题");
         }
-        
-        // Ctrl/Cmd + Shift + I (打开开发者工具)
-        if (e.shiftKey && (e.key === 'i' || e.key === 'I')) {
-             e.preventDefault();
-             alert("逃避不能解决问题");
+
+        // 检查是否是 Ctrl/Cmd 组合键 (Ctrl/Cmd + U, Ctrl/Cmd + Shift + I)
+        // metaKey 是 Mac 上的 Command 键
+        if (e.ctrlKey || e.metaKey) { 
+            
+            const keyLower = e.key.toLowerCase();
+
+            // Ctrl + U (查看源码)
+            if (keyLower === 'u') {
+                e.preventDefault();
+                alert("逃避不能解决问题");
+            }
+            
+            // Ctrl/Cmd + Shift + I (打开开发者工具)
+            if (e.shiftKey && keyLower === 'i') {
+                e.preventDefault();
+                alert("逃避不能解决问题");
+            }
         }
-    }
-});
+    });
+
+}
 /* === 反审查和右键禁用机制 结束 === */
 </script>
 </body>
