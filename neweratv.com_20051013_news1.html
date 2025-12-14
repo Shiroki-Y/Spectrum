@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新纪元电视台-新闻</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/favicon_1/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="images/favicon_1/favicon.svg" />
+    <link rel="shortcut icon" href="images/favicon_1/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_1/apple-touch-icon.png" />
+    <link rel="manifest" href="images/favicon_1/site.webmanifest" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#f8fafc',
+                        accent: '#dc2626',
+                        orangePlaceholder: '#ffa65b',
+                        greenVideo: '#00ff00',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+<style type="text/tailwindcss">
+    @layer utilities {
+        .archive-header {
+            @apply fixed top-0 left-0 right-0 z-50 text-white shadow-md bg-gradient-to-r from-purple-500 to-blue-500;
+        }
+        .archive-header-content {
+            @apply container mx-auto px-4;
+        }
+        .archive-header-top {
+            @apply flex items-center justify-between py-2 transition-all duration-300;
+        }
+        .archive-info {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500;
+        }
+        .archive-info-lower {
+            @apply py-1 bg-gradient-to-r from-purple-500 to-blue-500;
+        }
+        .return-home-btn {
+            @apply bg-white text-primary px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors;
+        }
+        .logo {
+              @apply h-10 w-auto bg-white p-1 border border-gray-300 rounded-[8px];
+        }
+        .content-wrapper {
+              @apply mt-0 pt-0;
+        }
+        .page-wrapper {
+              @apply mt-0;
+        }
+        .archive-header.top-hidden .archive-header-top {
+            @apply py-0 h-0 overflow-hidden;
+        }
+    }
+</style>
+<style>
+@media (min-width: 768px) {
+  .web-content {
+    height: calc(452px - 42px) !important;
+  }
+}
+
+/* 手机端强制加长容器，确保内容完整 */
+@media (max-width: 767px) {
+  .web-content {
+    height: auto !important;
+    min-height: 500px;
+    padding: 20px 15px !important;
+  }
+  
+  .text-sm {
+    font-size: 15px !important;
+  }
+  
+  .leading-relaxed {
+    line-height: 1.9 !important;
+  }
+  
+  .text-2xl {
+    font-size: 1.4rem !important;
+  }
+  
+  /* 移动端占满屏幕 */
+  body {
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* 移动端顶部条内容对齐 */
+  .archive-header-content {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  
+  /* 移动端顶部条第一行对齐 */
+  .archive-header-top {
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  
+  /* 移动端顶部条logo和按钮对齐 */
+  .archive-header-top > div:first-child,
+  .archive-header-top > a:last-child {
+    flex-shrink: 0 !important;
+  }
+  
+  .content-wrapper,
+  .page-wrapper {
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  
+  /* 移动端移除页面容器的圆角和阴影 */
+  .page-wrapper {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  
+  /* 移动端内容区域占满 */
+  .main-content-2005,
+  .navbar-2005,
+  .section-footer-2005 {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  /* 移动端隐藏视频上部的橙色区域 */
+  .main-area-topbar {
+    display: none !important;
+  }
+  
+  /* 移动端三栏布局改为垂直堆叠 */
+  .main-area-2005 {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  .main-area-row {
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  /* 移动端视频区域（绿色）占满宽度 */
+  .main-center-2005 {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    order: 1;
+    background: #00ff00 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  .main-center-2005 video {
+    width: 100% !important;
+    max-width: 100vw !important;
+    height: auto !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    object-fit: contain !important;
+  }
+  
+  /* 移动端橙色广告区域（两个gif横向排列，删除橙色边框） */
+  .main-left-2005 {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    order: 2;
+    display: flex !important;
+    flex-direction: row !important;
+    background: transparent !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  .main-left-box {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    max-width: 50% !important;
+    height: auto !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
+  
+  .main-left-box:first-child,
+  .main-left-box:last-child {
+    height: auto !important;
+    border-bottom: none !important;
+  }
+  
+  .main-left-box img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 0 !important;
+  }
+  
+  /* 确保容器高度完全由图片决定，消除任何额外空间 */
+  .main-left-box {
+    line-height: 0 !important;
+    font-size: 0 !important;
+  }
+  
+  /* 移动端节目介绍区域（右侧） */
+  .main-right-2005 {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    order: 3;
+    background: #fff !important;
+    padding: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  .main-right-title {
+    color: #fff !important;
+    text-align: center !important;
+    margin-bottom: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    background: linear-gradient(0deg, #6D6D6D -0.7%, #868686 32.22%, #BCBCBC 96.87%) !important;
+    box-shadow: 0 -1px 1px 0 rgba(0, 0, 0, 0.25) inset, 0 -1px 1px 0 rgba(255, 255, 255, 0.25) inset, 0 1px 0 0 rgba(255, 255, 255, 0.60) inset !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2) !important;
+    box-sizing: border-box !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
+  }
+  
+  .main-right-items-container {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 10px !important;
+    flex-wrap: nowrap !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    padding: 15px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  .main-right-item {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    max-width: calc(33.333% - 7px) !important;
+    background: transparent !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  
+  .main-right-item img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    margin-bottom: 8px !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    object-fit: contain !important;
+  }
+  
+  .main-right-desc {
+    text-align: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+  
+  .right-desc-title {
+    color: #000 !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    margin-bottom: 4px !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    text-decoration: none !important;
+    display: block !important;
+  }
+  
+  .right-desc-title:hover {
+    text-decoration: underline !important;
+  }
+  
+  .right-desc-time {
+    color: #000 !important;
+    font-size: 11px !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+  
+  /* 移动端：特别节目和热点新闻部分 - banner和内容配对显示 */
+  .news-main-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+  }
+  
+  .banner-section {
+    display: contents !important;
+  }
+  
+  .content-section {
+    display: contents !important;
+  }
+  
+  .banner-special {
+    width: 100% !important;
+    order: 1 !important;
+    margin-top: 0 !important;
+    border: 1px solid #C0C0C0 !important;
+    height: auto !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
+  
+  .banner-special img {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    object-fit: cover !important;
+    object-position: left center !important;
+  }
+  
+  .content-special {
+    width: 100% !important;
+    order: 2 !important;
+    margin-top: 0 !important;
+    border-top: 1px solid #C0C0C0 !important;
+  }
+  
+  .content-section > div {
+    display: contents !important;
+  }
+  
+  .banner-news {
+    width: 100% !important;
+    order: 3 !important;
+    margin-top: 2px !important;
+    border: 1px solid #C0C0C0 !important;
+    height: auto !important;
+    overflow: hidden !important;
+  }
+  
+  .banner-news img {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    object-fit: cover !important;
+  }
+  
+  /* 确保两个banner在移动端有相同的高度和显示效果 */
+  @media (max-width: 767px) {
+    .banner-special,
+    .banner-news {
+      height: 45px !important;
+      min-height: 45px !important;
+      max-height: 45px !important;
+      overflow: hidden !important;
+    }
+    
+    .banner-special img,
+    .banner-news img {
+      height: 45px !important;
+      width: 100% !important;
+      object-fit: cover !important;
+      object-position: center center !important;
+    }
+    
+    /* 特别节目banner确保左侧文字可见 */
+    .banner-special img {
+      object-position: left center !important;
+    }
+  }
+  
+  .content-news {
+    width: 100% !important;
+    order: 4 !important;
+    margin-top: 0 !important;
+    border-top: 1px solid #C0C0C0 !important;
+  }
+}
+
+/* 确保两个banner在PC端和移动端显示一致 */
+.banner-special,
+.banner-news {
+    border: 1px solid #C0C0C0 !important;
+    overflow: hidden !important;
+    line-height: 0 !important;
+}
+
+.banner-special img,
+.banner-news img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: left center !important;
+    display: block !important;
+}
+
+/* 链接样式：确保 right-desc-title 作为链接时保持原有外观 */
+.right-desc-title {
+    text-decoration: none !important;
+    color: inherit !important;
+    display: block !important;
+}
+
+.right-desc-title:hover {
+    text-decoration: underline !important;
+}
+
+/* 确保top-bar-2005和banner紧贴 */
+.top-bar-2005 {
+    margin-bottom: 0 !important;
+}
+.top-bar-2005 + div {
+    margin-top: 0 !important;
+}
+
+/* 确保两个banner高度一致且在同一水平线 */
+.banner-img {
+    object-fit: contain;
+    object-position: top;
+}
+
+/* 确保两个区域有边框和间隙 */
+.main-content-2005 .flex > div {
+    box-sizing: border-box;
+}
+
+/* 确保互动调查样式不被覆盖 */
+#survey-box {
+    background: #F5F5F5 !important;
+    border: 2px solid #D0D0D0 !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+#survey-box button {
+    background: linear-gradient(180deg, #F0F0F0 0%, #D0D0D0 50%, #6D6D6D 100%) !important;
+    color: #333 !important;
+    border: 1px solid #999 !important;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.2) !important;
+    border-radius: 20px !important;
+}
+
+/* 固定页脚到底部 */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.content-wrapper {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+footer {
+    flex-shrink: 0;
+    margin-top: auto;
+}
+/* 移动端移除底部多余空白 */
+@media (max-width: 767px) {
+    body {
+        min-height: auto !important;
+        padding-bottom: 0 !important;
+    }
+    .content-wrapper {
+        min-height: auto !important;
+        padding-bottom: 0 !important;
+    }
+    footer {
+        margin-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    /* 移除所有底部多余的margin和padding */
+    .page-wrapper,
+    .main-content-2005,
+    .section-footer-2005 {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+}
+</style>
+</head>
+<body class="bg-gray-100">
+    <!-- 顶部固定条 -->
+    <header class="archive-header" id="archiveHeader">
+        <!-- 顶部区域：Logo和返回按钮 -->
+        <div class="archive-header-top archive-header-content">
+            <div class="flex items-center">
+                <img src="images/webtimetower.png" 
+                     alt="WebTimeTower Logo" 
+                     class="logo">
+            </div>
+            <!-- PC端中间信息区域 -->
+            <div class="hidden md:block text-center text-[19px] text-white font-bold text-primary"> 
+                <div>您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<span class="underline">2005年10月13日</span>&nbsp;&nbsp;的网页存档</div>
+            </div>
+            <a href="webtimetower.html" class="return-home-btn flex items-center" id="returnHomeBtn">
+                  <i class="fa fa-home mr-2"></i>返回首页
+            </a>
+        </div>
+        <!-- 移动端中间信息区域（隐藏） -->
+        <div class="archive-info archive-header-content md:hidden">
+            <div class="text-center text-white font-bold">
+            您正在浏览&nbsp;&nbsp;<span class="underline">neweratv.com</span>&nbsp;&nbsp;于<br><span class="underline">2005年10月13日</span>&nbsp;&nbsp;的网页存档
+            </div>
+        </div>
+        <!-- 移动端下段文字区域（隐藏） -->
+        <div class="archive-info-lower archive-header-content md:hidden">
+            <div class="text-center text-sm font-semibold text-white" id="tower-placeholder-mobile">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+        <!-- PC端下段文字区域 -->
+        <div class="archive-info-lower archive-header-content hidden md:block">
+            <div class="text-center text-[16px] font-bold text-white" id="tower-placeholder-pc">（这里是小字占位符，可填写额外信息）</div>
+        </div>
+    </header>
+  
+    <div class="content-wrapper pt-[138px]"> <!-- header高度+margin -->
+      <div class="page-wrapper max-w-[960px] w-full min-w-[320px] mx-auto flex flex-col bg-gray-100 rounded-lg shadow-md">
+       <!-- 顶部黑色导航条 -->
+     <div class="navbar-2005">
+       <div class="navbar-2005-inner">
+         <nav>
+           <a href="neweratv.com_20051013.html">首页</a>
+           <span>|</span>
+           <a href="neweratv.com_20051013_tvguide.html">电视指南</a>
+           <span>|</span>
+           <a href="neweratv.com_20051013_news.html">新闻</a>
+           <span>|</span>
+           <a href="neweratv.com_20051013_show.html">综艺</a>
+           <span>|</span>
+           <a href="neweratv.com_20051013_finance.html">财经</a>
+           <span>|</span>
+           <a href="neweratv.com_20051013_music.html">音乐</a>
+           <span>|</span>
+           <a href="#" class="ad-link">电视剧</a>
+           <span>|</span>
+           <a href="#" class="ad-link">少儿</a>
+           <span>|</span>
+           <a href="#" class="ad-link">体育</a>
+           <span>|</span>
+           <a href="neweratv.com_adservice.html">广告服务</a>
+         </nav>
+       </div>
+     </div>
+     
+     <div class="main-content-2005">
+       <!-- 顶部蓝条 -->
+       <div class="top-bar-2005">
+         <div class="top-bar-blue"></div>
+         <div class="top-bar-orange">
+             <img src="images/logo.png" 
+                  alt="新纪元电视台 Logo" 
+             >
+         </div>
+         <div class="top-bar-search">
+           <input type="text" placeholder="请输入搜索内容…" class="search-input-2005" id="siteSearchInput" />
+           <button class="search-btn-2005" id="siteSearchBtn">站内搜索</button>
+         </div>
+       </div>
+
+<!-- 顶部标题区域 -->
+<div class="w-full">
+  <img src="images/banner_news.png" alt="Banner" class="w-full h-auto">
+</div>
+
+<!-- 蓝色横条（外部链接） -->
+<div class="mx-1 my-0.5" style="background: #E0EFFF; border: 1px solid #C0C0C0; height: 28px; display: flex; align-items: center; overflow: hidden;">
+  <marquee
+    direction="left"
+    scrollamount="5"
+    class="text-sm font-normal w-full"
+    style="color: #0066CC; padding: 0 8px;"
+    onmouseover="this.stop();" onmouseout="this.start();"
+  >
+    <a href="#" class="marquee-link ad-link" style="color: #0066CC; text-decoration: none;">[神六专题]13日13:05神舟六号进入远望二号测量船测控范围内</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="#" class="marquee-link ad-link" style="color: #0066CC; text-decoration: none;">[视点]巴基斯坦地震救灾情况</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="#" class="marquee-link ad-link" style="color: #0066CC; text-decoration: none;">[专家访谈]航天员今日将进行空间观测</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="#" class="marquee-link ad-link" style="color: #0066CC; text-decoration: none;">[视点]诺贝尔文学奖今日揭晓</a>
+  </marquee>
+</div>
+
+<!-- 特别节目和热点新闻包装器（用于移动端重新排列） -->
+<div class="news-main-wrapper">
+<!-- Banner标题区域 - 紧贴蓝色横条，两个banner同一水平线 -->
+<div class="banner-section w-[100%] mx-auto bg-white overflow-hidden" style="margin-top: 0; display: flex; flex-direction: row; align-items: stretch; gap: 2px;">
+  <!-- 左栏banner - 约68% -->
+  <div class="banner-special w-full md:w-[68%]" style="line-height: 0; border: 1px solid #C0C0C0; overflow: hidden;">
+    <img src="images/title_特别节目.png" alt="特别节目" style="width: 100%; height: 100%; object-fit: cover; object-position: left center; display: block;">
+  </div>
+  <!-- 右栏banner - 约32% -->
+  <div class="banner-news w-full md:w-[32%]" style="line-height: 0; border: 1px solid #C0C0C0; overflow: hidden;">
+    <img src="images/title_热点新闻.png" alt="热点新闻" style="width: 100%; height: 100%; object-fit: cover; object-position: left center; display: block;">
+  </div>
+</div>
+
+<!-- 主体内容区域 -->
+<div class="content-section w-[100%] h-[auto] mx-auto bg-white overflow-hidden" style="margin-top: 2px;">
+  <div class="flex flex-col md:flex-row w-full" style="gap: 2px;">
+    
+    <!-- 左栏 - 68% -->
+    <div class="content-special w-full md:w-[68%] px-0 py-4" style="border: 1px solid #C0C0C0;">
+      <!-- 聚焦新纪元标题 -->
+      <div class="px-4 md:px-6 mb-3 text-center">
+        <h2 class="text-xl md:text-xl font-bold text-blue-600" style="color: #0066CC;">《聚焦新纪元》神六发射特别节目</h2>
+      </div>
+      
+      <!-- 文章摘要 -->
+      <div class="text-sm text-gray-900 mb-4 leading-relaxed px-4 md:px-6 text-center">
+        <p style="text-indent: 2em;">10月12日，神舟六号载人飞船在酒泉卫星发射中心成功升空，点燃了全国民众的科学探索热情，更让"未知领域"成为热议焦点 —— 从遥远的宇宙星辰，到我们赖以生存的地球，是否还藏着人类尚未触及的秘密？本台《聚焦新纪元》栏目推出特别访谈，邀请中国天文大学刘砚教授围绕"未知文明"展开对话。→<a href="neweratv.com_20051013_news_interview.html" class="text-blue-700 underline font-bold">阅读全文</a></p>
+      </div>
+      
+      <!-- 互动调查 -->
+      <div class="w-full mb-6 font-sans relative" style="max-width: 90%; margin-left: auto; margin-right: auto; box-sizing: border-box;">
+        <!-- 标题条 - 灰黑色渐变 -->
+        <div 
+        class="font-bold text-center py-2 mb-0" 
+        style="background: linear-gradient(180deg, #c4c3c3 0%, #616161 50%, #474747 100%) !important; color: #ffffff !important; font-size: 15px !important; font-weight: bold !important; border-top-left-radius: 4px; border-top-right-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.1) inset, 0 -1px 1px rgba(255,255,255,0.3) inset;"
+      >
+        :: 特 别 节 目 互 动 调 查 ::
+      </div>
+        <!-- 调查框 - 淡灰色背景 -->
+        <div id="survey-box" class="font-sans relative" style="background: #F5F5F5 !important; padding: 16px 20px !important; border: 2px solid #D0D0D0 !important; border-top: none !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1) !important; box-sizing: border-box !important; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;">
+          <form id="special-survey" autocomplete="off" style="margin: 0 !important; padding: 0 !important;">
+            <div class="mb-4 font-bold text-center" style="color: #000 !important; font-size: 14px !important; text-align: center !important; font-weight: bold !important;">如果给您一次探索未知世界的机会，您更倾向于去：</div>
+            <div class="mb-3" style="text-align: left !important;">
+              <label class="cursor-pointer mb-2 block" style="color: #000 !important; font-size: 14px !important; display: block !important; margin-bottom: 8px !important;">
+                <input type="radio" name="explore" value="taikong" style="width: 16px !important; height: 16px !important; accent-color: #0066cc !important; margin-right: 8px !important; vertical-align: middle !important;" />
+                <span style="vertical-align: middle !important;">像神六宇航员一样探索广袤的太空</span>
+              </label>
+              <label class="cursor-pointer mb-2 block" style="color: #000 !important; font-size: 14px !important; display: block !important; margin-bottom: 8px !important;">
+                <input type="radio" name="explore" value="southpole" style="width: 16px !important; height: 16px !important; accent-color: #0066cc !important; margin-right: 8px !important; vertical-align: middle !important;" />
+                <span style="vertical-align: middle !important;">像南极科考队一样探索地球未发现的角落</span>
+              </label>
+              <label class="cursor-pointer mb-2 block" style="color: #000 !important; font-size: 14px !important; display: block !important; margin-bottom: 8px !important;">
+                <input type="radio" name="explore" value="parallel" style="width: 16px !important; height: 16px !important; accent-color: #0066cc !important; margin-right: 8px !important; vertical-align: middle !important;" />
+                <span style="vertical-align: middle !important;">像教授提出的那样探索"另一种文明"的可能性</span>
+              </label>
+            </div>
+            <!-- 成功提示区域（在选项和按钮之间） -->
+            <div id="survey-tip" class="text-sm mb-3 text-center" style="min-height: 20px; color: #dc2626; font-size: 14px;"></div>
+            <div class="flex gap-3 justify-center mt-4">
+              <button type="button" id="vote-btn" class="px-5 py-2 font-bold text-white" style="background: linear-gradient(180deg, #c4c3c3 0%, #616161 50%, #474747 100%) !important; color: #ffffff !important; border: 1px solid #999 !important; box-shadow: 0 2px 3px rgba(0,0,0,0.2) !important; cursor: pointer !important; border-radius: 20px !important; font-size: 14px !important; font-weight: bold !important;">提交</button>
+              <button type="button" id="result-btn" class="px-5 py-2 font-bold text-white" style="background: linear-gradient(180deg, #c4c3c3 0%, #616161 50%, #474747 100%) !important; color: #ffffff !important; border: 1px solid #999 !important; box-shadow: 0 2px 3px rgba(0,0,0,0.2) !important; cursor: pointer !important; border-radius: 20px !important; font-size: 14px !important; font-weight: bold !important;">查看</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 右栏 - 32% -->
+    <div class="content-news w-full md:w-[32%] px-0 py-4" style="border: 1px solid #C0C0C0;">
+      
+      <!-- 热点新闻图片 -->
+      <div class="mb-4 px-4 md:px-6 relative" style="position: relative;">
+        <div style="position: relative; display: inline-block; width: 100%; max-width: 85%; margin: 0 auto; box-shadow: inset 0 -40px 30px -10px rgba(0,0,0,0.5);">
+          <img src="images/news_pic.png" alt="热点新闻图片" class="w-full h-auto" style="display: block;">
+          <!-- 图集标题 - 叠加在图片左下角 -->
+          <a href="#" class="absolute bottom-1 left-2 text-white font-bold text-sm hover:underline" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.9); z-index: 2; padding: 4px 8px;">神舟六号载人航天精彩图集</a>
+        </div>
+      </div>
+      
+      <!-- 相关链接列表 -->
+      <ul class="list-none p-0 m-0 px-4 md:px-6" style="font-size: 13px; line-height: 1.8;">
+        <li style="margin-bottom: 6px;"><a href="#" class="text-gray-900 hover:text-blue-700 ad-link underline" style="text-decoration: underline; font-size: 14px; font-weight: 500;">·神舟六号飞船诞生全记录[组图]</a></li>
+        <li style="margin-bottom: 6px;"><a href="#" class="text-gray-900 hover:text-blue-700 ad-link underline" style="text-decoration: underline; font-size: 14px; font-weight: 500;">·我国航天食品以中餐为主</a></li>
+        <li style="margin-bottom: 6px;"><a href="#" class="text-gray-900 hover:text-blue-700 ad-link underline" style="text-decoration: underline; font-size: 14px; font-weight: 500;">·中国第22次南极考察方案敲定</a></li>
+        <li style="margin-bottom: 6px;"><a href="#" class="text-gray-900 hover:text-blue-700 ad-link underline" style="text-decoration: underline; font-size: 14px; font-weight: 500;">·新疆天池出现奇特光环[图]</a></li>
+        <li style="margin-bottom: 6px;"><a href="#" class="text-gray-900 hover:text-blue-700 ad-link underline" style="text-decoration: underline; font-size: 14px; font-weight: 500;">·在"死亡之海"罗布泊发现"地下大水库"</a></li>
+        <li style="margin-bottom: 6px;"><a href="#" class="text-gray-900 hover:text-blue-700 ad-link underline" style="text-decoration: underline; font-size: 14px; font-weight: 500;">·美国"勇气"号传回火星沙漠全景照片[图]</a></li>
+        <li style="margin-bottom: 6px;"><a href="#" class="text-gray-900 hover:text-blue-700 ad-link underline" style="text-decoration: underline; font-size: 14px; font-weight: 500;">·美科学家称发现太阳系第十行星</a></li>
+      </ul>
+    </div>
+    
+  </div>
+</div>
+</div>
+<!-- 特别节目和热点新闻包装器结束 -->
+
+<!-- 底部内容区域（横向三列布局） -->
+<div class="w-[100%] h-[auto] mx-auto bg-white overflow-hidden mt-0.5">
+  <div class="flex flex-col md:flex-row w-full" style="gap: 2px;">
+    
+    <!-- 底部左列：热门讨论 -->
+    <div class="w-full md:w-[45%] px-0 py-0" style="border: 1px solid #C0C0C0;">
+      <!-- 热门讨论标题 -->
+      <div class="w-full">
+        <img src="images/title_热门讨论.png" alt="热门讨论" class="w-full h-auto" style="display: block;">
+      </div>
+      
+      <!-- 内容区域：左右分布 -->
+      <div class="flex flex-col md:flex-row px-4 md:px-6 py-2">
+        <!-- 左侧：讨论话题列表 -->
+        <div class="w-full md:w-[50%] md:pr-3">
+          <ul class="list-none p-0 m-0 text-sm text-gray-900" style="line-height: 1.6;">
+            <li style="margin-bottom: 6px;"><a href="#" class="text-gray-900 hover:text-blue-700 ad-link underline" style="text-decoration: underline; font-size: 14px;">[讨论]禁止克隆，支持还是反对？</a></li>
+            <li style="margin-bottom: 6px;"><a href="externaldata/digitalhome.com_content_it_2620.html" class="text-gray-900 hover:text-blue-700 underline" target="_blank" style="text-decoration: underline; font-size: 14px;">[讨论]伪科学和"超自然现象"</a></li>
+            <li style="margin-bottom: 6px;"><a href="#" class="text-gray-900 hover:text-blue-700 ad-link underline" style="text-decoration: underline; font-size: 14px;">[讨论]苹果公司推出的视频ipod</a></li>
+          </ul>
+        </div>
+        
+        <!-- 右侧：论坛链接 -->
+        <div class="w-full md:w-[50%] md:pl-3 mt-4 md:mt-0">
+          <div class="text-sm text-gray-700 mb-2 font-bold" style="font-size: 14px; font-weight: bold;">本台合作综合性论坛</div>
+          <img src="images/digitalhome.jpg" alt="数字家园" class="w-auto h-auto max-w-full">
+        </div>
+      </div>
+    </div>
+    
+    <!-- 底部中列：GIF广告 -->
+    <div class="w-full md:w-[25%] px-0 py-0" style="border: 1px solid #C0C0C0; display: flex; align-items: stretch;">
+      <!-- 广告图片占位符 - 占满容器（保持比例） -->
+      <div class="w-full bg-orangePlaceholder flex items-center justify-center" style="min-height: 150px; width: 100%; overflow: hidden;">
+        <img src="images/homepage_ad_calling.gif" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+    </div>
+    
+    <!-- 底部右列：广告链接 -->
+    <div class="w-full md:w-[30%] px-4 md:px-6 py-2 relative" style="border: 1px solid #C0C0C0; background: #E0F2FF; position: relative;">
+      <!-- 广告标题 - 右上角 -->
+      <div class="absolute top-0 right-0 text-xs" style="background-color: #E0E0E0; color: #808080; font-size: 12px; font-weight: 600; padding: 2px 6px; border-radius: 2px;">广告</div>
+      
+      <!-- 广告链接列表 -->
+      <ul class="list-none p-0 m-0 mt-4" style="line-height: 1.6;">
+        <li style="margin-bottom: 6px;"><a href="#" class="ad-link underline" style="text-decoration: underline; font-size: 15px; color: #0066CC;">摆脱失眠抑郁症的困扰</a></li>
+        <li style="margin-bottom: 6px;"><a href="#" class="ad-link underline" style="text-decoration: underline; font-size: 15px; color: #0066CC;">告别—面瘫面肌痉挛！</a></li>
+        <li style="margin-bottom: 6px;"><a href="#" class="ad-link underline" style="text-decoration: underline; font-size: 15px; color: #0066CC;">网络创业十大法典</a></li>
+        <li style="margin-bottom: 6px;"><a href="#" class="ad-link underline" style="text-decoration: underline; font-size: 15px; color: #0066CC;">品牌鞋子的暴利经营</a></li>
+        <li style="margin-bottom: 6px;"><a href="#" class="ad-link underline" style="text-decoration: underline; font-size: 15px; color: #0066CC;">河南特色大盘鸡餐饮加盟</a></li>
+      </ul>
+    </div>
+    
+  </div>
+</div>
+
+<!-- 页脚导航 -->
+<div class="section-footer-2005">
+  <p>
+    <a href="neweratv.com_about.html">关于我们</a> |
+    <a href="neweratv.com_adservice.html">广告服务</a> |
+    <a href="#" class="ad-link">版权声明</a> |
+    <a href="neweratv.com_contact.html">联系我们</a>
+  </p>
+  
+  <!-- 插入分隔线 -->
+  <div class="footer-divider"></div>
+
+  <p class="footer-copy">新纪元电视台版权所有</p>
+  <p class="footer-note">
+    建议使用：1024×768分辨率，16位以上颜色、<br>
+    Netscape6.0、IE5.0以上版本浏览器和中文大字符集
+  </p>
+</div>
+</div>
+</div>
+</div>
+<footer class="w-full mt-4 text-center text-sm px-0 mx-0" style="flex-shrink: 0;">
+  <small>
+    <span class="first-line block">本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关</span>
+    <span class="second-line block">Copyright&copy; Shiroki. All Rights Reserved.</span>
+  </small>
+</footer>
+<div class="page-number">
+
+05/45
+
+</div>
+<script src="js/main.js"></script>
+<script>
+// 确保两个banner高度一致
+document.addEventListener('DOMContentLoaded', function() {
+    const banner1 = document.querySelector('img[alt="特别节目"]');
+    const banner2 = document.querySelector('img[alt="热点新闻"]');
+    
+    if (banner1 && banner2) {
+        function setEqualHeight() {
+            const height1 = banner1.offsetHeight;
+            const height2 = banner2.offsetHeight;
+            const maxHeight = Math.max(height1, height2);
+            
+            if (maxHeight > 0) {
+                // 特别节目banner保持原始高度
+                banner2.style.height = maxHeight + 'px';
+                banner2.style.objectFit = 'cover';
+            }
+        }
+        
+        if (banner1.complete && banner2.complete) {
+            setEqualHeight();
+        } else {
+            banner1.addEventListener('load', setEqualHeight);
+            banner2.addEventListener('load', setEqualHeight);
+        }
+    }
+});
+</script>
+</body>
+</html>
