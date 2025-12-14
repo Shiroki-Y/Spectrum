@@ -83,7 +83,7 @@
         // if (true) {
         if (!localStorage.getItem('userExperienceMode')) {
             console.log('首次访问，弹出模式选择框...');
-            const promptMsg = "请选择您想要体验的模式：\n1. 纯净版（删除可能影响直播的外部链接，如果您在直播请务必选择此项）\n2. 原版\n\n请输入 1 选择纯净版，输入 2 选择原版";
+            const promptMsg = "请选择您想要体验的模式：\n1. 纯净版（删除可能影响直播的外部链接，如果您在直播请务必选择此项）\n2. 原版（保留外链）\n\n请输入 1 选择纯净版，输入 2 选择原版";
             let userChoice = prompt(promptMsg, "1");
             
             while (userChoice !== null && userChoice !== "1" && userChoice !== "2") {
