@@ -1084,14 +1084,6 @@ function isMobileDevice() {
 
 // 只有在非移动设备上才启用以下机制
 if (!isMobileDevice()) {
-    
-    // 右键禁用机制
-    document.addEventListener('contextmenu', function(e) {
-        // 阻止默认的右键菜单
-        e.preventDefault();
-        // 弹出提示窗口
-        alert("逃避不能解决问题");
-    });
 
     // 键盘快捷键禁用机制 (F12, Ctrl+U, Ctrl+Shift+I)
     document.addEventListener('keydown', function(e) {
